@@ -1,10 +1,11 @@
 import { Player } from "./player.js";
 import { InputHandler } from "./input.js";
 import { Background } from "./background.js";
-import { FlyingEnemy, ClimbingEnemy, GroundEnemy } from "./enemies.js";
 import { UI } from "./ui.js";
 import { GAME_CONFIG } from "./gameConfig.js";
 import { SpriteAnimator } from "./systems/spriteAnimator.js";
+import { Manual1EnemySpawnStrategy, RandomEnemySpawnStrategy } from "./systems/enemySpawner.js";
+import { manual1EnemySpawn } from "./data/enemySpawn/manual1EnemySpawn.js";
 
 // https://www.youtube.com/watch?v=GFO_txvwK_c
 
@@ -26,6 +27,8 @@ window.addEventListener("load", function () {
       this.input = new InputHandler(this);
       this.UI = new UI(this);
       this.spriteAnimator = new SpriteAnimator();
+      // this.enemySpawnStrategy = new RandomEnemySpawnStrategy(this, GAME_CONFIG.enemyInterval);
+      this.enemySpawnStrategy = new Manual1EnemySpawnStrategy(this, manual1EnemySpawn);
 
       this.particles = [];
       this.maxParticles = GAME_CONFIG.maxParticles;
@@ -33,8 +36,6 @@ window.addEventListener("load", function () {
       this.floatingMessages = [];
 
       this.enemies = [];
-      this.enemyTimer = 0;
-      this.enemyInterval = GAME_CONFIG.enemyInterval;
 
       this.lives = GAME_CONFIG.initialLives;
 
@@ -56,12 +57,7 @@ window.addEventListener("load", function () {
       this.player.update(this.input.keys, deltaTime);
       this.background.update();
 
-      // enemies
-      this.enemyTimer += deltaTime;
-      if (this.enemyTimer > this.enemyInterval) {
-        this.addEnemy();
-        this.enemyTimer = 0;
-      }
+      this.enemySpawnStrategy.update(deltaTime);
 
       this.enemies.forEach((enemy) => enemy.update(deltaTime));
 
@@ -93,11 +89,6 @@ window.addEventListener("load", function () {
       this.collisions.forEach((collision) => collision.draw(context));
       this.floatingMessages.forEach((message) => message.draw(context));
       this.UI.draw(context);
-    }
-    addEnemy() {
-      if (this.speed > 0 && Math.random() < 0.5) this.enemies.push(new GroundEnemy(this));
-      else if (this.speed > 0) this.enemies.push(new ClimbingEnemy(this));
-      this.enemies.push(new FlyingEnemy(this));
     }
   }
 

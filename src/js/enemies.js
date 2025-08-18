@@ -23,22 +23,21 @@ class Enemy {
 }
 
 export class FlyingEnemy extends Enemy {
-  constructor(game) {
+  constructor(game, x = undefined, y = undefined, speedX = undefined, va = undefined) {
     super(game);
-
-    this.x = this.game.width + Math.random() * this.game.width * 0.5;
-    this.y = Math.random() * this.game.height * 0.5;
+    this.x = x !== undefined ? x : this.game.width + Math.random() * this.game.width * 0.5;
+    this.y = y !== undefined ? y : Math.random() * this.game.height * 0.5;
 
     this.width = this.spriteData.spriteWidth = 60;
     this.height = this.spriteData.spriteHeight = 44;
     this.spriteData.maxFrame = 4;
     this.spriteData.image = document.getElementById("enemy_fly");
 
-    this.speedX = Math.random() + 1;
+    this.speedX = speedX !== undefined ? speedX : Math.random() + 1;
     this.speedY = 0;
 
     this.angle = 0;
-    this.va = Math.random() * 0.1 + 0.1;
+    this.va = va !== undefined ? va : Math.random() * 0.1 + 0.1;
   }
   update(deltaTime) {
     super.update(deltaTime);
