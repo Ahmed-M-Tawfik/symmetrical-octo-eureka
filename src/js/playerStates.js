@@ -148,18 +148,18 @@ export class Hit extends State {
     resetFrames(this.player, 4, 10);
   }
   handleInput(input) {
-    if (this.player.spriteAnimation.frameX >= 10 && this.player.onGround()) {
+    if (this.player.spriteData.frameX >= 10 && this.player.onGround()) {
       this.player.setState(states.RUNNING, 1);
-    } else if (this.player.spriteAnimation.frameX >= 10 && !this.player.onGround()) {
+    } else if (this.player.spriteData.frameX >= 10 && !this.player.onGround()) {
       this.player.setState(states.FALLING, 1);
     }
   }
 }
 
 function resetFrames(player, frameY, maxFrame) {
-  player.spriteAnimation.frameX = 0;
-  player.spriteAnimation.frameY = frameY;
-  player.spriteAnimation.maxFrame = maxFrame;
+  player.spriteData.frameX = 0;
+  player.spriteData.frameY = frameY;
+  player.spriteData.maxFrame = maxFrame;
 }
 
 function handleHorizontalMovement(player, input) {

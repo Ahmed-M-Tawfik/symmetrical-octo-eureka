@@ -4,6 +4,7 @@ import { Background } from "./background.js";
 import { FlyingEnemy, ClimbingEnemy, GroundEnemy } from "./enemies.js";
 import { UI } from "./ui.js";
 import { GAME_CONFIG } from "./gameConfig.js";
+import { SpriteAnimator } from "./systems/spriteAnimator.js";
 
 // https://www.youtube.com/watch?v=GFO_txvwK_c
 
@@ -24,6 +25,7 @@ window.addEventListener("load", function () {
       this.player = new Player(this);
       this.input = new InputHandler(this);
       this.UI = new UI(this);
+      this.spriteAnimator = new SpriteAnimator();
 
       this.particles = [];
       this.maxParticles = GAME_CONFIG.maxParticles;
@@ -79,11 +81,14 @@ window.addEventListener("load", function () {
       }
       this.collisions = this.collisions.filter((collision) => !collision.markedForDeletion);
       this.floatingMessages = this.floatingMessages.filter((message) => !message.markedForDeletion);
+
+      this.spriteAnimator.update(deltaTime, this.player);
+      this.enemies.forEach((enemy) => this.spriteAnimator.update(deltaTime, enemy));
     }
     draw(context) {
       this.background.draw(context);
-      this.player.draw(context);
-      this.enemies.forEach((enemy) => enemy.draw(context));
+      this.spriteAnimator.draw(context, this.player, this.debug);
+      this.enemies.forEach((enemy) => this.spriteAnimator.draw(context, enemy, this.debug));
       this.particles.forEach((particle) => particle.draw(context));
       this.collisions.forEach((collision) => collision.draw(context));
       this.floatingMessages.forEach((message) => message.draw(context));

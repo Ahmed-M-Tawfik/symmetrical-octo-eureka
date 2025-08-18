@@ -1,28 +1,28 @@
 import { states, Sitting, Running, Jumping, Falling, Rolling, Diving, Hit } from "./playerStates.js";
 import { CollisionAnimation } from "./collisionAnimation.js";
 import { FloatingMessage } from "./floatingMessages.js";
-import { SpriteAnimation } from "../spriteAnimator.js";
+import { SpriteData } from "./spriteData.js";
 
 export class Player {
   constructor(game) {
     this.game = game;
 
-    this.spriteAnimation = new SpriteAnimation(game, 20);
+    this.spriteData = new SpriteData(game, 20);
 
-    this.width = this.spriteAnimation.width = 100;
-    this.height = this.spriteAnimation.height = 91.3;
-    this.x = this.spriteAnimation.x = 0;
-    this.y = this.spriteAnimation.y = this.game.height - this.height - this.game.groundMargin;
+    this.width = 100;
+    this.height = 91.3;
+    this.x = 0;
+    this.y = this.game.height - this.height - this.game.groundMargin;
 
     this.vy = 0;
     this.weight = 1;
 
-    this.spriteAnimation.spriteWidth = 575;
-    this.spriteAnimation.spriteHeight = 525;
-    this.spriteAnimation.image = document.getElementById("player");
-    this.spriteAnimation.frameX = 0;
-    this.spriteAnimation.frameY = 0;
-    this.spriteAnimation.maxFrame = 5;
+    this.spriteData.spriteWidth = 575;
+    this.spriteData.spriteHeight = 525;
+    this.spriteData.image = document.getElementById("player");
+    this.spriteData.frameX = 0;
+    this.spriteData.frameY = 0;
+    this.spriteData.maxFrame = 5;
 
     this.speed = 0;
     this.maxSpeed = 10;
@@ -60,13 +60,6 @@ export class Player {
     // vertical bounds
     if (this.y > this.game.height - this.height - this.game.groundMargin)
       this.y = this.game.height - this.height - this.game.groundMargin;
-
-    this.spriteAnimation.y = this.y;
-    this.spriteAnimation.x = this.x;
-    this.spriteAnimation.update(deltaTime);
-  }
-  draw(context) {
-    this.spriteAnimation.draw(context, this.game.debug);
   }
   onGround() {
     return this.y >= this.game.height - this.height - this.game.groundMargin;
