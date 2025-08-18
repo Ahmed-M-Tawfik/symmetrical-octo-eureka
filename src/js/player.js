@@ -1,27 +1,28 @@
 import { states, Sitting, Running, Jumping, Falling, Rolling, Diving, Hit } from "./playerStates.js";
 import { CollisionAnimation } from "./collisionAnimation.js";
 import { FloatingMessage } from "./floatingMessages.js";
+import { SpriteAnimation } from "../spriteAnimator.js";
 
 export class Player {
   constructor(game) {
     this.game = game;
-    this.width = 100;
-    this.height = 91.3;
-    this.spriteWidth = 575;
-    this.spriteHeight = 525;
-    this.x = 0;
-    this.y = this.game.height - this.height - this.game.groundMargin;
+
+    this.spriteAnimation = new SpriteAnimation(game, 20);
+
+    this.width = this.spriteAnimation.width = 100;
+    this.height = this.spriteAnimation.height = 91.3;
+    this.x = this.spriteAnimation.x = 0;
+    this.y = this.spriteAnimation.y = this.game.height - this.height - this.game.groundMargin;
 
     this.vy = 0;
     this.weight = 1;
 
-    this.image = document.getElementById("player");
-    this.frameX = 0;
-    this.frameY = 0;
-    this.maxFrame = 5;
-    this.fps = 20;
-    this.frameInterval = 1000 / this.fps;
-    this.frameTimer = 0;
+    this.spriteAnimation.spriteWidth = 575;
+    this.spriteAnimation.spriteHeight = 525;
+    this.spriteAnimation.image = document.getElementById("player");
+    this.spriteAnimation.frameX = 0;
+    this.spriteAnimation.frameY = 0;
+    this.spriteAnimation.maxFrame = 5;
 
     this.speed = 0;
     this.maxSpeed = 10;
@@ -60,29 +61,12 @@ export class Player {
     if (this.y > this.game.height - this.height - this.game.groundMargin)
       this.y = this.game.height - this.height - this.game.groundMargin;
 
-    // sprite animation
-    this.frameTimer += deltaTime;
-    if (this.frameTimer > this.frameInterval) {
-      this.frameTimer = 0;
-      this.frameX++;
-      if (this.frameX > this.maxFrame) this.frameX = 0;
-    }
+    this.spriteAnimation.y = this.y;
+    this.spriteAnimation.x = this.x;
+    this.spriteAnimation.update(deltaTime);
   }
   draw(context) {
-    if (this.game.debug) {
-      context.strokeRect(this.x, this.y, this.width, this.height);
-    }
-    context.drawImage(
-      this.image,
-      this.frameX * this.spriteWidth,
-      this.frameY * this.spriteHeight,
-      this.spriteWidth,
-      this.spriteHeight,
-      this.x,
-      this.y,
-      this.width,
-      this.height
-    );
+    this.spriteAnimation.draw(context, this.game.debug);
   }
   onGround() {
     return this.y >= this.game.height - this.height - this.game.groundMargin;
