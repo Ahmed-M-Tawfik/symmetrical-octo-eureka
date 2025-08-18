@@ -3,22 +3,18 @@ import { InputHandler } from "./input.js";
 import { Background } from "./background.js";
 import { FlyingEnemy, ClimbingEnemy, GroundEnemy } from "./enemies.js";
 import { UI } from "./ui.js";
+import { GAME_CONFIG } from "./gameConfig.js";
 
 // https://www.youtube.com/watch?v=GFO_txvwK_c
 
 window.addEventListener("load", function () {
-  const canvas = this.document.getElementById("canvas1");
-  const ctx = canvas.getContext("2d");
-  canvas.width = 900;
-  canvas.height = 500;
-
   class Game {
     constructor(width, height) {
       this.width = width;
       this.height = height;
-      this.groundMargin = 40;
+      this.groundMargin = GAME_CONFIG.groundMargin;
       this.speed = 0;
-      this.maxSpeed = 3;
+      this.maxSpeed = GAME_CONFIG.playerMaxSpeed;
 
       this.debug = false;
 
@@ -30,20 +26,20 @@ window.addEventListener("load", function () {
       this.UI = new UI(this);
 
       this.particles = [];
-      this.maxParticles = 200;
+      this.maxParticles = GAME_CONFIG.maxParticles;
       this.collisions = [];
       this.floatingMessages = [];
 
       this.enemies = [];
       this.enemyTimer = 0;
-      this.enemyInterval = 1000;
+      this.enemyInterval = GAME_CONFIG.enemyInterval;
 
-      this.lives = 5;
+      this.lives = GAME_CONFIG.initialLives;
 
       this.time = 0; // ms
-      this.maxTime = 30000;
+      this.maxTime = GAME_CONFIG.maxTime;
       this.score = 0;
-      this.winningScore = 40;
+      this.winningScore = GAME_CONFIG.winningScore;
       this.gameOver = false;
 
       this.player.currentState = this.player.states[0];
@@ -99,6 +95,11 @@ window.addEventListener("load", function () {
       this.enemies.push(new FlyingEnemy(this));
     }
   }
+
+  const canvas = document.getElementById("canvas1");
+  const ctx = canvas.getContext("2d");
+  canvas.width = GAME_CONFIG.canvasWidth;
+  canvas.height = GAME_CONFIG.canvasHeight;
 
   const game = new Game(canvas.width, canvas.height);
   let lastTime = 0;
