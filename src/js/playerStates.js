@@ -1,5 +1,3 @@
-import { Dust, Fire, Splash } from "./particles.js";
-
 export const states = {
   SITTING: 0,
   RUNNING: 1,
@@ -44,9 +42,7 @@ export class Running extends State {
     resetFrames(this.player, 3, 8);
   }
   handleInput(input) {
-    this.game.particles.unshift(
-      new Dust(this.game, this.player.x + this.player.width / 2, this.player.y + this.player.height)
-    );
+    this.game.particleAnimator.addDust(this.player.x + this.player.width * 0.5, this.player.y + this.player.height);
     handleHorizontalMovement(this.player, input);
     if (input.includes("ArrowDown")) {
       this.player.setState(states.SITTING, 0);
@@ -100,8 +96,9 @@ export class Rolling extends State {
     resetFrames(this.player, 6, 6);
   }
   handleInput(input) {
-    this.game.particles.unshift(
-      new Fire(this.game, this.player.x + this.player.width * 0.5, this.player.y + this.player.height * 0.5)
+    this.game.particleAnimator.addFire(
+      this.player.x + this.player.width * 0.5,
+      this.player.y + this.player.height * 0.5
     );
     handleHorizontalMovement(this.player, input);
     if (!input.includes("Enter") && this.player.onGround()) {
@@ -124,17 +121,13 @@ export class Diving extends State {
     this.game.player.vy = 15;
   }
   handleInput(input) {
-    this.game.particles.unshift(
-      new Fire(this.game, this.player.x + this.player.width * 0.5, this.player.y + this.player.height * 0.5)
+    this.game.particleAnimator.addFire(
+      this.player.x + this.player.width * 0.5,
+      this.player.y + this.player.height * 0.5
     );
-    // handleHorizontalMovement(this.player, input);
     if (this.player.onGround()) {
       this.player.setState(states.RUNNING, 1);
-      for (let i = 0; i < 30; i++) {
-        this.game.particles.unshift(
-          new Splash(this.game, this.player.x + this.player.width * 0.6, this.player.y + this.player.height * 1)
-        );
-      }
+      this.game.particleAnimator.addSplash(this.player.x + this.player.width * 0.6, this.player.y + this.player.height);
     } else if (input.includes("Enter") && this.player.onGround()) {
       this.player.setState(states.ROLLING, 2);
     }

@@ -4,8 +4,8 @@ import { Background } from "./background.js";
 import { UI } from "./ui.js";
 import { GAME_CONFIG } from "./gameConfig.js";
 import { SpriteAnimator } from "./systems/spriteAnimator.js";
-import { Manual1EnemySpawnStrategy, RandomEnemySpawnStrategy } from "./systems/enemySpawner.js";
-import { manual1EnemySpawn } from "./data/enemySpawn/manual1EnemySpawn.js";
+import { RandomEnemySpawnStrategy } from "./systems/enemySpawner.js";
+import { ParticleAnimator } from "./systems/particleAnimator.js";
 
 // https://www.youtube.com/watch?v=GFO_txvwK_c
 
@@ -27,11 +27,10 @@ window.addEventListener("load", function () {
       this.input = new InputHandler(this);
       this.UI = new UI(this);
       this.spriteAnimator = new SpriteAnimator();
-      // this.enemySpawnStrategy = new RandomEnemySpawnStrategy(this, GAME_CONFIG.enemyInterval);
-      this.enemySpawnStrategy = new Manual1EnemySpawnStrategy(this, manual1EnemySpawn);
+      this.particleAnimator = new ParticleAnimator(this);
+      this.enemySpawnStrategy = new RandomEnemySpawnStrategy(this, GAME_CONFIG.enemyInterval);
+      // this.enemySpawnStrategy = new Manual1EnemySpawnStrategy(this, manual1EnemySpawn);
 
-      this.particles = [];
-      this.maxParticles = GAME_CONFIG.maxParticles;
       this.collisions = [];
       this.floatingMessages = [];
 
@@ -63,18 +62,14 @@ window.addEventListener("load", function () {
 
       this.floatingMessages.forEach((message) => message.update());
 
-      // particles
-      this.particles.forEach((particle) => particle.update());
+      this.particleAnimator.update(deltaTime);
 
       // collisions
       this.collisions.forEach((collision) => collision.update(deltaTime));
 
       // deletions
       this.enemies = this.enemies.filter((enemy) => !enemy.markedForDeletion);
-      this.particles = this.particles.filter((particle) => !particle.markedForDeletion);
-      if (this.particles.length > this.maxParticles) {
-        this.particles = this.particles.slice(0, this.maxParticles);
-      }
+
       this.collisions = this.collisions.filter((collision) => !collision.markedForDeletion);
       this.floatingMessages = this.floatingMessages.filter((message) => !message.markedForDeletion);
 
@@ -83,11 +78,17 @@ window.addEventListener("load", function () {
     }
     draw(context) {
       this.background.draw(context);
+
       this.spriteAnimator.draw(context, this.player, this.debug);
       this.enemies.forEach((enemy) => this.spriteAnimator.draw(context, enemy, this.debug));
-      this.particles.forEach((particle) => particle.draw(context));
+
+      this.particleAnimator.draw(context);
+
       this.collisions.forEach((collision) => collision.draw(context));
+
       this.floatingMessages.forEach((message) => message.draw(context));
+
+      // UI at the end to ensure it's on top
       this.UI.draw(context);
     }
   }
