@@ -4,7 +4,7 @@ import { Background } from "./background.js";
 import { UI } from "./ui.js";
 import { GAME_CONFIG } from "./gameConfig.js";
 import { SpriteAnimator } from "./systems/spriteAnimator.js";
-import { RandomEnemySpawnStrategy } from "./systems/enemySpawner.js";
+import { RandomSpawnStrategy } from "./systems/levelSpawner.js";
 import { ParticleAnimator } from "./systems/particleAnimator.js";
 
 // https://www.youtube.com/watch?v=GFO_txvwK_c
@@ -28,7 +28,7 @@ window.addEventListener("load", function () {
       this.UI = new UI(this);
       this.spriteAnimator = new SpriteAnimator();
       this.particleAnimator = new ParticleAnimator(this);
-      this.enemySpawnStrategy = new RandomEnemySpawnStrategy(this, GAME_CONFIG.enemyInterval);
+      this.enemySpawnStrategy = new RandomSpawnStrategy(this, GAME_CONFIG.enemyInterval);
       // this.enemySpawnStrategy = new Manual1EnemySpawnStrategy(this, manual1EnemySpawn);
 
       this.collisions = [];

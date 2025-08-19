@@ -1,13 +1,13 @@
 import { FlyingEnemy, ClimbingEnemy, GroundEnemy } from "../enemies.js";
 
-export class EnemySpawnStrategy {
+export class SpawnStrategy {
   constructor(game) {
     this.game = game;
   }
   update(deltaTime) {}
 }
 
-export class RandomEnemySpawnStrategy extends EnemySpawnStrategy {
+export class RandomSpawnStrategy extends SpawnStrategy {
   constructor(game, enemyInterval = 1000) {
     super(game);
 
@@ -34,7 +34,7 @@ export class RandomEnemySpawnStrategy extends EnemySpawnStrategy {
   }
 }
 
-export class Manual1EnemySpawnStrategy extends EnemySpawnStrategy {
+export class Manual1SpawnStrategy extends SpawnStrategy {
   /**
    * spawnSchedule: Array of objects like:
    * { time: ms, type: 'FlyingEnemy'|'ClimbingEnemy'|'GroundEnemy', x: number, y: number, speed: number }
