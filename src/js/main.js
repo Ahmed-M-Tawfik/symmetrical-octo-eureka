@@ -8,6 +8,8 @@ import { Manual1SpawnStrategy, RandomSpawnStrategy } from "./systems/levelSpawne
 import { manual1Spawn } from "./data/spawn/manual1Spawn.js";
 import { ParticleAnimator } from "./systems/particleAnimator.js";
 import { Level } from "./level.js";
+import { KeyBindings } from "./ui/keybindings.js";
+import { DEFAULT_KEY_BINDINGS } from "./data/keybindingsData.js";
 
 // https://www.youtube.com/watch?v=GFO_txvwK_c
 
@@ -35,7 +37,7 @@ window.addEventListener("load", function () {
       this.gameLevels[this.currentGameLevel].start();
 
       this.player = new Player(this);
-      this.input = new InputHandler(this, context.canvas);
+      this.input = new InputHandler(this, context.canvas, new KeyBindings(DEFAULT_KEY_BINDINGS));
       this.UI = new UI(this);
       this.spriteAnimator = new SpriteAnimator();
       this.particleAnimator = new ParticleAnimator(this);
@@ -72,7 +74,7 @@ window.addEventListener("load", function () {
       }
 
       // updates
-      this.player.update(this.input.keys, deltaTime);
+      this.player.update(this.input.actions, deltaTime);
       this.gameLevels[this.currentGameLevel].update();
 
       this.gameLevels[this.currentGameLevel].spawnStrategy.update(deltaTime);

@@ -1,31 +1,23 @@
 export class InputHandler {
-  constructor(game, canvas) {
+  constructor(game, canvas, keyBindings) {
     this.game = game;
-    this.keys = [];
+    this.keyBindings = keyBindings;
     this.buttons = [];
-    this.context = canvas;
+    this.actions = new Set();
 
     // Make sure the canvas is focused to receive keyboard events
     canvas.focus();
 
     canvas.addEventListener("keydown", (e) => {
-      if (
-        (e.key === "ArrowDown" ||
-          e.key === "ArrowUp" ||
-          e.key == "ArrowLeft" ||
-          e.key == "ArrowRight" ||
-          e.key == "Enter") &&
-        this.keys.indexOf(e.key) === -1
-      ) {
-        this.keys.push(e.key);
+      if (this.keyBindings.getKeysByGroup("player").includes(e.key)) {
+        this.actions.add(this.keyBindings.keyToAction[e.key].action);
       }
       this.processDebugKeys(e);
       this.processGameKeys(e);
     });
     canvas.addEventListener("keyup", (e) => {
-      const index = this.keys.indexOf(e.key);
-      if (index > -1) {
-        this.keys.splice(index, 1);
+      if (this.keyBindings.getKeysByGroup("player").includes(e.key)) {
+        this.actions.delete(this.keyBindings.keyToAction[e.key].action);
       }
     });
 
@@ -48,16 +40,16 @@ export class InputHandler {
   }
 
   processDebugKeys(e) {
-    if (e.key === "d") {
+    if (e.key === this.keyBindings.actionToKey["debug"].key) {
       this.game.debug = !this.game.debug;
     }
-    if (e.key === "g") {
+    if (e.key === this.keyBindings.actionToKey["debug_add_score"].key) {
       this.game.score += 10;
     }
   }
 
   processGameKeys(e) {
-    if (e.key === "p") {
+    if (e.key === this.keyBindings.actionToKey["pause"].key) {
       this.game.togglePause();
     }
   }

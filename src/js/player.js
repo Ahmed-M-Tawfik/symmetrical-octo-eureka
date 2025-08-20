@@ -38,9 +38,9 @@ export class Player {
     ];
     this.currentState = null;
   }
-  update(input, deltaTime) {
+  update(actions, deltaTime) {
     this.checkCollision();
-    this.currentState.handleInput(input);
+    this.currentState.handleInput(actions);
 
     // horizontal movement
     this.x += this.speed;

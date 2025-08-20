@@ -8,6 +8,14 @@ export const states = {
   HIT: 6,
 };
 
+export const playerActions = {
+  moveLeft: "moveLeft",
+  moveRight: "moveRight",
+  jump: "jump",
+  down: "down",
+  roll: "roll",
+};
+
 class State {
   constructor(state, player) {
     this.state = state;
@@ -15,7 +23,7 @@ class State {
     this.game = player.game;
   }
   enter() {}
-  handleInput(input) {}
+  handleInput(inputActions) {}
 }
 export class Sitting extends State {
   constructor(player) {
@@ -24,12 +32,12 @@ export class Sitting extends State {
   enter() {
     resetFrames(this.player, 5, 4);
   }
-  handleInput(input) {
-    if (input.includes("ArrowRight") || input.includes("ArrowLeft")) {
+  handleInput(inputActions) {
+    if (inputActions.has(playerActions.moveLeft) || inputActions.has(playerActions.moveRight)) {
       this.player.setState(states.RUNNING, 1);
-    } else if (input.includes("ArrowUp")) {
+    } else if (inputActions.has(playerActions.jump)) {
       this.player.setState(states.JUMPING, 1);
-    } else if (input.includes("Enter")) {
+    } else if (inputActions.has(playerActions.roll)) {
       this.player.setState(states.ROLLING, 2);
     }
   }
@@ -41,14 +49,14 @@ export class Running extends State {
   enter() {
     resetFrames(this.player, 3, 8);
   }
-  handleInput(input) {
+  handleInput(inputActions) {
     this.game.particleAnimator.addDust(this.player.x + this.player.width * 0.5, this.player.y + this.player.height);
-    handleHorizontalMovement(this.player, input);
-    if (input.includes("ArrowDown")) {
+    handleHorizontalMovement(this.player, inputActions);
+    if (inputActions.has(playerActions.down)) {
       this.player.setState(states.SITTING, 0);
-    } else if (input.includes("ArrowUp")) {
+    } else if (inputActions.has(playerActions.jump)) {
       this.player.setState(states.JUMPING, 1);
-    } else if (input.includes("Enter")) {
+    } else if (inputActions.has(playerActions.roll)) {
       this.player.setState(states.ROLLING, 2);
     }
   }
@@ -61,13 +69,13 @@ export class Jumping extends State {
     if (this.player.onGround()) this.player.vy = -27;
     resetFrames(this.player, 1, 6);
   }
-  handleInput(input) {
-    handleHorizontalMovement(this.player, input);
+  handleInput(inputActions) {
+    handleHorizontalMovement(this.player, inputActions);
     if (this.player.vy > this.player.weight) {
       this.player.setState(states.FALLING, 1);
-    } else if (input.includes("Enter")) {
+    } else if (inputActions.has(playerActions.roll)) {
       this.player.setState(states.ROLLING, 2);
-    } else if (input.includes("ArrowDown")) {
+    } else if (inputActions.has(playerActions.down)) {
       this.player.setState(states.DIVING, 0);
     }
   }
@@ -79,11 +87,11 @@ export class Falling extends State {
   enter() {
     resetFrames(this.player, 2, 6);
   }
-  handleInput(input) {
-    handleHorizontalMovement(this.player, input);
+  handleInput(inputActions) {
+    handleHorizontalMovement(this.player, inputActions);
     if (this.player.onGround()) {
       this.player.setState(states.RUNNING, 1);
-    } else if (input.includes("ArrowDown")) {
+    } else if (inputActions.has(playerActions.down)) {
       this.player.setState(states.DIVING, 0);
     }
   }
@@ -95,19 +103,19 @@ export class Rolling extends State {
   enter() {
     resetFrames(this.player, 6, 6);
   }
-  handleInput(input) {
+  handleInput(inputActions) {
     this.game.particleAnimator.addFire(
       this.player.x + this.player.width * 0.5,
       this.player.y + this.player.height * 0.5
     );
-    handleHorizontalMovement(this.player, input);
-    if (!input.includes("Enter") && this.player.onGround()) {
+    handleHorizontalMovement(this.player, inputActions);
+    if (!inputActions.has(playerActions.roll) && this.player.onGround()) {
       this.player.setState(states.RUNNING, 1);
-    } else if (!input.includes("Enter") && !this.player.onGround()) {
+    } else if (!inputActions.has(playerActions.roll) && !this.player.onGround()) {
       this.player.setState(states.FALLING, 1);
-    } else if (input.includes("Enter") && input.includes("ArrowUp") && this.player.onGround()) {
+    } else if (inputActions.has(playerActions.roll) && inputActions.has(playerActions.jump) && this.player.onGround()) {
       this.player.vy -= 27;
-    } else if (input.includes("ArrowDown") && !this.player.onGround()) {
+    } else if (inputActions.has(playerActions.down) && !this.player.onGround()) {
       this.player.setState(states.DIVING, 0);
     }
   }
@@ -120,7 +128,7 @@ export class Diving extends State {
     resetFrames(this.player, 6, 6);
     this.game.player.vy = 15;
   }
-  handleInput(input) {
+  handleInput(inputActions) {
     this.game.particleAnimator.addFire(
       this.player.x + this.player.width * 0.5,
       this.player.y + this.player.height * 0.5
@@ -128,7 +136,7 @@ export class Diving extends State {
     if (this.player.onGround()) {
       this.player.setState(states.RUNNING, 1);
       this.game.particleAnimator.addSplash(this.player.x + this.player.width * 0.6, this.player.y + this.player.height);
-    } else if (input.includes("Enter") && this.player.onGround()) {
+    } else if (inputActions.has(playerActions.roll) && this.player.onGround()) {
       this.player.setState(states.ROLLING, 2);
     }
   }
@@ -140,7 +148,7 @@ export class Hit extends State {
   enter() {
     resetFrames(this.player, 4, 10);
   }
-  handleInput(input) {
+  handleInput(inputActions) {
     if (this.player.spriteData.frameX >= 10 && this.player.onGround()) {
       this.player.setState(states.RUNNING, 1);
     } else if (this.player.spriteData.frameX >= 10 && !this.player.onGround()) {
@@ -155,13 +163,13 @@ function resetFrames(player, frameY, maxFrame) {
   player.spriteData.maxFrame = maxFrame;
 }
 
-function handleHorizontalMovement(player, input) {
+function handleHorizontalMovement(player, inputActions) {
   // horizontal movement
-  if (input.includes("ArrowRight") && input.includes("ArrowLeft")) {
+  if (inputActions.has(playerActions.moveRight) && inputActions.has(playerActions.moveLeft)) {
     player.speed = 0;
-  } else if (input.includes("ArrowRight")) {
+  } else if (inputActions.has(playerActions.moveRight)) {
     player.speed = player.maxSpeed;
-  } else if (input.includes("ArrowLeft")) {
+  } else if (inputActions.has(playerActions.moveLeft)) {
     player.speed = -player.maxSpeed;
   } else {
     player.speed = 0;
