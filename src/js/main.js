@@ -114,24 +114,31 @@ window.addEventListener("load", function () {
     setLevelComplete() {
       this.levelComplete = true;
     }
-    nextLevel() {
-      this.currentGameLevel++;
-      if (this.currentGameLevel >= this.gameLevels.length) {
-        this.currentGameLevel = 0;
-      }
-      this.player.x = 0;
+    _resetLevelState() {
+      this.paused = false;
       this.enemies = [];
-
+      this.particleAnimator.reset();
       this.collisions = [];
       this.floatingMessages = [];
-
+      this.lives = GAME_CONFIG.initialLives;
       this.score = 0;
-
       this.time = 0;
-      this.levelComplete = false;
 
       this.gameLevels[this.currentGameLevel].start();
+      this.player.reset();
     }
+
+    nextLevel() {
+      this.currentGameLevel = (this.currentGameLevel + 1) % this.gameLevels.length;
+      this.levelComplete = false;
+      this._resetLevelState();
+    }
+
+    retryLevel() {
+      this.gameOver = false;
+      this._resetLevelState();
+    }
+
     togglePause() {
       this.paused = !this.paused;
     }

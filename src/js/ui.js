@@ -36,6 +36,36 @@ export class UI {
         }
       )
     );
+
+    this.game.input.buttons.push(
+      new Button(
+        "RetryLevelBtn",
+        this.game.width * 0.5 - 100,
+        this.game.height * 0.5 + 100,
+        200,
+        50,
+        () => {
+          if (!this.game.gameOver) return;
+
+          this.game.retryLevel();
+        },
+        (context) => {
+          if (!this.game.gameOver) return;
+
+          context.save();
+
+          // draw button
+          context.font = "20px Creepster";
+          context.fillStyle = "#845e00ff";
+          context.fillRect(this.game.width * 0.5 - 100, this.game.height * 0.5 + 100, 200, 50);
+          context.fillStyle = "#001122";
+          context.textAlign = "center";
+          context.fillText("Retry Level", this.game.width * 0.5, this.game.height * 0.5 + 130);
+
+          context.restore();
+        }
+      )
+    );
   }
   draw(context) {
     context.save();

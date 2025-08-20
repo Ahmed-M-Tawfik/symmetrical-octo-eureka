@@ -11,11 +11,6 @@ export class Player {
 
     this.width = 100;
     this.height = 91.3;
-    this.x = 0;
-    this.y = this.game.height - this.height - this.game.groundMargin;
-
-    this.vy = 0;
-    this.weight = 1;
 
     this.spriteData.spriteWidth = 575;
     this.spriteData.spriteHeight = 525;
@@ -23,9 +18,6 @@ export class Player {
     this.spriteData.frameX = 0;
     this.spriteData.frameY = 0;
     this.spriteData.maxFrame = 5;
-
-    this.speed = 0;
-    this.maxSpeed = 10;
 
     this.states = [
       new Sitting(this),
@@ -36,7 +28,8 @@ export class Player {
       new Diving(this),
       new Hit(this),
     ];
-    this.currentState = null;
+
+    this.reset();
   }
   update(actions, deltaTime) {
     this.checkCollision();
@@ -65,9 +58,18 @@ export class Player {
     return this.y >= this.game.height - this.height - this.game.groundMargin;
   }
   setState(state, speed) {
-    this.currentState = this.states[state];
     this.game.speed = this.game.maxSpeed * speed;
+    this.currentState = this.states[state];
     this.currentState.enter();
+  }
+  reset() {
+    this.x = 0;
+    this.y = this.game.height - this.height - this.game.groundMargin;
+    this.vy = 0;
+    this.weight = 1;
+    this.speed = 0;
+    this.maxSpeed = 10;
+    this.setState(this.states[0].state, 0);
   }
   checkCollision() {
     this.game.enemies.forEach((enemy) => {

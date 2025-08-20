@@ -19,6 +19,9 @@ export class ParticleAnimator {
   draw(context) {
     this.particles.forEach((particle) => particle.draw(context));
   }
+  reset() {
+    this.particles = [];
+  }
   addDust(x, y) {
     this.particles.unshift(new Dust(this.game, x, y));
   }

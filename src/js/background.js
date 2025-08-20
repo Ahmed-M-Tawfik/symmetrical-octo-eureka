@@ -52,6 +52,9 @@ export class Background {
   }
   start() {
     this.game.groundMargin = this.groundMargin;
+    this.layers.forEach((layer) => {
+      layer.x = 0;
+    });
   }
   update() {
     this.layers.forEach((layer) => {
