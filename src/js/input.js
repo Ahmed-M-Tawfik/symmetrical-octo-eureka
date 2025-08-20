@@ -1,8 +1,14 @@
 export class InputHandler {
-  constructor(game) {
+  constructor(game, canvas) {
     this.game = game;
     this.keys = [];
-    window.addEventListener("keydown", (e) => {
+    this.buttons = [];
+    this.context = canvas;
+
+    // Make sure the canvas is focused to receive keyboard events
+    canvas.focus();
+
+    canvas.addEventListener("keydown", (e) => {
       if (
         (e.key === "ArrowDown" ||
           e.key === "ArrowUp" ||
@@ -16,11 +22,28 @@ export class InputHandler {
         this.game.debug = !this.game.debug;
       }
     });
-    window.addEventListener("keyup", (e) => {
+    canvas.addEventListener("keyup", (e) => {
       const index = this.keys.indexOf(e.key);
       if (index > -1) {
         this.keys.splice(index, 1);
       }
+    });
+
+    canvas.addEventListener("click", (e) => {
+      let mouseX = e.offsetX;
+      let mouseY = e.offsetY;
+      this.buttons.forEach((button) => {
+        if (
+          !(
+            mouseX < button.x ||
+            mouseX > button.x + button.width ||
+            mouseY < button.y ||
+            mouseY > button.y + button.height
+          )
+        ) {
+          button.onClick();
+        }
+      });
     });
   }
 }

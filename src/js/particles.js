@@ -22,10 +22,14 @@ export class Dust extends Particle {
     this.color = "rgba(0,0,0,0.2)";
   }
   draw(context) {
+    context.save();
+
     context.beginPath();
     context.arc(this.x, this.y, this.size, 0, Math.PI * 2);
     context.fillStyle = this.color;
     context.fill();
+
+    context.restore();
   }
 }
 

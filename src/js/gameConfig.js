@@ -10,7 +10,8 @@ export const GAME_CONFIG = {
 
   maxParticles: 200,
 
-  maxTime: 30000,
+  // maxTime: 30000,
+  maxTime: 10000,
 
   winningScore: 40,
 

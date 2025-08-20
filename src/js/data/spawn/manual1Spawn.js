@@ -1,5 +1,5 @@
 // spawns HELLO
-export const manual1EnemySpawn = [
+export const manual1Spawn = [
   // H
   { time: 0, type: "FlyingEnemy", x: 0, y: 0, speed: 2 },
   { time: 0, type: "FlyingEnemy", x: 0, y: 40, speed: 2 },
