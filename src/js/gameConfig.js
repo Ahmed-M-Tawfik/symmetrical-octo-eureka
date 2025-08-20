@@ -4,7 +4,6 @@ export const GAME_CONFIG = {
   canvasHeight: 500,
 
   // environment
-  groundMargin: 40,
   playerMaxSpeed: 3,
   enemyInterval: 1000,
 
@@ -13,7 +12,7 @@ export const GAME_CONFIG = {
   // maxTime: 30000,
   maxTime: 10000,
 
-  winningScore: 40,
+  winningScore: 5,
 
   initialLives: 5,
 };

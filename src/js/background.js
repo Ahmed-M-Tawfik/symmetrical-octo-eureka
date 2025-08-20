@@ -19,24 +19,39 @@ class Layer {
 }
 
 export class Background {
-  constructor(game) {
+  constructor(
+    game,
+    width,
+    height,
+    groundMargin,
+    backgroundLayers = [
+      // example
+      { imageName: "layer1", speed: 0.15 },
+      { imageName: "layer2", speed: 0.2 },
+      { imageName: "layer3", speed: 0.4 },
+      { imageName: "layer4", speed: 0.6 },
+      { imageName: "layer5", speed: 1 },
+    ]
+  ) {
     this.game = game;
-    this.width = 1667;
-    this.height = 500;
+    this.width = width;
+    this.height = height;
+    this.groundMargin = groundMargin;
 
-    this.layer5image = document.getElementById("layer5");
-    this.layer4image = document.getElementById("layer4");
-    this.layer3image = document.getElementById("layer3");
-    this.layer2image = document.getElementById("layer2");
-    this.layer1image = document.getElementById("layer1");
-
-    this.layer1 = new Layer(this.game, this.width, this.height, 0.15, this.layer1image);
-    this.layer2 = new Layer(this.game, this.width, this.height, 0.2, this.layer2image);
-    this.layer3 = new Layer(this.game, this.width, this.height, 0.4, this.layer3image);
-    this.layer4 = new Layer(this.game, this.width, this.height, 0.6, this.layer4image);
-    this.layer5 = new Layer(this.game, this.width, this.height, 1, this.layer5image);
-
-    this.layers = [this.layer1, this.layer2, this.layer3, this.layer4, this.layer5];
+    this.layers = [];
+    backgroundLayers.forEach((layer) => {
+      const layerInstance = new Layer(
+        this.game,
+        this.width,
+        this.height,
+        layer.speed,
+        document.getElementById(layer.imageName)
+      );
+      this.layers.push(layerInstance);
+    });
+  }
+  start() {
+    this.game.groundMargin = this.groundMargin;
   }
   update() {
     this.layers.forEach((layer) => {
@@ -47,5 +62,29 @@ export class Background {
     this.layers.forEach((layer) => {
       layer.draw(context);
     });
+  }
+}
+
+export class ForestBackground extends Background {
+  constructor(game) {
+    super(game, 1667, 500, 40, [
+      { imageName: "bglayer1-forest", speed: 0.15 },
+      { imageName: "bglayer2-forest", speed: 0.2 },
+      { imageName: "bglayer3-forest", speed: 0.4 },
+      { imageName: "bglayer4-forest", speed: 0.6 },
+      { imageName: "bglayer5-forest", speed: 1 },
+    ]);
+  }
+}
+
+export class CityBackground extends Background {
+  constructor(game) {
+    super(game, 1667, 500, 80, [
+      { imageName: "bglayer1-city", speed: 0.15 },
+      { imageName: "bglayer2-city", speed: 0.2 },
+      { imageName: "bglayer3-city", speed: 0.4 },
+      { imageName: "bglayer4-city", speed: 0.6 },
+      { imageName: "bglayer5-city", speed: 1 },
+    ]);
   }
 }

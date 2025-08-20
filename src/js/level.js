@@ -7,6 +7,7 @@ export class Level {
   }
 
   start() {
+    this.background.start();
     this.spawnStrategy = this.spawnStrategyCallback(this.game);
   }
 

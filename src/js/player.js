@@ -71,12 +71,7 @@ export class Player {
   }
   checkCollision() {
     this.game.enemies.forEach((enemy) => {
-      if (
-        this.x < enemy.x + enemy.width &&
-        this.x + this.width > enemy.x &&
-        this.y < enemy.y + enemy.height &&
-        this.y + this.height > enemy.y
-      ) {
+      if (this.isCollidedWithEnemy(enemy)) {
         // collision detected
         enemy.markedForDeletion = true;
         this.game.collisions.push(
@@ -94,5 +89,13 @@ export class Player {
         }
       }
     });
+  }
+  isCollidedWithEnemy(enemy) {
+    return (
+      this.x < enemy.x + enemy.width &&
+      this.x + this.width > enemy.x &&
+      this.y < enemy.y + enemy.height &&
+      this.y + this.height > enemy.y
+    );
   }
 }

@@ -1,6 +1,6 @@
 import { Player } from "./player.js";
 import { InputHandler } from "./input.js";
-import { Background } from "./background.js";
+import { CityBackground, ForestBackground } from "./background.js";
 import { UI } from "./ui.js";
 import { GAME_CONFIG } from "./gameConfig.js";
 import { SpriteAnimator } from "./systems/spriteAnimator.js";
@@ -16,7 +16,6 @@ window.addEventListener("load", function () {
     constructor(width, height, context) {
       this.width = width;
       this.height = height;
-      this.groundMargin = GAME_CONFIG.groundMargin;
       this.speed = 0;
       this.maxSpeed = GAME_CONFIG.playerMaxSpeed;
 
@@ -24,22 +23,22 @@ window.addEventListener("load", function () {
 
       this.fontColor = "black";
 
+      this.gameLevels = [
+        new Level(this, new CityBackground(this), (game) => {
+          return new Manual1SpawnStrategy(this, manual1Spawn);
+        }),
+        new Level(this, new ForestBackground(this), (game) => {
+          return new RandomSpawnStrategy(this, GAME_CONFIG.enemyInterval);
+        }),
+      ];
+      this.currentGameLevel = 0;
+      this.gameLevels[this.currentGameLevel].start();
+
       this.player = new Player(this);
       this.input = new InputHandler(this, context.canvas);
       this.UI = new UI(this);
       this.spriteAnimator = new SpriteAnimator();
       this.particleAnimator = new ParticleAnimator(this);
-
-      this.gameLevels = [
-        new Level(this, new Background(this), (game) => {
-          return new RandomSpawnStrategy(this, GAME_CONFIG.enemyInterval);
-        }),
-        new Level(this, new Background(this), (game) => {
-          return new Manual1SpawnStrategy(this, manual1Spawn);
-        }),
-      ];
-      this.currentGameLevel = 0;
-      this.gameLevels[this.currentGameLevel].start();
 
       this.collisions = [];
       this.floatingMessages = [];
@@ -122,6 +121,8 @@ window.addEventListener("load", function () {
 
       this.collisions = [];
       this.floatingMessages = [];
+
+      this.score = 0;
 
       this.time = 0;
       this.levelComplete = false;
