@@ -65,12 +65,11 @@ window.addEventListener("load", function () {
 
       this.time += deltaTime;
       if (this.time > this.maxTime) {
-        // this.gameOver = true;
-        // for debugging, we'll set level complete instead:
-        this.levelComplete = true;
-      }
-      if (this.score > this.winningScore) {
-        this.levelComplete = true;
+        if (this.score > this.winningScore) {
+          this.levelComplete = true;
+        } else {
+          this.gameOver = true;
+        }
       }
 
       // updates
@@ -128,6 +127,9 @@ window.addEventListener("load", function () {
       this.levelComplete = false;
 
       this.gameLevels[this.currentGameLevel].start();
+    }
+    togglePause() {
+      this.paused = !this.paused;
     }
   }
 

@@ -18,9 +18,9 @@ export class InputHandler {
         this.keys.indexOf(e.key) === -1
       ) {
         this.keys.push(e.key);
-      } else if (e.key === "d") {
-        this.game.debug = !this.game.debug;
       }
+      this.processDebugKeys(e);
+      this.processGameKeys(e);
     });
     canvas.addEventListener("keyup", (e) => {
       const index = this.keys.indexOf(e.key);
@@ -45,5 +45,20 @@ export class InputHandler {
         }
       });
     });
+  }
+
+  processDebugKeys(e) {
+    if (e.key === "d") {
+      this.game.debug = !this.game.debug;
+    }
+    if (e.key === "g") {
+      this.game.score += 10;
+    }
+  }
+
+  processGameKeys(e) {
+    if (e.key === "p") {
+      this.game.togglePause();
+    }
   }
 }

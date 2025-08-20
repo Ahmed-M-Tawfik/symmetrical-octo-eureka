@@ -63,6 +63,8 @@ export class UI {
       this.drawGameOver(context);
     } else if (this.game.levelComplete) {
       this.drawLevelComplete(context);
+    } else if (this.game.paused) {
+      this.drawPaused(context);
     }
 
     context.restore();
@@ -94,6 +96,23 @@ export class UI {
       this.game.width * 0.5,
       this.game.height * 0.5 + 20
     );
+    context.restore();
+  }
+
+  /**
+   * Should only be called if the game is NOT over / level NOT complete
+   * @param {CanvasRenderingContext2D} context
+   */
+  drawPaused(context) {
+    context.save();
+
+    context.textAlign = "center";
+    context.font = this.fontSize * 2 + "px " + this.fontFamily;
+
+    context.fillText("Paused!", this.game.width * 0.5, this.game.height * 0.5 - 20);
+    context.font = this.fontSize * 0.7 + "px " + this.fontFamily;
+    context.fillText("Press P to resume", this.game.width * 0.5, this.game.height * 0.5 + 20);
+
     context.restore();
   }
 }
