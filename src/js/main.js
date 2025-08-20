@@ -119,6 +119,7 @@ window.addEventListener("load", function () {
       if (this.currentGameLevel >= this.gameLevels.length) {
         this.currentGameLevel = 0;
       }
+      this.player.x = 0;
       this.enemies = [];
 
       this.collisions = [];
