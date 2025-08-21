@@ -1,12 +1,11 @@
-export class FloatingMessage {
+import { GameEntity } from "./entities/GameEntity.js";
+
+export class FloatingMessage extends GameEntity {
   constructor(value, x, y, targetX, targetY) {
+    super(null, x, y, 0, 0); // No game ref, no width/height needed
     this.value = value;
-    this.x = x;
-    this.y = y;
     this.targetX = targetX;
     this.targetY = targetY;
-
-    this.markedForDeletion = false;
     this.timer = 0;
   }
   update() {
@@ -17,13 +16,11 @@ export class FloatingMessage {
   }
   draw(context) {
     context.save();
-
     context.font = "20px Creepster";
     context.fillStyle = "white";
     context.fillText(this.value, this.x, this.y);
     context.fillStyle = "black";
     context.fillText(this.value, this.x - 2, this.y - 2);
-
     context.restore();
   }
 }
