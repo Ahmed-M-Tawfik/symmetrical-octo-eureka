@@ -10,6 +10,7 @@ import { ParticleAnimator } from "./systems/particleAnimator.js";
 import { Level } from "./level.js";
 import { KeyBindings } from "./ui/keybindings.js";
 import { DEFAULT_KEY_BINDINGS } from "./data/keybindingsData.js";
+import { GAME_STATES } from "./gameStates.js";
 
 // https://www.youtube.com/watch?v=GFO_txvwK_c
 
@@ -22,7 +23,6 @@ window.addEventListener("load", function () {
       this.maxSpeed = GAME_CONFIG.playerMaxSpeed;
 
       this.debug = false;
-
       this.fontColor = "black";
 
       this.gameLevels = [
@@ -44,52 +44,48 @@ window.addEventListener("load", function () {
 
       this.collisions = [];
       this.floatingMessages = [];
-
       this.enemies = [];
-
       this.lives = GAME_CONFIG.initialLives;
-
       this.time = 0; // ms
       this.maxTime = GAME_CONFIG.maxTime;
-      this.levelComplete = false;
       this.score = 0;
       this.winningScore = GAME_CONFIG.winningScore;
-      this.gameOver = false;
 
-      this.paused = false;
+      this.gameState = GAME_STATES.PLAYING;
 
       this.player.currentState = this.player.states[0];
       this.player.currentState.enter();
     }
     update(deltaTime) {
-      if (this.paused || this.gameOver || this.levelComplete) return;
+      if (
+        this.gameState === GAME_STATES.PAUSED ||
+        this.gameState === GAME_STATES.GAME_OVER ||
+        this.gameState === GAME_STATES.LEVEL_COMPLETE ||
+        this.gameState === GAME_STATES.MAIN_MENU
+      ) {
+        return;
+      }
 
       this.time += deltaTime;
       if (this.time > this.maxTime) {
         if (this.score > this.winningScore) {
-          this.levelComplete = true;
+          this.setGameState(GAME_STATES.LEVEL_COMPLETE);
         } else {
-          this.gameOver = true;
+          this.setGameState(GAME_STATES.GAME_OVER);
         }
       }
 
       // updates
       this.player.update(this.input.actions, deltaTime);
       this.gameLevels[this.currentGameLevel].update();
-
       this.gameLevels[this.currentGameLevel].spawnStrategy.update(deltaTime);
-
       this.enemies.forEach((enemy) => enemy.update(deltaTime));
-
       this.floatingMessages.forEach((message) => message.update());
-
       this.particleAnimator.update(deltaTime);
-
       this.collisions.forEach((collision) => collision.update(deltaTime));
 
       // deletions
       this.enemies = this.enemies.filter((enemy) => !enemy.markedForDeletion);
-
       this.collisions = this.collisions.filter((collision) => !collision.markedForDeletion);
       this.floatingMessages = this.floatingMessages.filter((message) => !message.markedForDeletion);
 
@@ -111,11 +107,10 @@ window.addEventListener("load", function () {
       // UI at the end to ensure it's on top
       this.UI.draw(context);
     }
-    setLevelComplete() {
-      this.levelComplete = true;
+    setGameState(newState) {
+      this.gameState = newState;
     }
     _resetLevelState() {
-      this.paused = false;
       this.enemies = [];
       this.particleAnimator.reset();
       this.collisions = [];
@@ -123,24 +118,27 @@ window.addEventListener("load", function () {
       this.lives = GAME_CONFIG.initialLives;
       this.score = 0;
       this.time = 0;
-
       this.gameLevels[this.currentGameLevel].start();
       this.player.reset();
     }
 
     nextLevel() {
       this.currentGameLevel = (this.currentGameLevel + 1) % this.gameLevels.length;
-      this.levelComplete = false;
+      this.setGameState(GAME_STATES.PLAYING);
       this._resetLevelState();
     }
 
     retryLevel() {
-      this.gameOver = false;
+      this.setGameState(GAME_STATES.PLAYING);
       this._resetLevelState();
     }
 
     togglePause() {
-      this.paused = !this.paused;
+      if (this.gameState === GAME_STATES.PAUSED) {
+        this.setGameState(GAME_STATES.PLAYING);
+      } else if (this.gameState === GAME_STATES.PLAYING) {
+        this.setGameState(GAME_STATES.PAUSED);
+      }
     }
   }
 

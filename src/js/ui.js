@@ -1,4 +1,5 @@
 import { Button } from "./ui/buttons.js";
+import { GAME_STATES } from "./gameStates.js";
 
 export class UI {
   constructor(game) {
@@ -15,23 +16,18 @@ export class UI {
         200,
         50,
         () => {
-          if (!this.game.levelComplete) return;
-
+          if (this.game.gameState !== GAME_STATES.LEVEL_COMPLETE) return;
           this.game.nextLevel();
         },
         (context) => {
-          if (!this.game.levelComplete) return;
-
+          if (this.game.gameState !== GAME_STATES.LEVEL_COMPLETE) return;
           context.save();
-
-          // draw button
           context.font = "20px Creepster";
           context.fillStyle = "#845e00ff";
           context.fillRect(this.game.width * 0.5 - 100, this.game.height * 0.5 + 100, 200, 50);
           context.fillStyle = "#001122";
           context.textAlign = "center";
           context.fillText("Next Level", this.game.width * 0.5, this.game.height * 0.5 + 130);
-
           context.restore();
         }
       )
@@ -45,23 +41,18 @@ export class UI {
         200,
         50,
         () => {
-          if (!this.game.gameOver) return;
-
+          if (this.game.gameState !== GAME_STATES.GAME_OVER) return;
           this.game.retryLevel();
         },
         (context) => {
-          if (!this.game.gameOver) return;
-
+          if (this.game.gameState !== GAME_STATES.GAME_OVER) return;
           context.save();
-
-          // draw button
           context.font = "20px Creepster";
           context.fillStyle = "#845e00ff";
           context.fillRect(this.game.width * 0.5 - 100, this.game.height * 0.5 + 100, 200, 50);
           context.fillStyle = "#001122";
           context.textAlign = "center";
           context.fillText("Retry Level", this.game.width * 0.5, this.game.height * 0.5 + 130);
-
           context.restore();
         }
       )
@@ -88,12 +79,12 @@ export class UI {
       context.drawImage(this.livesImage, 25 * i + 20, 95, 25, 25);
     }
 
-    // game over messages
-    if (this.game.gameOver) {
+    // game state messages
+    if (this.game.gameState === GAME_STATES.GAME_OVER) {
       this.drawGameOver(context);
-    } else if (this.game.levelComplete) {
+    } else if (this.game.gameState === GAME_STATES.LEVEL_COMPLETE) {
       this.drawLevelComplete(context);
-    } else if (this.game.paused) {
+    } else if (this.game.gameState === GAME_STATES.PAUSED) {
       this.drawPaused(context);
     }
 

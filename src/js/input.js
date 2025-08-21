@@ -1,3 +1,5 @@
+import { GAME_STATES } from "./gameStates.js";
+
 export class InputHandler {
   constructor(game, canvas, keyBindings) {
     this.game = game;
@@ -9,14 +11,15 @@ export class InputHandler {
     canvas.focus();
 
     canvas.addEventListener("keydown", (e) => {
-      if (this.keyBindings.getKeysByGroup("player").includes(e.key)) {
+      // Only process player actions if game is in PLAYING state
+      if (this.game.gameState === GAME_STATES.PLAYING && this.keyBindings.getKeysByGroup("player").includes(e.key)) {
         this.actions.add(this.keyBindings.keyToAction[e.key].action);
       }
       this.processDebugKeys(e);
       this.processGameKeys(e);
     });
     canvas.addEventListener("keyup", (e) => {
-      if (this.keyBindings.getKeysByGroup("player").includes(e.key)) {
+      if (this.game.gameState === GAME_STATES.PLAYING && this.keyBindings.getKeysByGroup("player").includes(e.key)) {
         this.actions.delete(this.keyBindings.keyToAction[e.key].action);
       }
     });
