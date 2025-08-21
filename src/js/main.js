@@ -10,9 +10,13 @@ import { ParticleAnimator } from "./systems/particleAnimator.js";
 import { Level } from "./level.js";
 import { KeyBindings } from "./ui/keybindings.js";
 import { DEFAULT_KEY_BINDINGS } from "./data/keybindingsData.js";
-import { GAME_STATES } from "./gameStates.js";
+import { PlayingState } from "./states/PlayingState.js";
+import { PausedState } from "./states/PausedState.js";
+import { GameOverState } from "./states/GameOverState.js";
+import { MainMenuState } from "./states/MainMenuState.js";
+import { LevelCompleteState } from "./states/LevelCompleteState.js";
 
-// https://www.youtube.com/watch?v=GFO_txvwK_c
+// Origin: https://www.youtube.com/watch?v=GFO_txvwK_c
 
 window.addEventListener("load", function () {
   class Game {
@@ -51,64 +55,31 @@ window.addEventListener("load", function () {
       this.score = 0;
       this.winningScore = GAME_CONFIG.winningScore;
 
-      this.gameState = GAME_STATES.PLAYING;
+      // State machine setup
+      this.states = {
+        playing: new PlayingState(this),
+        paused: new PausedState(this),
+        gameOver: new GameOverState(this),
+        mainMenu: new MainMenuState(this),
+        levelComplete: new LevelCompleteState(this),
+      };
+      // change state only using changeState(state) method
+      this.state = this.states.playing;
+      this.state.enter();
 
       this.player.currentState = this.player.states[0];
       this.player.currentState.enter();
     }
     update(deltaTime) {
-      if (
-        this.gameState === GAME_STATES.PAUSED ||
-        this.gameState === GAME_STATES.GAME_OVER ||
-        this.gameState === GAME_STATES.LEVEL_COMPLETE ||
-        this.gameState === GAME_STATES.MAIN_MENU
-      ) {
-        return;
-      }
-
-      this.time += deltaTime;
-      if (this.time > this.maxTime) {
-        if (this.score > this.winningScore) {
-          this.setGameState(GAME_STATES.LEVEL_COMPLETE);
-        } else {
-          this.setGameState(GAME_STATES.GAME_OVER);
-        }
-      }
-
-      // updates
-      this.player.update(this.input.actions, deltaTime);
-      this.gameLevels[this.currentGameLevel].update();
-      this.gameLevels[this.currentGameLevel].spawnStrategy.update(deltaTime);
-      this.enemies.forEach((enemy) => enemy.update(deltaTime));
-      this.floatingMessages.forEach((message) => message.update());
-      this.particleAnimator.update(deltaTime);
-      this.collisions.forEach((collision) => collision.update(deltaTime));
-
-      // deletions
-      this.enemies = this.enemies.filter((enemy) => !enemy.markedForDeletion);
-      this.collisions = this.collisions.filter((collision) => !collision.markedForDeletion);
-      this.floatingMessages = this.floatingMessages.filter((message) => !message.markedForDeletion);
-
-      this.spriteAnimator.update(deltaTime, this.player);
-      this.enemies.forEach((enemy) => this.spriteAnimator.update(deltaTime, enemy));
+      this.state.update(deltaTime);
     }
     draw(context) {
-      this.gameLevels[this.currentGameLevel].draw(context);
-
-      this.spriteAnimator.draw(context, this.player, this.debug);
-      this.enemies.forEach((enemy) => this.spriteAnimator.draw(context, enemy, this.debug));
-
-      this.particleAnimator.draw(context);
-
-      this.collisions.forEach((collision) => collision.draw(context));
-
-      this.floatingMessages.forEach((message) => message.draw(context));
-
-      // UI at the end to ensure it's on top
-      this.UI.draw(context);
+      this.state.draw(context);
     }
-    setGameState(newState) {
-      this.gameState = newState;
+    changeState(newState) {
+      this.state.exit();
+      this.state = newState;
+      this.state.enter();
     }
     _resetLevelState() {
       this.enemies = [];
@@ -124,20 +95,20 @@ window.addEventListener("load", function () {
 
     nextLevel() {
       this.currentGameLevel = (this.currentGameLevel + 1) % this.gameLevels.length;
-      this.setGameState(GAME_STATES.PLAYING);
       this._resetLevelState();
+      this.changeState(this.states.playing);
     }
 
     retryLevel() {
-      this.setGameState(GAME_STATES.PLAYING);
       this._resetLevelState();
+      this.changeState(this.states.playing);
     }
 
     togglePause() {
-      if (this.gameState === GAME_STATES.PAUSED) {
-        this.setGameState(GAME_STATES.PLAYING);
-      } else if (this.gameState === GAME_STATES.PLAYING) {
-        this.setGameState(GAME_STATES.PAUSED);
+      if (this.state === this.states.paused) {
+        this.changeState(this.states.playing);
+      } else if (this.state === this.states.playing) {
+        this.changeState(this.states.paused);
       }
     }
   }
@@ -158,7 +129,6 @@ window.addEventListener("load", function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     game.update(deltaTime);
-
     game.draw(ctx);
 
     requestAnimationFrame(animate);

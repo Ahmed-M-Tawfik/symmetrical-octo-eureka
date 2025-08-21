@@ -1,6 +1,4 @@
 import { Button } from "./ui/buttons.js";
-import { GAME_STATES } from "./gameStates.js";
-
 export class UI {
   constructor(game) {
     this.game = game;
@@ -16,11 +14,11 @@ export class UI {
         200,
         50,
         () => {
-          if (this.game.gameState !== GAME_STATES.LEVEL_COMPLETE) return;
+          if (this.game.state !== this.game.states.levelComplete) return;
           this.game.nextLevel();
         },
         (context) => {
-          if (this.game.gameState !== GAME_STATES.LEVEL_COMPLETE) return;
+          if (this.game.state !== this.game.states.levelComplete) return;
           context.save();
           context.font = "20px Creepster";
           context.fillStyle = "#845e00ff";
@@ -41,11 +39,11 @@ export class UI {
         200,
         50,
         () => {
-          if (this.game.gameState !== GAME_STATES.GAME_OVER) return;
+          if (this.game.state !== this.game.states.gameOver) return;
           this.game.retryLevel();
         },
         (context) => {
-          if (this.game.gameState !== GAME_STATES.GAME_OVER) return;
+          if (this.game.state !== this.game.states.gameOver) return;
           context.save();
           context.font = "20px Creepster";
           context.fillStyle = "#845e00ff";
@@ -80,11 +78,11 @@ export class UI {
     }
 
     // game state messages
-    if (this.game.gameState === GAME_STATES.GAME_OVER) {
+    if (this.game.state === this.game.states.gameOver) {
       this.drawGameOver(context);
-    } else if (this.game.gameState === GAME_STATES.LEVEL_COMPLETE) {
+    } else if (this.game.state === this.game.states.levelComplete) {
       this.drawLevelComplete(context);
-    } else if (this.game.gameState === GAME_STATES.PAUSED) {
+    } else if (this.game.state === this.game.states.paused) {
       this.drawPaused(context);
     }
 

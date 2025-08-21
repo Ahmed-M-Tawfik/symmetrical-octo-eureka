@@ -1,5 +1,3 @@
-import { GAME_STATES } from "./gameStates.js";
-
 export class InputHandler {
   constructor(game, canvas, keyBindings) {
     this.game = game;
@@ -12,14 +10,15 @@ export class InputHandler {
 
     canvas.addEventListener("keydown", (e) => {
       // Only process player actions if game is in PLAYING state
-      if (this.game.gameState === GAME_STATES.PLAYING && this.keyBindings.getKeysByGroup("player").includes(e.key)) {
+      if (this.game.state === this.game.states.playing && this.keyBindings.getKeysByGroup("player").includes(e.key)) {
         this.actions.add(this.keyBindings.keyToAction[e.key].action);
       }
       this.processDebugKeys(e);
-      this.processGameKeys(e);
+      // Route game-level input to the current state
+      this.game.state.handleInput(e);
     });
     canvas.addEventListener("keyup", (e) => {
-      if (this.game.gameState === GAME_STATES.PLAYING && this.keyBindings.getKeysByGroup("player").includes(e.key)) {
+      if (this.game.state === this.game.states.playing && this.keyBindings.getKeysByGroup("player").includes(e.key)) {
         this.actions.delete(this.keyBindings.keyToAction[e.key].action);
       }
     });
@@ -43,17 +42,17 @@ export class InputHandler {
   }
 
   processDebugKeys(e) {
-    if (e.key === this.keyBindings.actionToKey["debug"].key) {
+    if (e.key === this.keyBindings.actionToKey["debug_active"].key) {
       this.game.debug = !this.game.debug;
     }
     if (e.key === this.keyBindings.actionToKey["debug_add_score"].key) {
       this.game.score += 10;
     }
-  }
-
-  processGameKeys(e) {
-    if (e.key === this.keyBindings.actionToKey["pause"].key) {
-      this.game.togglePause();
+    if (e.key === this.keyBindings.actionToKey["debug_next_level"].key) {
+      this.game.nextLevel();
+    }
+    if (e.key === this.keyBindings.actionToKey["debug_retry_level"].key) {
+      this.game.retryLevel();
     }
   }
 }

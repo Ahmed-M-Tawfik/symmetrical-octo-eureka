@@ -9,6 +9,8 @@ export const DEFAULT_KEY_BINDINGS = [
 
   { action: "pause", key: "p", group: "game" },
 
-  { action: "debug", key: "d", group: "debug" },
+  { action: "debug_active", key: "d", group: "debug" },
   { action: "debug_add_score", key: "g", group: "debug" },
+  { action: "debug_next_level", key: "n", group: "debug" },
+  { action: "debug_retry_level", key: "r", group: "debug" },
 ];
