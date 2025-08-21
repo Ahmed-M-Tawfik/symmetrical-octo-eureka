@@ -3,20 +3,20 @@ import { CollisionAnimation } from "./collisionAnimation.js";
 import { FloatingMessage } from "./floatingMessages.js";
 import { SpriteData } from "./spriteData.js";
 import { GameEntity } from "./entities/GameEntity.js";
+import { GAME_CONFIG } from "./gameConfig.js";
 
 export class Player extends GameEntity {
   constructor(game) {
-    const height = 91.3;
-    const width = 100;
+    const { width, height, spriteWidth, spriteHeight, maxFrame } = GAME_CONFIG.player;
     super(game, 0, game.height - height - game.groundMargin, width, height);
 
     this.spriteData = new SpriteData(game, 20);
-    this.spriteData.spriteWidth = 575;
-    this.spriteData.spriteHeight = 525;
+    this.spriteData.spriteWidth = spriteWidth;
+    this.spriteData.spriteHeight = spriteHeight;
     this.spriteData.image = document.getElementById("player");
     this.spriteData.frameX = 0;
     this.spriteData.frameY = 0;
-    this.spriteData.maxFrame = 5;
+    this.spriteData.maxFrame = maxFrame;
 
     this.states = [
       new Sitting(this),
@@ -65,9 +65,9 @@ export class Player extends GameEntity {
     this.x = 0;
     this.y = this.game.height - this.height - this.game.groundMargin;
     this.vy = 0;
-    this.weight = 1;
+    this.weight = GAME_CONFIG.player.weight;
     this.speed = 0;
-    this.maxSpeed = 10;
+    this.maxSpeed = GAME_CONFIG.player.maxSpeed;
     this.setState(this.states[0].state, 0);
   }
   checkCollision() {

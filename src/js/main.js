@@ -23,7 +23,7 @@ window.addEventListener("load", function () {
       this.width = width;
       this.height = height;
       this.speed = 0;
-      this.maxSpeed = GAME_CONFIG.playerMaxSpeed;
+      this.maxSpeed = GAME_CONFIG.backgroundSpeed;
 
       this.debug = false;
       this.fontColor = "black";

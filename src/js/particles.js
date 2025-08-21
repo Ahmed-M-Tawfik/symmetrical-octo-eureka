@@ -1,18 +1,21 @@
 import { GameEntity } from "./entities/GameEntity.js";
+import { PARTICLE_CONFIG } from "./gameConfig.js";
 
 export class Dust extends GameEntity {
   constructor(game, x, y) {
-    const size = Math.random() * 10 + 10;
+    const cfg = PARTICLE_CONFIG.dust;
+    const size = Math.random() * (cfg.size.max - cfg.size.min) + cfg.size.min;
     super(game, x, y, size, size);
     this.size = size;
     this.speedX = Math.random();
     this.speedY = Math.random();
-    this.color = "rgba(0,0,0,0.2)";
+    this.color = cfg.color;
+    this.shrink = cfg.shrink;
   }
   update() {
     this.x -= this.speedX + this.game.speed;
     this.y -= this.speedY;
-    this.size *= 0.97;
+    this.size *= this.shrink;
     if (this.size < 0.5) this.markedForDeletion = true;
   }
   draw(context) {
@@ -27,21 +30,24 @@ export class Dust extends GameEntity {
 
 export class Splash extends GameEntity {
   constructor(game, x, y) {
-    const size = Math.random() * 50 + 10;
+    const cfg = PARTICLE_CONFIG.splash;
+    const size = Math.random() * (cfg.size.max - cfg.size.min) + cfg.size.min;
     super(game, x - size * 0.4, y - size * 0.5, size, size);
     this.image = document.getElementById("fire");
     this.size = size;
-    this.speedX = Math.random() * 6 - 3;
-    this.speedY = Math.random() * 2 + 2;
-    this.gravity = 0;
+    this.speedX = Math.random() * (cfg.speedX.max - cfg.speedX.min) + cfg.speedX.min;
+    this.speedY = Math.random() * (cfg.speedY.max - cfg.speedY.min) + cfg.speedY.min;
+    this.decelRate = 0;
+    this.shrink = cfg.shrink;
+    this.gravity = cfg.gravity;
   }
   update() {
     this.x -= this.speedX + this.game.speed;
     this.y -= this.speedY;
-    this.size *= 0.97;
+    this.size *= this.shrink;
     if (this.size < 0.5) this.markedForDeletion = true;
-    this.gravity += 0.1;
-    this.y += this.gravity;
+    this.decelRate += this.gravity;
+    this.y += this.decelRate;
   }
   draw(context) {
     context.drawImage(this.image, this.x, this.y, this.size, this.size);
@@ -50,19 +56,21 @@ export class Splash extends GameEntity {
 
 export class Fire extends GameEntity {
   constructor(game, x, y) {
-    const size = Math.random() * 100 + 50;
+    const cfg = PARTICLE_CONFIG.fire;
+    const size = Math.random() * (cfg.size.max - cfg.size.min) + cfg.size.min;
     super(game, x, y, size, size);
     this.image = document.getElementById("fire");
     this.size = size;
-    this.speedX = 1;
-    this.speedY = 1;
+    this.speedX = cfg.speedX;
+    this.speedY = cfg.speedY;
     this.angle = 0;
-    this.va = Math.random() * 0.2 - 0.1;
+    this.shrink = cfg.shrink;
+    this.va = Math.random() * (cfg.va.max - cfg.va.min) + cfg.va.min;
   }
   update() {
     this.x -= this.speedX + this.game.speed;
     this.y -= this.speedY;
-    this.size *= 0.97;
+    this.size *= this.shrink;
     if (this.size < 0.5) this.markedForDeletion = true;
     this.angle += this.va;
     this.x += Math.sin(this.angle * 10);
