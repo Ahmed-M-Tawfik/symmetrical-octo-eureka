@@ -1,20 +1,18 @@
 import { GameState } from "./GameState.js";
 
 export class PlayingState extends GameState {
-  enter() {}
+  enter() {
+    this.subState = "active"; // 'active' or 'paused'
+  }
   exit() {
     // Clear all input actions to prevent stuck keys when leaving playing state
     this.game.input.actions.clear();
   }
   update(deltaTime) {
+    if (this.subState === "paused") return;
     this.game.time += deltaTime;
-
     this.evaluateEndGameCondition();
-
-    // updates
     this.runUpdates(deltaTime);
-
-    // deletions
     this.runDeletions(deltaTime);
   }
 
@@ -50,7 +48,6 @@ export class PlayingState extends GameState {
   draw(context) {
     this.game.gameLevels[this.game.currentGameLevel].draw(context);
 
-    // game entities
     this.game.spriteAnimator.draw(context, this.game.player, this.game.debug);
     this.game.enemies.forEach((enemy) => this.game.spriteAnimator.draw(context, enemy, this.game.debug));
     this.game.particleAnimator.draw(context);
@@ -65,7 +62,11 @@ export class PlayingState extends GameState {
   handleInput(event) {
     const pauseKey = this.game.input.keyBindings.actionToKey["pause"].key;
     if (event.key === pauseKey) {
-      this.game.togglePause();
+      if (this.subState === "active") {
+        this.subState = "paused";
+      } else if (this.subState === "paused") {
+        this.subState = "active";
+      }
     }
   }
 }

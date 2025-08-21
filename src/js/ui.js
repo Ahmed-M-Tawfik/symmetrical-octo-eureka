@@ -82,7 +82,7 @@ export class UI {
       this.drawGameOver(context);
     } else if (this.game.state === this.game.states.levelComplete) {
       this.drawLevelComplete(context);
-    } else if (this.game.state === this.game.states.paused) {
+    } else if (this.game.state === this.game.states.playing && this.game.state.subState === "paused") {
       this.drawPaused(context);
     }
 

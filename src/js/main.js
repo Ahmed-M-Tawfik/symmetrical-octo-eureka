@@ -11,7 +11,6 @@ import { Level } from "./level.js";
 import { KeyBindings } from "./ui/keybindings.js";
 import { DEFAULT_KEY_BINDINGS } from "./data/keybindingsData.js";
 import { PlayingState } from "./states/PlayingState.js";
-import { PausedState } from "./states/PausedState.js";
 import { GameOverState } from "./states/GameOverState.js";
 import { MainMenuState } from "./states/MainMenuState.js";
 import { LevelCompleteState } from "./states/LevelCompleteState.js";
@@ -58,7 +57,6 @@ window.addEventListener("load", function () {
       // State machine setup
       this.states = {
         playing: new PlayingState(this),
-        paused: new PausedState(this),
         gameOver: new GameOverState(this),
         mainMenu: new MainMenuState(this),
         levelComplete: new LevelCompleteState(this),
@@ -102,14 +100,6 @@ window.addEventListener("load", function () {
     retryLevel() {
       this._resetLevelState();
       this.changeState(this.states.playing);
-    }
-
-    togglePause() {
-      if (this.state === this.states.paused) {
-        this.changeState(this.states.playing);
-      } else if (this.state === this.states.playing) {
-        this.changeState(this.states.paused);
-      }
     }
   }
 
