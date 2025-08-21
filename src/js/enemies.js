@@ -1,35 +1,17 @@
 import { SpriteData } from "./spriteData.js";
+import { GameEntity } from "./entities/GameEntity.js";
 
-class Enemy {
-  constructor(game) {
-    this.game = game;
+export class FlyingEnemy extends GameEntity {
+  constructor(game, x = undefined, y = undefined, speedX = undefined, va = undefined) {
+    const width = 60;
+    const height = 44;
+    const spawnX = x !== undefined ? x : game.width + Math.random() * game.width * 0.5;
+    const spawnY = y !== undefined ? y : Math.random() * game.height * 0.5;
+    super(game, spawnX, spawnY, width, height);
 
     this.spriteData = new SpriteData(game, 20);
-
-    this.markedForDeletion = false;
-  }
-
-  update(deltaTime) {
-    // movement
-    this.x -= this.speedX + this.game.speed;
-    this.y += this.speedY;
-
-    // bounds check
-    if (this.x + this.width < 0) this.markedForDeletion = true;
-  }
-  draw(context) {
-    // noop - we preserve this for any subclasses that use it
-  }
-}
-
-export class FlyingEnemy extends Enemy {
-  constructor(game, x = undefined, y = undefined, speedX = undefined, va = undefined) {
-    super(game);
-    this.x = x !== undefined ? x : this.game.width + Math.random() * this.game.width * 0.5;
-    this.y = y !== undefined ? y : Math.random() * this.game.height * 0.5;
-
-    this.width = this.spriteData.spriteWidth = 60;
-    this.height = this.spriteData.spriteHeight = 44;
+    this.spriteData.spriteWidth = width;
+    this.spriteData.spriteHeight = height;
     this.spriteData.maxFrame = 4;
     this.spriteData.image = document.getElementById("enemy_fly");
 
@@ -40,7 +22,9 @@ export class FlyingEnemy extends Enemy {
     this.va = va !== undefined ? va : Math.random() * 0.1 + 0.1;
   }
   update(deltaTime) {
-    super.update(deltaTime);
+    this.x -= this.speedX + this.game.speed;
+    this.y += this.speedY;
+    if (this.x + this.width < 0) this.markedForDeletion = true;
 
     this.angle += this.va;
     this.y += Math.sin(this.angle) * 2;
@@ -48,31 +32,41 @@ export class FlyingEnemy extends Enemy {
   }
 }
 
-export class GroundEnemy extends Enemy {
+export class GroundEnemy extends GameEntity {
   constructor(game) {
-    super(game);
+    const width = 60;
+    const height = 87;
+    const x = game.width;
+    const y = game.height - height - game.groundMargin;
+    super(game, x, y, width, height);
 
-    this.width = this.spriteData.spriteWidth = 60;
-    this.height = this.spriteData.spriteHeight = 87;
-    this.x = this.game.width;
-    this.y = this.game.height - this.height - this.game.groundMargin;
-
+    this.spriteData = new SpriteData(game, 20);
+    this.spriteData.spriteWidth = width;
+    this.spriteData.spriteHeight = height;
     this.spriteData.image = document.getElementById("enemy_plant");
     this.spriteData.maxFrame = 1;
 
     this.speedX = 0;
     this.speedY = 0;
   }
+  update(deltaTime) {
+    this.x -= this.speedX + this.game.speed;
+    this.y += this.speedY;
+    if (this.x + this.width < 0) this.markedForDeletion = true;
+  }
 }
 
-export class ClimbingEnemy extends Enemy {
+export class ClimbingEnemy extends GameEntity {
   constructor(game) {
-    super(game);
-    this.width = this.spriteData.spriteWidth = 120;
-    this.height = this.spriteData.spriteHeight = 144;
-    this.x = this.game.width;
-    this.y = Math.random() * this.game.height * 0.5;
+    const width = 120;
+    const height = 144;
+    const x = game.width;
+    const y = Math.random() * game.height * 0.5;
+    super(game, x, y, width, height);
 
+    this.spriteData = new SpriteData(game, 20);
+    this.spriteData.spriteWidth = width;
+    this.spriteData.spriteHeight = height;
     this.spriteData.image = document.getElementById("enemy_spider_big");
     this.spriteData.maxFrame = 5;
 
@@ -80,12 +74,15 @@ export class ClimbingEnemy extends Enemy {
     this.speedY = Math.random() > 0.5 ? 1 : -1;
   }
   update(deltaTime) {
-    super.update(deltaTime);
+    this.x -= this.speedX + this.game.speed;
+    this.y += this.speedY;
+    if (this.x + this.width < 0) this.markedForDeletion = true;
     if (this.y < 0 || this.y > this.game.height - this.height - this.game.groundMargin) {
       this.speedY *= -1;
     }
   }
   draw(context) {
+    // Draw the web line
     context.beginPath();
     context.moveTo(this.x + this.width / 2, 0);
     context.lineTo(this.x + this.width / 2, this.y + 50);

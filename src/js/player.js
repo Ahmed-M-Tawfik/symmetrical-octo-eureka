@@ -2,16 +2,15 @@ import { states, Sitting, Running, Jumping, Falling, Rolling, Diving, Hit } from
 import { CollisionAnimation } from "./collisionAnimation.js";
 import { FloatingMessage } from "./floatingMessages.js";
 import { SpriteData } from "./spriteData.js";
+import { GameEntity } from "./entities/GameEntity.js";
 
-export class Player {
+export class Player extends GameEntity {
   constructor(game) {
-    this.game = game;
+    const height = 91.3;
+    const width = 100;
+    super(game, 0, game.height - height - game.groundMargin, width, height);
 
     this.spriteData = new SpriteData(game, 20);
-
-    this.width = 100;
-    this.height = 91.3;
-
     this.spriteData.spriteWidth = 575;
     this.spriteData.spriteHeight = 525;
     this.spriteData.image = document.getElementById("player");
@@ -73,7 +72,7 @@ export class Player {
   }
   checkCollision() {
     this.game.enemies.forEach((enemy) => {
-      if (this.isCollidedWithEnemy(enemy)) {
+      if (this.collidesWith(enemy)) {
         // collision detected
         enemy.markedForDeletion = true;
         this.game.collisions.push(
@@ -91,13 +90,5 @@ export class Player {
         }
       }
     });
-  }
-  isCollidedWithEnemy(enemy) {
-    return (
-      this.x < enemy.x + enemy.width &&
-      this.x + this.width > enemy.x &&
-      this.y < enemy.y + enemy.height &&
-      this.y + this.height > enemy.y
-    );
   }
 }
