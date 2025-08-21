@@ -31,8 +31,13 @@ export class Sitting extends State {
   }
   enter() {
     resetFrames(this.player, 5, 4);
+    this.player.speed = 0;
   }
   handleInput(inputActions) {
+    if (inputActions.has(playerActions.down)) {
+      // no op
+      return;
+    }
     if (inputActions.has(playerActions.moveLeft) || inputActions.has(playerActions.moveRight)) {
       this.player.setState(states.RUNNING, 1);
     } else if (inputActions.has(playerActions.jump)) {
@@ -126,7 +131,7 @@ export class Diving extends State {
   }
   enter() {
     resetFrames(this.player, 6, 6);
-    this.game.player.vy = 15;
+    this.game.player.vy = 30;
   }
   handleInput(inputActions) {
     this.game.particleAnimator.addFire(
