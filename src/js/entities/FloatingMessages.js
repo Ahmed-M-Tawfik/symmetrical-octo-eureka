@@ -2,7 +2,7 @@ import { GameEntity } from "./GameEntity.js";
 
 export class FloatingMessage extends GameEntity {
   constructor(value, x, y, targetX, targetY) {
-    super(null, x, y, 0, 0); // No game ref, no width/height needed
+    super(null, x, y, 0, 0); // No game ref nor width/height needed
     this.value = value;
     this.targetX = targetX;
     this.targetY = targetY;
