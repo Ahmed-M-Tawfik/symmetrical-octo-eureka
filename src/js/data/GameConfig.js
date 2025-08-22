@@ -10,6 +10,7 @@ export const PARTICLE_CONFIG = {
     speedY: { min: 2, max: 4 },
     gravity: 0.1,
     shrink: 0.97,
+    imageId: "fire",
   },
   fire: {
     size: { min: 50, max: 150 },
@@ -17,6 +18,7 @@ export const PARTICLE_CONFIG = {
     speedY: 1,
     va: { min: -0.1, max: 0.1 },
     shrink: 0.97,
+    imageId: "fire",
   },
 };
 export const ENEMY_CONFIG = {

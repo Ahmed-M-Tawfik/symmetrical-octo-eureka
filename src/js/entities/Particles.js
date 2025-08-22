@@ -33,7 +33,7 @@ export class Splash extends GameEntity {
     const cfg = PARTICLE_CONFIG.splash;
     const size = Math.random() * (cfg.size.max - cfg.size.min) + cfg.size.min;
     super(game, x - size * 0.4, y - size * 0.5, size, size);
-    this.image = document.getElementById("fire");
+    this.image = document.getElementById(cfg.imageId);
     this.size = size;
     this.speedX = Math.random() * (cfg.speedX.max - cfg.speedX.min) + cfg.speedX.min;
     this.speedY = Math.random() * (cfg.speedY.max - cfg.speedY.min) + cfg.speedY.min;
@@ -59,7 +59,7 @@ export class Fire extends GameEntity {
     const cfg = PARTICLE_CONFIG.fire;
     const size = Math.random() * (cfg.size.max - cfg.size.min) + cfg.size.min;
     super(game, x, y, size, size);
-    this.image = document.getElementById("fire");
+    this.image = document.getElementById(cfg.imageId);
     this.size = size;
     this.speedX = cfg.speedX;
     this.speedY = cfg.speedY;
