@@ -1,13 +1,10 @@
-import { Player } from "./player.js";
+import { Player } from "./entities/player.js";
 import { InputHandler } from "./input.js";
-import { CityBackground, ForestBackground } from "./background.js";
 import { UI } from "./ui.js";
-import { GAME_CONFIG } from "./gameConfig.js";
+import { GAME_CONFIG } from "./data/gameConfig.js";
 import { SpriteAnimator } from "./systems/spriteAnimator.js";
-import { Manual1SpawnStrategy, RandomSpawnStrategy } from "./systems/levelSpawner.js";
-import { manual1Spawn } from "./data/spawn/manual1Spawn.js";
 import { ParticleAnimator } from "./systems/particleAnimator.js";
-import { Level } from "./level.js";
+import { getLevelSequence } from "./data/levels.js";
 import { KeyBindings } from "./ui/keybindings.js";
 import { DEFAULT_KEY_BINDINGS } from "./data/keybindingsData.js";
 import { PlayingState } from "./states/PlayingState.js";
@@ -28,14 +25,7 @@ window.addEventListener("load", function () {
       this.debug = false;
       this.fontColor = "black";
 
-      this.gameLevels = [
-        new Level(this, new CityBackground(this), (game) => {
-          return new Manual1SpawnStrategy(this, manual1Spawn);
-        }),
-        new Level(this, new ForestBackground(this), (game) => {
-          return new RandomSpawnStrategy(this, GAME_CONFIG.enemyInterval);
-        }),
-      ];
+      this.gameLevels = getLevelSequence(this);
       this.currentGameLevel = 0;
       this.gameLevels[this.currentGameLevel].start();
 

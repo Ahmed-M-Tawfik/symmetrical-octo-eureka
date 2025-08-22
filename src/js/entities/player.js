@@ -1,9 +1,9 @@
-import { states, Sitting, Running, Jumping, Falling, Rolling, Diving, Hit } from "./playerStates.js";
-import { CollisionAnimation } from "./collisionAnimation.js";
-import { FloatingMessage } from "./floatingMessages.js";
-import { SpriteData } from "./spriteData.js";
-import { GameEntity } from "./entities/GameEntity.js";
-import { GAME_CONFIG } from "./gameConfig.js";
+import { states, Sitting, Running, Jumping, Falling, Rolling, Diving, Hit } from "../playerStates.js";
+import { CollisionAnimation } from "../collisionAnimation.js";
+import { FloatingMessage } from "../floatingMessages.js";
+import { SpriteData } from "../spriteData.js";
+import { GameEntity } from "./GameEntity.js";
+import { GAME_CONFIG } from "../data/gameConfig.js";
 
 export class Player extends GameEntity {
   constructor(game) {
