@@ -26,11 +26,11 @@ export class RandomSpawnStrategy extends SpawnStrategy {
   }
   addEnemy() {
     if (this.game.speed > 0 && Math.random() < 0.5) {
-      this.game.enemies.push(new GroundEnemy(this.game));
+      this.game.session.enemies.push(new GroundEnemy(this.game));
     } else if (this.game.speed > 0) {
-      this.game.enemies.push(new ClimbingEnemy(this.game));
+      this.game.session.enemies.push(new ClimbingEnemy(this.game));
     }
-    this.game.enemies.push(new FlyingEnemy(this.game));
+    this.game.session.enemies.push(new FlyingEnemy(this.game));
   }
 }
 
@@ -91,6 +91,6 @@ export class Manual1SpawnStrategy extends SpawnStrategy {
     enemy.x = this.game.width + event.x;
     enemy.y = event.y;
     enemy.speedX = event.speed;
-    this.game.enemies.push(enemy);
+    this.game.session.enemies.push(enemy);
   }
 }

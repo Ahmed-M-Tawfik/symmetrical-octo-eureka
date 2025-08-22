@@ -66,14 +66,14 @@ export class UI {
 
     context.font = `${this.fontSize}px ${this.fontFamily}`;
     context.textAlign = "left";
-    context.fillStyle = this.game.fontColor;
+    context.fillStyle = "black";
     // score
-    context.fillText(`Score: ${this.game.score}`, 20, 50);
+    context.fillText(`Score: ${this.game.session.score}`, 20, 50);
     // timer
     context.font = this.fontSize * 0.8 + "px " + this.fontFamily;
-    context.fillText(`Time: ${(this.game.time * 0.001).toFixed(1)}`, 20, 80);
+    context.fillText(`Time: ${(this.game.session.time * 0.001).toFixed(1)}`, 20, 80);
     // lives
-    for (let i = 0; i < this.game.lives; i++) {
+    for (let i = 0; i < this.game.session.lives; i++) {
       context.drawImage(this.livesImage, 25 * i + 20, 95, 25, 25);
     }
 

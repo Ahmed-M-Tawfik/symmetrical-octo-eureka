@@ -1,4 +1,4 @@
-import { Player } from "./entities/player.js";
+import { GameSession } from "./session/GameSession.js";
 import { InputHandler } from "./input.js";
 import { UI } from "./ui.js";
 import { GAME_CONFIG } from "./data/gameConfig.js";
@@ -23,26 +23,16 @@ window.addEventListener("load", function () {
       this.maxSpeed = GAME_CONFIG.backgroundSpeed;
 
       this.debug = false;
-      this.fontColor = "black";
 
       this.gameLevels = getLevelSequence(this);
       this.currentGameLevel = 0;
       this.gameLevels[this.currentGameLevel].start();
 
-      this.player = new Player(this);
-      this.input = new InputHandler(this, context.canvas, new KeyBindings(DEFAULT_KEY_BINDINGS));
-      this.UI = new UI(this);
+      this.session = new GameSession(this);
       this.spriteAnimator = new SpriteAnimator();
       this.particleAnimator = new ParticleAnimator(this);
-
-      this.collisions = [];
-      this.floatingMessages = [];
-      this.enemies = [];
-      this.lives = GAME_CONFIG.initialLives;
-      this.time = 0; // ms
-      this.maxTime = GAME_CONFIG.maxTime;
-      this.score = 0;
-      this.winningScore = GAME_CONFIG.winningScore;
+      this.input = new InputHandler(this, context.canvas, new KeyBindings(DEFAULT_KEY_BINDINGS));
+      this.UI = new UI(this);
 
       // State machine setup
       this.states = {
@@ -54,9 +44,6 @@ window.addEventListener("load", function () {
       // change state only using changeState(state) method
       this.state = this.states.playing;
       this.state.enter();
-
-      this.player.currentState = this.player.states[0];
-      this.player.currentState.enter();
     }
     update(deltaTime) {
       this.state.update(deltaTime);
@@ -69,16 +56,10 @@ window.addEventListener("load", function () {
       this.state = newState;
       this.state.enter();
     }
+
     _resetLevelState() {
-      this.enemies = [];
-      this.particleAnimator.reset();
-      this.collisions = [];
-      this.floatingMessages = [];
-      this.lives = GAME_CONFIG.initialLives;
-      this.score = 0;
-      this.time = 0;
+      this.session.reset();
       this.gameLevels[this.currentGameLevel].start();
-      this.player.reset();
     }
 
     nextLevel() {

@@ -46,7 +46,7 @@ export class InputHandler {
       this.game.debug = !this.game.debug;
     }
     if (e.key === this.keyBindings.actionToKey["debug_add_score"].key) {
-      this.game.score += 10;
+      this.game.session.score += 10;
     }
     if (e.key === this.keyBindings.actionToKey["debug_next_level"].key) {
       this.game.nextLevel();

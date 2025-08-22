@@ -8,7 +8,7 @@ import { GAME_CONFIG } from "../data/gameConfig.js";
 export class Player extends GameEntity {
   constructor(game) {
     const { width, height, spriteWidth, spriteHeight, maxFrame } = GAME_CONFIG.player;
-    super(game, 0, game.height - height - game.groundMargin, width, height);
+    super(game, 0, 0, width, height);
 
     this.spriteData = new SpriteData(game, 20);
     this.spriteData.spriteWidth = spriteWidth;
@@ -71,20 +71,20 @@ export class Player extends GameEntity {
     this.setState(this.states[0].state, 0);
   }
   checkCollision() {
-    this.game.enemies.forEach((enemy) => {
+    this.game.session.enemies.forEach((enemy) => {
       if (this.collidesWith(enemy)) {
         // collision detected
         enemy.markedForDeletion = true;
-        this.game.collisions.push(
+        this.game.session.collisions.push(
           new CollisionAnimation(this.game, this.x + this.width * 0.5, this.y + this.height * 0.5)
         );
         if (this.currentState instanceof Diving || this.currentState instanceof Rolling) {
-          this.game.score++;
-          this.game.floatingMessages.push(new FloatingMessage("+1", enemy.x, enemy.y, 100, 50));
+          this.game.session.score++;
+          this.game.session.floatingMessages.push(new FloatingMessage("+1", enemy.x, enemy.y, 100, 50));
         } else {
           this.setState(states.HIT, 0);
-          this.game.lives--;
-          if (this.game.lives <= 0) {
+          this.game.session.lives--;
+          if (this.game.session.lives <= 0) {
             this.game.changeState(this.game.states.gameOver);
           }
         }

@@ -3,6 +3,8 @@ import { GameState } from "./GameState.js";
 export class PlayingState extends GameState {
   enter() {
     this.subState = "active"; // 'active' or 'paused'
+    this.game.session.player.currentState = this.game.session.player.states[0];
+    this.game.session.player.currentState.enter();
   }
   exit() {
     // Clear all input actions to prevent stuck keys when leaving playing state
@@ -10,34 +12,39 @@ export class PlayingState extends GameState {
   }
   update(deltaTime) {
     if (this.subState === "paused") return;
-    this.game.time += deltaTime;
+
+    this.game.session.time += deltaTime;
+
     this.evaluateEndGameCondition();
+
     this.runUpdates(deltaTime);
     this.runDeletions(deltaTime);
   }
 
   runDeletions(deltaTime) {
-    this.game.enemies = this.game.enemies.filter((enemy) => !enemy.markedForDeletion);
-    this.game.collisions = this.game.collisions.filter((collision) => !collision.markedForDeletion);
-    this.game.floatingMessages = this.game.floatingMessages.filter((message) => !message.markedForDeletion);
-    this.game.spriteAnimator.update(deltaTime, this.game.player);
-    this.game.enemies.forEach((enemy) => this.game.spriteAnimator.update(deltaTime, enemy));
+    this.game.session.enemies = this.game.session.enemies.filter((enemy) => !enemy.markedForDeletion);
+    this.game.session.collisions = this.game.session.collisions.filter((collision) => !collision.markedForDeletion);
+    this.game.session.floatingMessages = this.game.session.floatingMessages.filter(
+      (message) => !message.markedForDeletion
+    );
+    this.game.spriteAnimator.update(deltaTime, this.game.session.player);
+    this.game.session.enemies.forEach((enemy) => this.game.spriteAnimator.update(deltaTime, enemy));
   }
 
   runUpdates(deltaTime) {
-    this.game.player.update(this.game.input.actions, deltaTime);
+    this.game.session.player.update(this.game.input.actions, deltaTime);
     this.game.gameLevels[this.game.currentGameLevel].update();
     this.game.gameLevels[this.game.currentGameLevel].spawnStrategy.update(deltaTime);
 
-    this.game.enemies.forEach((enemy) => enemy.update(deltaTime));
-    this.game.floatingMessages.forEach((message) => message.update());
+    this.game.session.enemies.forEach((enemy) => enemy.update(deltaTime));
+    this.game.session.floatingMessages.forEach((message) => message.update());
     this.game.particleAnimator.update(deltaTime);
-    this.game.collisions.forEach((collision) => collision.update(deltaTime));
+    this.game.session.collisions.forEach((collision) => collision.update(deltaTime));
   }
 
   evaluateEndGameCondition() {
-    if (this.game.time > this.game.maxTime) {
-      if (this.game.score > this.game.winningScore) {
+    if (this.game.session.time > this.game.session.maxTime) {
+      if (this.game.session.score > this.game.session.winningScore) {
         this.game.changeState(this.game.states.levelComplete);
       } else {
         this.game.changeState(this.game.states.gameOver);
@@ -48,11 +55,11 @@ export class PlayingState extends GameState {
   draw(context) {
     this.game.gameLevels[this.game.currentGameLevel].draw(context);
 
-    this.game.spriteAnimator.draw(context, this.game.player, this.game.debug);
-    this.game.enemies.forEach((enemy) => this.game.spriteAnimator.draw(context, enemy, this.game.debug));
+    this.game.spriteAnimator.draw(context, this.game.session.player, this.game.debug);
+    this.game.session.enemies.forEach((enemy) => this.game.spriteAnimator.draw(context, enemy, this.game.debug));
     this.game.particleAnimator.draw(context);
-    this.game.collisions.forEach((collision) => collision.draw(context));
-    this.game.floatingMessages.forEach((message) => message.draw(context));
+    this.game.session.collisions.forEach((collision) => collision.draw(context));
+    this.game.session.floatingMessages.forEach((message) => message.draw(context));
 
     // UI updates at the end to ensure they are drawn on top
     this.game.UI.draw(context);

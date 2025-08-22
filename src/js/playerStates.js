@@ -131,7 +131,7 @@ export class Diving extends State {
   }
   enter() {
     resetFrames(this.player, 6, 6);
-    this.game.player.vy = 30;
+    this.player.vy = 30;
   }
   handleInput(inputActions) {
     this.game.particleAnimator.addFire(
