@@ -13,7 +13,7 @@ export class FlyingEnemy extends GameEntity {
     this.spriteData.spriteWidth = cfg.spriteWidth;
     this.spriteData.spriteHeight = cfg.spriteHeight;
     this.spriteData.maxFrame = cfg.maxFrame;
-    this.spriteData.image = document.getElementById("enemy_fly");
+    this.spriteData.image = document.getElementById(cfg.imageId);
 
     this.speedX = speedX !== undefined ? speedX : Math.random() * (cfg.speedX.max - cfg.speedX.min) + cfg.speedX.min;
     this.speedY = 0;
@@ -42,7 +42,7 @@ export class GroundEnemy extends GameEntity {
     this.spriteData = new SpriteData(game, 20);
     this.spriteData.spriteWidth = cfg.spriteWidth;
     this.spriteData.spriteHeight = cfg.spriteHeight;
-    this.spriteData.image = document.getElementById("enemy_plant");
+    this.spriteData.image = document.getElementById(cfg.imageId);
     this.spriteData.maxFrame = cfg.maxFrame;
 
     this.speedX = cfg.speedX;
@@ -65,7 +65,7 @@ export class ClimbingEnemy extends GameEntity {
     this.spriteData = new SpriteData(game, 20);
     this.spriteData.spriteWidth = cfg.spriteWidth;
     this.spriteData.spriteHeight = cfg.spriteHeight;
-    this.spriteData.image = document.getElementById("enemy_spider_big");
+    this.spriteData.image = document.getElementById(cfg.imageId);
     this.spriteData.maxFrame = cfg.maxFrame;
 
     this.speedX = cfg.speedX;

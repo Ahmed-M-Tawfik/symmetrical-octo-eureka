@@ -26,6 +26,7 @@ export const ENEMY_CONFIG = {
     spriteWidth: 60,
     spriteHeight: 44,
     maxFrame: 4,
+    imageId: "enemy_fly",
     speedX: { min: 1, max: 2 },
     va: { min: 0.1, max: 0.2 },
   },
@@ -35,6 +36,7 @@ export const ENEMY_CONFIG = {
     spriteWidth: 60,
     spriteHeight: 87,
     maxFrame: 1,
+    imageId: "enemy_plant",
     speedX: 0,
   },
   climbing: {
@@ -43,6 +45,7 @@ export const ENEMY_CONFIG = {
     spriteWidth: 120,
     spriteHeight: 144,
     maxFrame: 5,
+    imageId: "enemy_spider_big",
     speedX: 0,
     speedY: { min: -1, max: 1 },
   },
@@ -61,6 +64,19 @@ export const GAME_CONFIG = {
     spriteWidth: 575,
     spriteHeight: 525,
     maxFrame: 5,
+    imageId: "player",
+  },
+
+  // collision animation
+  collisionAnimation: {
+    spriteWidth: 100,
+    spriteHeight: 90,
+    sizeModifierMin: 0.5,
+    sizeModifierMax: 1.5, // Math.random() + 0.5
+    frameIntervalMin: 5,
+    frameIntervalMax: 15, // Math.random() * 10 + 5
+    maxFrame: 4,
+    imageId: "collisionAnimation",
   },
 
   // environment

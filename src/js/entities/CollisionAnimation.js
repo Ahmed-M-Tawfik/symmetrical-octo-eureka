@@ -1,22 +1,25 @@
 import { SpriteData } from "../SpriteData.js";
 import { GameEntity } from "./GameEntity.js";
+import { GAME_CONFIG } from "../data/GameConfig.js";
 
 export class CollisionAnimation extends GameEntity {
   constructor(game, x, y) {
-    // Sprite size and random modifier
-    const spriteWidth = 100;
-    const spriteHeight = 90;
-    const sizeModifier = Math.random() + 0.5;
+    // Use config values
+    const config = GAME_CONFIG.collisionAnimation;
+    const spriteWidth = config.spriteWidth;
+    const spriteHeight = config.spriteHeight;
+    const sizeModifier = Math.random() * (config.sizeModifierMax - config.sizeModifierMin) + config.sizeModifierMin;
     const width = spriteWidth * sizeModifier;
     const height = spriteHeight * sizeModifier;
     // Center the animation on (x, y)
     super(game, x - width * 0.5, y - height * 0.5, width, height);
 
-    this.spriteData = new SpriteData(game, Math.random() * 10 + 5);
+    const frameInterval = Math.random() * (config.frameIntervalMax - config.frameIntervalMin) + config.frameIntervalMin;
+    this.spriteData = new SpriteData(game, frameInterval);
     this.spriteData.spriteWidth = spriteWidth;
     this.spriteData.spriteHeight = spriteHeight;
-    this.spriteData.image = document.getElementById("collisionAnimation");
-    this.spriteData.maxFrame = 4;
+    this.spriteData.image = document.getElementById(config.imageId);
+    this.spriteData.maxFrame = config.maxFrame;
     this.spriteData.frameX = 0;
 
     this.sizeModifier = sizeModifier;
