@@ -1,40 +1,45 @@
-export class CollisionAnimation {
+import { SpriteData } from "./SpriteData.js";
+import { GameEntity } from "./entities/GameEntity.js";
+
+export class CollisionAnimation extends GameEntity {
   constructor(game, x, y) {
-    this.game = game;
-    this.image = document.getElementById("collisionAnimation");
-    this.spriteWidth = 100;
-    this.spriteHeight = 90;
-    this.sizeModifier = Math.random() + 0.5;
-    this.width = this.spriteWidth * this.sizeModifier;
-    this.height = this.spriteHeight * this.sizeModifier;
+    // Sprite size and random modifier
+    const spriteWidth = 100;
+    const spriteHeight = 90;
+    const sizeModifier = Math.random() + 0.5;
+    const width = spriteWidth * sizeModifier;
+    const height = spriteHeight * sizeModifier;
+    // Center the animation on (x, y)
+    super(game, x - width * 0.5, y - height * 0.5, width, height);
 
-    this.x = x - this.width * 0.5;
-    this.y = y - this.height * 0.5;
-    this.frameX = 0;
-    this.maxFrame = 4;
-    this.markedForDeletion = false;
+    this.spriteData = new SpriteData(game, Math.random() * 10 + 5);
+    this.spriteData.spriteWidth = spriteWidth;
+    this.spriteData.spriteHeight = spriteHeight;
+    this.spriteData.image = document.getElementById("collisionAnimation");
+    this.spriteData.maxFrame = 4;
+    this.spriteData.frameX = 0;
 
-    this.fps = Math.random() * 10 + 5;
-    this.frameInterval = 1000 / this.fps;
-    this.frameTimer = 0;
+    this.sizeModifier = sizeModifier;
   }
+
   update(deltaTime) {
     this.x -= this.game.speed;
-    if (this.frameTimer > this.frameInterval) {
-      this.frameTimer = 0;
-      this.frameX++;
+    if (this.spriteData.frameTimer > this.spriteData.frameInterval) {
+      this.spriteData.frameTimer = 0;
+      this.spriteData.frameX++;
     } else {
-      this.frameTimer += deltaTime;
+      this.spriteData.frameTimer += deltaTime;
     }
-    if (this.frameX > this.maxFrame) this.markedForDeletion = true;
+    if (this.spriteData.frameX > this.spriteData.maxFrame) this.markedForDeletion = true;
   }
+
   draw(context) {
     context.drawImage(
-      this.image,
-      this.frameX * this.spriteWidth,
+      this.spriteData.image,
+      this.spriteData.frameX * this.spriteData.spriteWidth,
       0,
-      this.spriteWidth,
-      this.spriteHeight,
+      this.spriteData.spriteWidth,
+      this.spriteData.spriteHeight,
       this.x,
       this.y,
       this.width,
