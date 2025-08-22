@@ -1,4 +1,4 @@
-import { GameState } from "./GameState.js";
+import { GameState } from "./GameStates.js";
 
 export class PlayingState extends GameState {
   enter() {

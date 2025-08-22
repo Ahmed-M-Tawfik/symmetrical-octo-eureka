@@ -1,5 +1,5 @@
-import { GAME_CONFIG } from "../data/gameConfig.js";
-import { Dust, Fire, Splash } from "../entities/particles.js";
+import { GAME_CONFIG } from "../data/GameConfig.js";
+import { Dust, Fire, Splash } from "../entities/Particles.js";
 
 export class ParticleAnimator {
   constructor(game) {

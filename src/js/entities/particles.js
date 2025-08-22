@@ -1,5 +1,5 @@
 import { GameEntity } from "./GameEntity.js";
-import { PARTICLE_CONFIG } from "../data/gameConfig.js";
+import { PARTICLE_CONFIG } from "../data/GameConfig.js";
 
 export class Dust extends GameEntity {
   constructor(game, x, y) {

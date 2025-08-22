@@ -1,6 +1,6 @@
-import { SpriteData } from "./spriteData.js";
+import { SpriteData } from "./SpriteData.js";
 import { GameEntity } from "./entities/GameEntity.js";
-import { ENEMY_CONFIG } from "./data/gameConfig.js";
+import { ENEMY_CONFIG } from "./data/GameConfig.js";
 
 export class FlyingEnemy extends GameEntity {
   constructor(game, x = undefined, y = undefined, speedX = undefined, va = undefined) {

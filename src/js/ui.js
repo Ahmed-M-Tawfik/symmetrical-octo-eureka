@@ -1,4 +1,4 @@
-import { Button } from "./ui/buttons.js";
+import { Button } from "./ui/Button.js";
 export class UI {
   constructor(game) {
     this.game = game;

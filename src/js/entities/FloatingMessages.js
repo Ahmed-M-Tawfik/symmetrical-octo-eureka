@@ -1,4 +1,4 @@
-import { GameEntity } from "./entities/GameEntity.js";
+import { GameEntity } from "./GameEntity.js";
 
 export class FloatingMessage extends GameEntity {
   constructor(value, x, y, targetX, targetY) {

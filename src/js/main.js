@@ -1,16 +1,14 @@
 import { GameSession } from "./session/GameSession.js";
-import { InputHandler } from "./input.js";
-import { UI } from "./ui.js";
-import { GAME_CONFIG } from "./data/gameConfig.js";
-import { SpriteAnimator } from "./systems/spriteAnimator.js";
-import { ParticleAnimator } from "./systems/particleAnimator.js";
-import { getLevelSequence } from "./data/levels.js";
-import { KeyBindings } from "./ui/keybindings.js";
-import { DEFAULT_KEY_BINDINGS } from "./data/keybindingsData.js";
+import { InputHandler } from "./InputHandler.js";
+import { UI } from "./UI.js";
+import { GAME_CONFIG } from "./data/GameConfig.js";
+import { SpriteAnimator } from "./systems/SpriteAnimator.js";
+import { ParticleAnimator } from "./systems/ParticleAnimator.js";
+import { getLevelSequence } from "./data/LevelData.js";
+import { KeyBindings } from "./ui/KeyBindings.js";
+import { DEFAULT_KEY_BINDINGS } from "./data/KeyBindingsData.js";
 import { PlayingState } from "./states/PlayingState.js";
-import { GameOverState } from "./states/GameOverState.js";
-import { MainMenuState } from "./states/MainMenuState.js";
-import { LevelCompleteState } from "./states/LevelCompleteState.js";
+import { MainMenuState, GameOverState, LevelCompleteState } from "./states/GameStates.js";
 
 // Origin: https://www.youtube.com/watch?v=GFO_txvwK_c
 

@@ -1,5 +1,5 @@
-import { Player } from "../entities/player.js";
-import { GAME_CONFIG } from "../data/gameConfig.js";
+import { Player } from "../entities/Player.js";
+import { GAME_CONFIG } from "../data/GameConfig.js";
 
 export class GameSession {
   constructor(game) {

@@ -1,4 +1,4 @@
-import { playerActions } from "../playerStates.js";
+import { playerActions } from "../states/PlayerStates.js";
 
 export const DEFAULT_KEY_BINDINGS = [
   { action: playerActions.moveLeft, key: "ArrowLeft", group: "player" },

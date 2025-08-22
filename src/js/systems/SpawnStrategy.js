@@ -1,4 +1,4 @@
-import { FlyingEnemy, ClimbingEnemy, GroundEnemy } from "../enemies.js";
+import { FlyingEnemy, ClimbingEnemy, GroundEnemy } from "../Enemy.js";
 
 export class SpawnStrategy {
   constructor(game) {
