@@ -27,19 +27,25 @@ export class PlayingState extends GameState {
     this.game.session.floatingMessages = this.game.session.floatingMessages.filter(
       (message) => !message.markedForDeletion
     );
-    this.game.spriteAnimator.update(deltaTime, this.game.session.player);
-    this.game.session.enemies.forEach((enemy) => this.game.spriteAnimator.update(deltaTime, enemy));
   }
 
   runUpdates(deltaTime) {
     this.game.session.player.update(this.game.input.actions, deltaTime);
+    this.game.spriteAnimator.update(deltaTime, this.game.session.player);
+
     this.game.gameLevels[this.game.currentGameLevel].update();
     this.game.gameLevels[this.game.currentGameLevel].spawnStrategy.update(deltaTime);
 
-    this.game.session.enemies.forEach((enemy) => enemy.update(deltaTime));
-    this.game.session.floatingMessages.forEach((message) => message.update());
+    this.game.session.enemies.forEach((enemy) => {
+      enemy.update(deltaTime);
+      this.game.spriteAnimator.update(deltaTime, enemy);
+    });
     this.game.particleAnimator.update(deltaTime);
-    this.game.session.collisions.forEach((collision) => collision.update(deltaTime));
+    this.game.session.collisions.forEach((collision) => {
+      collision.update(deltaTime);
+      this.game.spriteAnimator.update(deltaTime, collision);
+    });
+    this.game.session.floatingMessages.forEach((message) => message.update());
   }
 
   evaluateEndGameCondition() {
@@ -58,7 +64,9 @@ export class PlayingState extends GameState {
     this.game.spriteAnimator.draw(context, this.game.session.player, this.game.debug);
     this.game.session.enemies.forEach((enemy) => this.game.spriteAnimator.draw(context, enemy, this.game.debug));
     this.game.particleAnimator.draw(context);
-    this.game.session.collisions.forEach((collision) => collision.draw(context));
+    this.game.session.collisions.forEach((collision) =>
+      this.game.spriteAnimator.draw(context, collision, this.game.debug)
+    );
     this.game.session.floatingMessages.forEach((message) => message.draw(context));
 
     // UI updates at the end to ensure they are drawn on top

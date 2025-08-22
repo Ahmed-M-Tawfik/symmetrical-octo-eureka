@@ -76,7 +76,7 @@ export class Player extends GameEntity {
         // collision detected
         enemy.markedForDeletion = true;
         this.game.session.collisions.push(
-          new CollisionAnimation(this.game, this.x + this.width * 0.5, this.y + this.height * 0.5)
+          new CollisionAnimation(this.game, enemy.x + enemy.width * 0.5, enemy.y + enemy.height * 0.5)
         );
         if (this.currentState instanceof Diving || this.currentState instanceof Rolling) {
           this.game.session.score++;

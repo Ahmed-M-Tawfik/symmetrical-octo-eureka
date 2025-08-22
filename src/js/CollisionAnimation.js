@@ -24,26 +24,14 @@ export class CollisionAnimation extends GameEntity {
 
   update(deltaTime) {
     this.x -= this.game.speed;
-    if (this.spriteData.frameTimer > this.spriteData.frameInterval) {
-      this.spriteData.frameTimer = 0;
-      this.spriteData.frameX++;
-    } else {
-      this.spriteData.frameTimer += deltaTime;
-    }
-    if (this.spriteData.frameX > this.spriteData.maxFrame) this.markedForDeletion = true;
-  }
 
-  draw(context) {
-    context.drawImage(
-      this.spriteData.image,
-      this.spriteData.frameX * this.spriteData.spriteWidth,
-      0,
-      this.spriteData.spriteWidth,
-      this.spriteData.spriteHeight,
-      this.x,
-      this.y,
-      this.width,
-      this.height
-    );
+    if (!this.reachedLastSprite && this.spriteData.frameX == this.spriteData.maxFrame) {
+      this.reachedLastSprite = true;
+    } else if (this.reachedLastSprite) {
+      let frameTimerCalc = this.spriteData.frameTimer + deltaTime;
+      if (frameTimerCalc > this.spriteData.frameInterval) {
+        this.markedForDeletion = true;
+      }
+    }
   }
 }
