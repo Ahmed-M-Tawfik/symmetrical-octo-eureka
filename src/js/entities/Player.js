@@ -1,5 +1,5 @@
 import { states, Sitting, Running, Jumping, Falling, Rolling, Diving, Hit } from "../states/PlayerStates.js";
-import { CollisionAnimation } from "../CollisionAnimation.js";
+import { CollisionAnimation } from "./CollisionAnimation.js";
 import { FloatingMessage } from "./FloatingMessages.js";
 import { SpriteData } from "../SpriteData.js";
 import { GameEntity } from "./GameEntity.js";

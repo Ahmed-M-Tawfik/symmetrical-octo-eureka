@@ -1,5 +1,5 @@
-import { SpriteData } from "./SpriteData.js";
-import { GameEntity } from "./entities/GameEntity.js";
+import { SpriteData } from "../SpriteData.js";
+import { GameEntity } from "./GameEntity.js";
 
 export class CollisionAnimation extends GameEntity {
   constructor(game, x, y) {
