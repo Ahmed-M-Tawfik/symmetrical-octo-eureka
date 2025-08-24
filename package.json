@@ -1,0 +1,26 @@
+{
+  "name": "side-scroll-game",
+  "version": "1.0.0",
+  "description": "Architecture and systemisation experiment. Source: https://www.youtube.com/watch?v=GFO_txvwK_c",
+  "main": "Main.js",
+  "scripts": {
+    "watch": "tsc --watch",
+    "watch:assets": "chokidar 'src/index.html' 'src/style.css' 'assets/**/*' -c 'node copy-static-assets.js'",
+    "dev": "npm-run-all --parallel watch watch:assets",
+    "build": "tsc && node copy-static-assets.js",
+    "start": "npx serve dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github-ahmed-personal:Ahmed-M-Tawfik/symmetrical-octo-eureka.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "chokidar-cli": "^3.0.0",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.9.2"
+  }
+}

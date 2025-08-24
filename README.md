@@ -1,5 +1,13 @@
+# Architecture and systemisation experiment
+
 Source: https://www.youtube.com/watch?v=GFO_txvwK_c
 
-## To run:
+## To run in dev:
 
-Start server and open src/index.html
+Run `npm run dev`.
+
+Start web server (e.g. GoLive in VSCode) and open dist/index.html
+
+## To deploy:
+
+Run `npm run build` then `npm serve dist`
