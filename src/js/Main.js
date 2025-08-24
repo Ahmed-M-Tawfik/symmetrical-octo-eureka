@@ -1,5 +1,5 @@
 import { GameSession } from "./session/GameSession.js";
-import { InputHandler } from "./InputHandler.js";
+import { InputHandler } from "./ui/InputHandler.js";
 import { UI } from "./UI.js";
 import { GAME_CONFIG } from "./data/GameConfig.js";
 import { SpriteAnimator } from "./systems/SpriteAnimator.js";

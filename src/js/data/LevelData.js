@@ -1,5 +1,5 @@
 import { Level } from "../Level.js";
-import { CityBackground, ForestBackground } from "../Background.js";
+import { CityBackground, ForestBackground } from "../ui/Background.js";
 import { Manual1SpawnStrategy, RandomSpawnStrategy } from "../systems/SpawnStrategy.js";
 import { manual1Spawn } from "./spawn/Manual1SpawnData.js";
 import { GAME_CONFIG } from "./GameConfig.js";
