@@ -1,6 +1,7 @@
 import type { KeyBinding, KeyBindings } from "./KeyBindings.js";
 import { Button } from "./Button.js";
 import type { Game } from "../Main.js";
+import { eventBus } from "../engine/EventBus.js";
 
 export class InputHandler {
   game: Game;
@@ -52,7 +53,7 @@ export class InputHandler {
 
   processDebugKeys(e: KeyboardEvent) {
     if (e.key === this.getKeyBinding(this.keyBindings.actionToKey, "debug_active").key) {
-      this.game.debug = !this.game.debug;
+      eventBus.emit("test:debug_active", { active: !this.game.debug });
     }
     if (e.key === this.getKeyBinding(this.keyBindings.actionToKey, "debug_add_score").key) {
       this.game.session.score += 10;

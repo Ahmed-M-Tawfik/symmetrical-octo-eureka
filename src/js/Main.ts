@@ -13,6 +13,7 @@ import { MainMenuState, GameOverState, LevelCompleteState, GameState } from "./s
 import { imageAssets } from "./data/ImageAssets.js";
 import { AssetManager } from "./systems/AssetManager.js";
 import type { Level } from "./Level.js";
+import { eventBus } from "./engine/EventBus.js";
 
 // Origin: https://www.youtube.com/watch?v=GFO_txvwK_c
 
@@ -45,6 +46,9 @@ export class Game {
     this.maxSpeed = GAME_CONFIG.backgroundSpeed;
 
     this.debug = false;
+    eventBus.on("test:debug_active", ({ active }) => {
+      this.debug = active;
+    });
 
     this.gameLevels = getLevelSequence(this);
     this.currentGameLevel = 0;

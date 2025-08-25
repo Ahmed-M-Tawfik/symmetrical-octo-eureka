@@ -1,0 +1,67 @@
+import type { GameEntity } from "../entities/GameEntity.js";
+
+export type GameEventMap = {
+  // Player events
+  "player:death": { hitGameEntity: GameEntity };
+  "player:hit": { remainingLives: number; hitGameEntity: GameEntity };
+  "player:run": { x: number; y: number; speed: number }; // on ground
+  "player:sit": { x: number; y: number };
+  "player:jump": { x: number; y: number; vy: number };
+  "player:fall": { x: number; y: number; vy: number };
+  "player:land": { x: number; y: number };
+  "player:roll": { x: number; y: number; vy: number };
+  "player:dive": { x: number; y: number; vy: number };
+  "player:diveEnd": { x: number; y: number };
+  "player:stateChange": { from: string; to: string; speed: number };
+  "player:reset": {};
+  // "player:update": { x: number; y: number; vy: number; remainingLives: number; speed: number };
+
+  // Enemy events
+  "enemy:spawn": { type: string; x: number; y: number };
+  "enemy:defeated": { type: string; x: number; y: number };
+
+  // Level events
+  "level:start": { levelId: number }; // any level start
+
+  "level:complete": { levelId: number }; // load win screen
+  "level:next": { levelId: number }; // load next level
+
+  "level:fail": { levelId: number }; // load lose screen
+  "level:retry": { levelId: number }; // reload level
+
+  // Game state events
+  "game:update": { deltaTime: number; active_actions: string[] }; // input actions
+  // "game:over": { reason: string };
+  "game:start": {};
+  "game:pause": {};
+  "game:resume": {};
+  // "game:reset": {};
+  // "game:stateChange": { from: string; to: string };
+
+  // Score events
+  "score:change": { amount: number; total: number };
+  // "score:milestone": { total: number; milestone: number };
+
+  // UI events
+  "ui:buttonClick": { button: string };
+  // "ui:floatingMessage": { value: string; x: number; y: number };
+
+  // Asset events
+  // "asset:loaded": { assetId: string };
+  // "asset:error": { assetId: string; error: string };
+
+  // Particle events
+  // "particle:spawn": { type: string; x: number; y: number };
+
+  // Collision events
+  "collision:detected": { x: number; y: number; entity: GameEntity };
+
+  // Input events
+  "input:actionStart": { action: string };
+  "input:actionEnd": { action: string };
+  // to get list of active actions, subscribe to "game:update"
+
+  // Test/automation events
+  "test:debug_active": { active: boolean };
+  "test:event": { name: string; payload?: any };
+};
