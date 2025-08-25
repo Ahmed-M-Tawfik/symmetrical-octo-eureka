@@ -10,6 +10,8 @@ import { KeyBindings } from "./ui/KeyBindings.js";
 import { DEFAULT_KEY_BINDINGS } from "./data/KeyBindingsData.js";
 import { PlayingState } from "./states/PlayingState.js";
 import { MainMenuState, GameOverState, LevelCompleteState, GameState } from "./states/GameStates.js";
+import { imageAssets } from "./data/ImageAssets.js";
+import { AssetManager } from "./systems/AssetManager.js";
 import type { Level } from "./Level.js";
 
 // Origin: https://www.youtube.com/watch?v=GFO_txvwK_c
@@ -95,11 +97,13 @@ export class Game {
   }
 }
 
-window.addEventListener("load", function () {
+window.addEventListener("load", async function () {
   const canvas = document.getElementById("canvas1") as HTMLCanvasElement;
   const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
   canvas.width = GAME_CONFIG.canvasWidth;
   canvas.height = GAME_CONFIG.canvasHeight;
+
+  await AssetManager.preloadImages(imageAssets);
 
   const game = new Game(canvas.width, canvas.height, ctx);
   let lastTime: number = 0;

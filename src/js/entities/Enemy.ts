@@ -3,6 +3,7 @@ import { GameEntity } from "./GameEntity.js";
 import type { Game } from "../Main.js";
 import { ENEMY_CONFIG } from "../data/GameConfig.js";
 import type { ISpriteAnimatable } from "../systems/SpriteAnimator.js";
+import { AssetManager } from "../systems/AssetManager.js";
 
 export class FlyingEnemy extends GameEntity implements ISpriteAnimatable {
   spriteData: SpriteData;
@@ -22,7 +23,7 @@ export class FlyingEnemy extends GameEntity implements ISpriteAnimatable {
     this.spriteData.spriteWidth = cfg.spriteWidth;
     this.spriteData.spriteHeight = cfg.spriteHeight;
     this.spriteData.maxFrame = cfg.maxFrame;
-    this.spriteData.image = document.getElementById(cfg.imageId) as HTMLImageElement;
+    this.spriteData.image = AssetManager.getImage(cfg.imageId);
 
     if (speedX !== undefined) {
       this.speedX = speedX;
@@ -72,7 +73,7 @@ export class GroundEnemy extends GameEntity implements ISpriteAnimatable {
     this.spriteData = new SpriteData(game, 20);
     this.spriteData.spriteWidth = cfg.spriteWidth;
     this.spriteData.spriteHeight = cfg.spriteHeight;
-    this.spriteData.image = document.getElementById(cfg.imageId) as HTMLImageElement;
+    this.spriteData.image = AssetManager.getImage(cfg.imageId);
     this.spriteData.maxFrame = cfg.maxFrame;
 
     this.speedX = typeof cfg.speedX === "number" ? cfg.speedX : 0;
@@ -101,7 +102,7 @@ export class ClimbingEnemy extends GameEntity implements ISpriteAnimatable {
     this.spriteData = new SpriteData(game, 20);
     this.spriteData.spriteWidth = cfg.spriteWidth;
     this.spriteData.spriteHeight = cfg.spriteHeight;
-    this.spriteData.image = document.getElementById(cfg.imageId) as HTMLImageElement;
+    this.spriteData.image = AssetManager.getImage(cfg.imageId);
     this.spriteData.maxFrame = cfg.maxFrame;
 
     this.speedX = typeof cfg.speedX === "number" ? cfg.speedX : 0;

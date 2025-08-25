@@ -3,6 +3,7 @@ import { GameEntity } from "./GameEntity.js";
 import type { Game } from "../Main.js";
 import { GAME_CONFIG } from "../data/GameConfig.js";
 import type { ISpriteAnimatable } from "../systems/SpriteAnimator.js";
+import { AssetManager } from "../systems/AssetManager.js";
 
 export class CollisionAnimation extends GameEntity implements ISpriteAnimatable {
   spriteData: SpriteData;
@@ -26,7 +27,7 @@ export class CollisionAnimation extends GameEntity implements ISpriteAnimatable 
     this.spriteData = new SpriteData(game, frameInterval);
     this.spriteData.spriteWidth = spriteWidth;
     this.spriteData.spriteHeight = spriteHeight;
-    this.spriteData.image = document.getElementById(config.imageId) as HTMLImageElement;
+    this.spriteData.image = AssetManager.getImage(config.imageId);
     this.spriteData.maxFrame = config.maxFrame;
     this.spriteData.frameX = 0;
 

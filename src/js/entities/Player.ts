@@ -17,6 +17,7 @@ import type { ISpriteAnimatable } from "../systems/SpriteAnimator.js";
 import { CollisionAnimation } from "./CollisionAnimation.js";
 import { FloatingMessage } from "./FloatingMessages.js";
 import { GameEntity } from "./GameEntity.js";
+import { AssetManager } from "../systems/AssetManager.js";
 
 export class Player extends GameEntity implements ISpriteAnimatable {
   override draw?: (context: CanvasRenderingContext2D) => void;
@@ -35,7 +36,7 @@ export class Player extends GameEntity implements ISpriteAnimatable {
     this.spriteData = new SpriteData(game, 20);
     this.spriteData.spriteWidth = spriteWidth;
     this.spriteData.spriteHeight = spriteHeight;
-    this.spriteData.image = document.getElementById("player") as HTMLImageElement;
+    this.spriteData.image = AssetManager.getImage("player");
     this.spriteData.frameX = 0;
     this.spriteData.frameY = 0;
     this.spriteData.maxFrame = maxFrame;

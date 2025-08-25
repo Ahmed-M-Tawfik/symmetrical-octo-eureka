@@ -1,6 +1,7 @@
 import { GameEntity } from "./GameEntity.js";
 import type { Game } from "../Main.js";
 import { PARTICLE_CONFIG } from "../data/GameConfig.js";
+import { AssetManager } from "../systems/AssetManager.js";
 
 export class Dust extends GameEntity {
   size: number;
@@ -53,7 +54,7 @@ export class Splash extends GameEntity {
     const size = Math.random() * (cfg.size.max - cfg.size.min) + cfg.size.min;
     super(game, x - size * 0.4, y - size * 0.5, size, size);
     if (!cfg.imageId) throw new Error("Missing imageId for Splash particle config");
-    this.image = document.getElementById(cfg.imageId) as HTMLImageElement;
+    this.image = AssetManager.getImage(cfg.imageId);
     this.size = size;
     this.speedX =
       typeof cfg.speedX === "number"
@@ -97,7 +98,7 @@ export class Fire extends GameEntity {
     const size = Math.random() * (cfg.size.max - cfg.size.min) + cfg.size.min;
     super(game, x, y, size, size);
     if (!cfg.imageId) throw new Error("Missing imageId for Fire particle config");
-    this.image = document.getElementById(cfg.imageId) as HTMLImageElement;
+    this.image = AssetManager.getImage(cfg.imageId);
     this.size = size;
     this.speedX = typeof cfg.speedX === "number" ? cfg.speedX : 1;
     this.speedY = typeof cfg.speedY === "number" ? cfg.speedY : 1;

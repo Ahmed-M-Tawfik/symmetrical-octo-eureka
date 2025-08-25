@@ -1,6 +1,7 @@
 import { Button } from "./ui/Button.js";
 import type { Game } from "./Main.js";
 import { PlayingState } from "./states/PlayingState.js";
+import { AssetManager } from "./systems/AssetManager.js";
 
 export class UI {
   game: Game;
@@ -12,7 +13,7 @@ export class UI {
     this.game = game;
     this.fontSize = 30;
     this.fontFamily = "Creepster";
-    this.livesImage = document.getElementById("lives") as HTMLImageElement;
+    this.livesImage = AssetManager.getImage("lives");
 
     this.game.input.buttons.push(
       new Button(

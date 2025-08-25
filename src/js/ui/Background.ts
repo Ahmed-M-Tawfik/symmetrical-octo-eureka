@@ -1,4 +1,5 @@
 import type { Game } from "../Main.js";
+import { AssetManager } from "../systems/AssetManager.js";
 
 export interface IBackgroundLayerConfig {
   imageName: string;
@@ -62,7 +63,7 @@ export class Background {
         this.width,
         this.height,
         layer.speed,
-        document.getElementById(layer.imageName) as HTMLImageElement
+        AssetManager.getImage(layer.imageName)
       );
       this.layers.push(layerInstance);
     });
