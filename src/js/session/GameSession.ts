@@ -9,16 +9,16 @@ import type { FlyingEnemy, GroundEnemy, ClimbingEnemy } from "../entities/Enemy.
 
 export class GameSession {
   game: Game;
-  player: Player;
-  particles: Array<Dust | Splash | Fire>;
-  enemies: Array<FlyingEnemy | GroundEnemy | ClimbingEnemy>;
-  collisions: CollisionAnimation[];
-  floatingMessages: FloatingMessage[];
-  lives: number;
-  time: number;
-  maxTime: number;
-  score: number;
-  winningScore: number;
+  player!: Player;
+  particles: Array<Dust | Splash | Fire> = [];
+  enemies: Array<FlyingEnemy | GroundEnemy | ClimbingEnemy> = [];
+  collisions: CollisionAnimation[] = [];
+  floatingMessages: FloatingMessage[] = [];
+  lives: number = 0;
+  time: number = 0;
+  maxTime: number = 0;
+  score: number = 0;
+  winningScore: number = 0;
 
   constructor(game: Game) {
     this.game = game;

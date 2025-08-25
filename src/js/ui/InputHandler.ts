@@ -65,11 +65,11 @@ export class InputHandler {
     }
   }
 
-  getKeyBinding<T extends object>(map: T, key: string): NonNullable<KeyBinding> {
-    const value = map[key];
-    if (value === undefined || value === null) {
+  getKeyBinding(map: Record<string, KeyBinding>, key: string): NonNullable<KeyBinding> {
+    const keyBinding = map[key];
+    if (!keyBinding) {
       throw new Error(`Key binding for '${String(key)}' not found`);
     }
-    return value as NonNullable<KeyBinding>;
+    return keyBinding as NonNullable<KeyBinding>;
   }
 }

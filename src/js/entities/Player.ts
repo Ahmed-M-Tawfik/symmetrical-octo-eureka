@@ -23,10 +23,10 @@ export class Player extends GameEntity implements ISpriteAnimatable {
   spriteData: SpriteData;
   states: PlayerState[];
   currentState: PlayerState;
-  speed: number;
-  maxSpeed: number;
-  vy: number;
-  weight: number;
+  speed: number = 0;
+  maxSpeed: number = 0;
+  vy: number = 0;
+  weight: number = 0;
 
   constructor(game: Game) {
     const { width, height, spriteWidth, spriteHeight, maxFrame } = GAME_CONFIG.player;
