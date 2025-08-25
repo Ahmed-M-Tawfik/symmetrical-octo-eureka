@@ -1,4 +1,5 @@
 import { GAME_CONFIG } from "../data/GameConfig.js";
+import { first, atIndex } from "../utils/arrayUtils.js";
 import type { Game } from "../Main.js";
 import { SpriteData } from "../SpriteData.js";
 import {
@@ -48,7 +49,7 @@ export class Player extends GameEntity implements ISpriteAnimatable {
       new Diving(this),
       new Hit(this),
     ];
-    this.currentState = this.states[0];
+    this.currentState = first(this.states);
 
     this.reset();
   }
@@ -83,7 +84,7 @@ export class Player extends GameEntity implements ISpriteAnimatable {
 
   setState(state: number, speed: number): void {
     this.game.speed = this.game.maxSpeed * speed;
-    this.currentState = this.states[state];
+    this.currentState = atIndex(this.states, state);
     this.currentState.enter();
   }
 
@@ -94,7 +95,7 @@ export class Player extends GameEntity implements ISpriteAnimatable {
     this.weight = GAME_CONFIG.player.weight;
     this.speed = 0;
     this.maxSpeed = GAME_CONFIG.player.maxSpeed;
-    this.setState(this.states[0].state, 0);
+    this.setState(first(this.states).state, 0);
   }
 
   checkCollision(): void {

@@ -1,11 +1,13 @@
 import { GameState } from "./GameStates.js";
+import { first } from "../utils/arrayUtils.js";
+import type { Level } from "../Level.js";
 
 export class PlayingState extends GameState {
   subState: "active" | "paused" = "active";
 
   override enter(): void {
     this.subState = "active";
-    this.game.session.player.currentState = this.game.session.player.states[0];
+    this.game.session.player.currentState = first(this.game.session.player.states);
     this.game.session.player.currentState.enter();
   }
 
@@ -33,8 +35,9 @@ export class PlayingState extends GameState {
   runUpdates(deltaTime: number): void {
     this.game.session.player.updateWithActions(this.game.input.actions, deltaTime);
     this.game.spriteAnimator.update(deltaTime, this.game.session.player);
-    this.game.gameLevels[this.game.currentGameLevel].update(deltaTime);
-    this.game.gameLevels[this.game.currentGameLevel].spawnStrategy.update(deltaTime);
+
+    const level = this._getLevel();
+    level.update(deltaTime);
     this.game.session.enemies.forEach((enemy) => {
       enemy.update(deltaTime);
       this.game.spriteAnimator.update(deltaTime, enemy);
@@ -58,7 +61,7 @@ export class PlayingState extends GameState {
   }
 
   override draw(context: CanvasRenderingContext2D): void {
-    this.game.gameLevels[this.game.currentGameLevel].draw(context);
+    this._getLevel().draw(context);
     this.game.spriteAnimator.draw(context, this.game.session.player, this.game.debug);
     this.game.session.enemies.forEach((enemy) => this.game.spriteAnimator.draw(context, enemy, this.game.debug));
     this.game.particleAnimator.draw(context);
@@ -71,13 +74,21 @@ export class PlayingState extends GameState {
   }
 
   override handleInput(event: KeyboardEvent): void {
-    const pauseKey = this.game.input.keyBindings.actionToKey["pause"].key;
-    if (event.key === pauseKey) {
+    const pauseKeyBinding = this.game.input.keyBindings.actionToKey["pause"];
+    if (!pauseKeyBinding) throw new Error("Pause key binding is not defined");
+
+    if (event.key === pauseKeyBinding.key) {
       if (this.subState === "active") {
         this.subState = "paused";
       } else if (this.subState === "paused") {
         this.subState = "active";
       }
     }
+  }
+
+  _getLevel(): Level {
+    const level = this.game.gameLevels[this.game.currentGameLevel];
+    if (!level) throw new Error("Current game level is undefined");
+    return level;
   }
 }

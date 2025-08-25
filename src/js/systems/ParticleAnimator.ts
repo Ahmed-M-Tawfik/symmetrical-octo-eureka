@@ -15,7 +15,8 @@ export class ParticleAnimator {
     this.game.session.particles.forEach((particle: Dust | Fire | Splash) => particle.update());
     // Remove deleted
     for (let i = this.game.session.particles.length - 1; i >= 0; i--) {
-      if (this.game.session.particles[i].markedForDeletion) this.game.session.particles.splice(i, 1);
+      const particle = this.game.session.particles[i];
+      if (particle && particle.markedForDeletion) this.game.session.particles.splice(i, 1);
     }
     // truncate to avoid performance issues
     if (this.game.session.particles.length > this.maxParticles) {

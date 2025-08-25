@@ -11,12 +11,13 @@ export class Dust extends GameEntity {
 
   constructor(game: Game, x: number, y: number) {
     const cfg = PARTICLE_CONFIG["dust"];
+    if (!cfg) throw new Error("Dust particle config not found");
     const size = Math.random() * (cfg.size.max - cfg.size.min) + cfg.size.min;
     super(game, x, y, size, size);
     this.size = size;
     this.speedX = Math.random();
     this.speedY = Math.random();
-    this.color = cfg.color;
+    this.color = cfg.color === undefined ? "black" : cfg.color;
     this.shrink = cfg.shrink;
   }
 
@@ -38,7 +39,7 @@ export class Dust extends GameEntity {
 }
 
 export class Splash extends GameEntity {
-  image: HTMLImageElement | null;
+  image: HTMLImageElement;
   size: number;
   speedX: number;
   speedY: number;
@@ -48,8 +49,10 @@ export class Splash extends GameEntity {
 
   constructor(game: Game, x: number, y: number) {
     const cfg = PARTICLE_CONFIG["splash"];
+    if (!cfg) throw new Error("Splash particle config not found");
     const size = Math.random() * (cfg.size.max - cfg.size.min) + cfg.size.min;
     super(game, x - size * 0.4, y - size * 0.5, size, size);
+    if (!cfg.imageId) throw new Error("Missing imageId for Splash particle config");
     this.image = document.getElementById(cfg.imageId) as HTMLImageElement;
     this.size = size;
     this.speedX =
@@ -80,7 +83,7 @@ export class Splash extends GameEntity {
 }
 
 export class Fire extends GameEntity {
-  image: HTMLImageElement | null;
+  image: HTMLImageElement;
   size: number;
   speedX: number;
   speedY: number;
@@ -90,8 +93,10 @@ export class Fire extends GameEntity {
 
   constructor(game: Game, x: number, y: number) {
     const cfg = PARTICLE_CONFIG["fire"];
+    if (!cfg) throw new Error("Fire particle config not found");
     const size = Math.random() * (cfg.size.max - cfg.size.min) + cfg.size.min;
     super(game, x, y, size, size);
+    if (!cfg.imageId) throw new Error("Missing imageId for Fire particle config");
     this.image = document.getElementById(cfg.imageId) as HTMLImageElement;
     this.size = size;
     this.speedX = typeof cfg.speedX === "number" ? cfg.speedX : 1;

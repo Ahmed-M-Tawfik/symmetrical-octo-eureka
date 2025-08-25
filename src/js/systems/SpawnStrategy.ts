@@ -1,3 +1,4 @@
+import { atIndex } from "../utils/arrayUtils.js";
 import { FlyingEnemy, ClimbingEnemy, GroundEnemy } from "../entities/Enemy.js";
 
 import type { Game } from "../Main.js";
@@ -5,9 +6,14 @@ import type { ISpawnData } from "../data/ConfigTypes.js";
 
 export class SpawnStrategy {
   game: Game;
+  /**
+   * NO CALLS TO GAME TO BE MADE IN CONSTRUCTOR
+   * Use start() instead
+   */
   constructor(game: Game) {
     this.game = game;
   }
+  start(): void {}
   update(deltaTime: number): void {}
 }
 
@@ -63,9 +69,9 @@ export class Manual1SpawnStrategy extends SpawnStrategy {
     this.enemyTimer += deltaTime;
     while (
       this.nextSpawnIndex < this.spawnSchedule.length &&
-      this.enemyTimer >= this.spawnSchedule[this.nextSpawnIndex].time
+      this.enemyTimer >= atIndex(this.spawnSchedule, this.nextSpawnIndex).time
     ) {
-      const event = this.spawnSchedule[this.nextSpawnIndex];
+      const event = atIndex(this.spawnSchedule, this.nextSpawnIndex);
       this.addEnemy(event);
       this.nextSpawnIndex++;
     }

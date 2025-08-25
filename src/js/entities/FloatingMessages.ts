@@ -8,7 +8,7 @@ export class FloatingMessage extends GameEntity {
   timer: number;
 
   constructor(value: string, x: number, y: number, targetX: number, targetY: number) {
-    super(null as Game, x, y, 0, 0); // No game ref nor width/height needed
+    super(null as unknown as Game, x, y, 0, 0); // No game ref nor width/height needed
     this.value = value;
     this.targetX = targetX;
     this.targetY = targetY;

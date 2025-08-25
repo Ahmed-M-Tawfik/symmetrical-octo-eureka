@@ -13,6 +13,7 @@ export class FlyingEnemy extends GameEntity implements ISpriteAnimatable {
 
   constructor(game: Game, x?: number, y?: number, speedX?: number, va?: number) {
     const cfg = ENEMY_CONFIG["flying"];
+    if (!cfg) throw new Error("Flying enemy config not found");
     const spawnX = x !== undefined ? x : game.width + Math.random() * game.width * 0.5;
     const spawnY = y !== undefined ? y : Math.random() * game.height * 0.5;
     super(game, spawnX, spawnY, cfg.width, cfg.height);
@@ -27,8 +28,10 @@ export class FlyingEnemy extends GameEntity implements ISpriteAnimatable {
       this.speedX = speedX;
     } else if (typeof cfg.speedX === "number") {
       this.speedX = cfg.speedX;
-    } else {
+    } else if (cfg.speedX && typeof cfg.speedX.min === "number" && typeof cfg.speedX.max === "number") {
       this.speedX = Math.random() * (cfg.speedX.max - cfg.speedX.min) + cfg.speedX.min;
+    } else {
+      throw new Error("Invalid speedX configuration for FlyingEnemy");
     }
     this.speedY = 0;
 
@@ -37,8 +40,10 @@ export class FlyingEnemy extends GameEntity implements ISpriteAnimatable {
       this.va = va;
     } else if (typeof cfg.va === "number") {
       this.va = cfg.va;
-    } else {
+    } else if (cfg.va && typeof cfg.va.min === "number" && typeof cfg.va.max === "number") {
       this.va = Math.random() * (cfg.va.max - cfg.va.min) + cfg.va.min;
+    } else {
+      throw new Error("Invalid va configuration for FlyingEnemy");
     }
   }
 
@@ -59,6 +64,7 @@ export class GroundEnemy extends GameEntity implements ISpriteAnimatable {
 
   constructor(game: Game) {
     const cfg = ENEMY_CONFIG["ground"];
+    if (!cfg) throw new Error("Ground enemy config not found");
     const x = game.width;
     const y = game.height - cfg.height - game.groundMargin;
     super(game, x, y, cfg.width, cfg.height);
@@ -87,6 +93,7 @@ export class ClimbingEnemy extends GameEntity implements ISpriteAnimatable {
 
   constructor(game: Game) {
     const cfg = ENEMY_CONFIG["climbing"];
+    if (!cfg) throw new Error("Climbing enemy config not found");
     const x = game.width;
     const y = Math.random() * game.height * 0.5;
     super(game, x, y, cfg.width, cfg.height);

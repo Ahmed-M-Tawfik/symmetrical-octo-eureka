@@ -1,4 +1,5 @@
 import { GameSession } from "./session/GameSession.js";
+import { atIndex } from "./utils/arrayUtils.js";
 import { InputHandler } from "./ui/InputHandler.js";
 import { UI } from "./UI.js";
 import { GAME_CONFIG } from "./data/GameConfig.js";
@@ -45,8 +46,8 @@ export class Game {
 
     this.gameLevels = getLevelSequence(this);
     this.currentGameLevel = 0;
-    this.gameLevels[this.currentGameLevel].start();
-    this.groundMargin = this.gameLevels[this.currentGameLevel].background.groundMargin;
+    atIndex(this.gameLevels, this.currentGameLevel).start();
+    this.groundMargin = atIndex(this.gameLevels, this.currentGameLevel).background.groundMargin;
 
     this.session = new GameSession(this);
     this.spriteAnimator = new SpriteAnimator();
@@ -79,7 +80,7 @@ export class Game {
 
   _resetLevelState() {
     this.session.reset();
-    this.gameLevels[this.currentGameLevel].start();
+    atIndex(this.gameLevels, this.currentGameLevel).start();
   }
 
   nextLevel() {
@@ -96,7 +97,7 @@ export class Game {
 
 window.addEventListener("load", function () {
   const canvas = document.getElementById("canvas1") as HTMLCanvasElement;
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
   canvas.width = GAME_CONFIG.canvasWidth;
   canvas.height = GAME_CONFIG.canvasHeight;
 

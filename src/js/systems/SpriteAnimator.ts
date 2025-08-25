@@ -21,6 +21,9 @@ export class SpriteAnimator {
     if (isDebug) {
       context.strokeRect(gameEntity.x, gameEntity.y, gameEntity.width, gameEntity.height);
     }
+    if (!gameEntity.spriteData.image) {
+      throw new Error("Sprite image not found for " + gameEntity);
+    }
     context.drawImage(
       gameEntity.spriteData.image,
       gameEntity.spriteData.frameX * gameEntity.spriteData.spriteWidth,
