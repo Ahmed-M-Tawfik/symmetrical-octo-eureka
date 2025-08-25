@@ -1,3 +1,6 @@
+import type { Game } from "../Main.js";
+import type { Player } from "../entities/Player.js";
+
 export const states = {
   SITTING: 0,
   RUNNING: 1,
@@ -16,24 +19,28 @@ export const playerActions = {
   roll: "roll",
 };
 
-class State {
-  constructor(state, player) {
+export class PlayerState {
+  state: number;
+  player: Player;
+  game: Game;
+
+  constructor(state: number, player: Player) {
     this.state = state;
     this.player = player;
     this.game = player.game;
   }
-  enter() {}
-  handleInput(inputActions) {}
+  enter(): void {}
+  handleInput(inputActions: Set<string>): void {}
 }
-export class Sitting extends State {
-  constructor(player) {
+export class Sitting extends PlayerState {
+  constructor(player: Player) {
     super(states.SITTING, player);
   }
-  enter() {
+  enter(): void {
     resetFrames(this.player, 5, 4);
     this.player.speed = 0;
   }
-  handleInput(inputActions) {
+  handleInput(inputActions: Set<string>): void {
     if (inputActions.has(playerActions.down)) {
       // no op
       return;
@@ -47,14 +54,14 @@ export class Sitting extends State {
     }
   }
 }
-export class Running extends State {
-  constructor(player) {
+export class Running extends PlayerState {
+  constructor(player: Player) {
     super(states.RUNNING, player);
   }
-  enter() {
+  enter(): void {
     resetFrames(this.player, 3, 8);
   }
-  handleInput(inputActions) {
+  handleInput(inputActions: Set<string>): void {
     this.game.particleAnimator.addDust(this.player.x + this.player.width * 0.5, this.player.y + this.player.height);
     handleHorizontalMovement(this.player, inputActions);
     if (inputActions.has(playerActions.down)) {
@@ -66,15 +73,15 @@ export class Running extends State {
     }
   }
 }
-export class Jumping extends State {
-  constructor(player) {
+export class Jumping extends PlayerState {
+  constructor(player: Player) {
     super(states.JUMPING, player);
   }
-  enter() {
+  enter(): void {
     if (this.player.onGround()) this.player.vy = -27;
     resetFrames(this.player, 1, 6);
   }
-  handleInput(inputActions) {
+  handleInput(inputActions: Set<string>): void {
     handleHorizontalMovement(this.player, inputActions);
     if (this.player.vy > this.player.weight) {
       this.player.setState(states.FALLING, 1);
@@ -85,14 +92,14 @@ export class Jumping extends State {
     }
   }
 }
-export class Falling extends State {
-  constructor(player) {
+export class Falling extends PlayerState {
+  constructor(player: Player) {
     super(states.FALLING, player);
   }
-  enter() {
+  enter(): void {
     resetFrames(this.player, 2, 6);
   }
-  handleInput(inputActions) {
+  handleInput(inputActions: Set<string>): void {
     handleHorizontalMovement(this.player, inputActions);
     if (this.player.onGround()) {
       this.player.setState(states.RUNNING, 1);
@@ -101,14 +108,14 @@ export class Falling extends State {
     }
   }
 }
-export class Rolling extends State {
-  constructor(player) {
+export class Rolling extends PlayerState {
+  constructor(player: Player) {
     super(states.ROLLING, player);
   }
-  enter() {
+  enter(): void {
     resetFrames(this.player, 6, 6);
   }
-  handleInput(inputActions) {
+  handleInput(inputActions: Set<string>): void {
     this.game.particleAnimator.addFire(
       this.player.x + this.player.width * 0.5,
       this.player.y + this.player.height * 0.5
@@ -125,15 +132,15 @@ export class Rolling extends State {
     }
   }
 }
-export class Diving extends State {
-  constructor(player) {
+export class Diving extends PlayerState {
+  constructor(player: Player) {
     super(states.DIVING, player);
   }
-  enter() {
+  enter(): void {
     resetFrames(this.player, 6, 6);
     this.player.vy = 30;
   }
-  handleInput(inputActions) {
+  handleInput(inputActions: Set<string>): void {
     this.game.particleAnimator.addFire(
       this.player.x + this.player.width * 0.5,
       this.player.y + this.player.height * 0.5
@@ -146,14 +153,14 @@ export class Diving extends State {
     }
   }
 }
-export class Hit extends State {
-  constructor(player) {
+export class Hit extends PlayerState {
+  constructor(player: Player) {
     super(states.HIT, player);
   }
-  enter() {
+  enter(): void {
     resetFrames(this.player, 4, 10);
   }
-  handleInput(inputActions) {
+  handleInput(inputActions: Set<string>): void {
     if (this.player.spriteData.frameX >= 10 && this.player.onGround()) {
       this.player.setState(states.RUNNING, 1);
     } else if (this.player.spriteData.frameX >= 10 && !this.player.onGround()) {
@@ -162,13 +169,13 @@ export class Hit extends State {
   }
 }
 
-function resetFrames(player, frameY, maxFrame) {
+function resetFrames(player: Player, frameY: number, maxFrame: number): void {
   player.spriteData.frameX = 0;
   player.spriteData.frameY = frameY;
   player.spriteData.maxFrame = maxFrame;
 }
 
-function handleHorizontalMovement(player, inputActions) {
+function handleHorizontalMovement(player: Player, inputActions: Set<string>): void {
   // horizontal movement
   if (inputActions.has(playerActions.moveRight) && inputActions.has(playerActions.moveLeft)) {
     player.speed = 0;

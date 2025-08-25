@@ -1,8 +1,15 @@
 import { GameEntity } from "./GameEntity.js";
+import type { Game } from "../Main.js";
 import { PARTICLE_CONFIG } from "../data/GameConfig.js";
 
 export class Dust extends GameEntity {
-  constructor(game, x, y) {
+  size: number;
+  speedX: number;
+  speedY: number;
+  color: string;
+  shrink: number;
+
+  constructor(game: Game, x: number, y: number) {
     const cfg = PARTICLE_CONFIG.dust;
     const size = Math.random() * (cfg.size.max - cfg.size.min) + cfg.size.min;
     super(game, x, y, size, size);
@@ -12,13 +19,15 @@ export class Dust extends GameEntity {
     this.color = cfg.color;
     this.shrink = cfg.shrink;
   }
-  update() {
+
+  update(): void {
     this.x -= this.speedX + this.game.speed;
     this.y -= this.speedY;
     this.size *= this.shrink;
     if (this.size < 0.5) this.markedForDeletion = true;
   }
-  draw(context) {
+
+  draw(context: CanvasRenderingContext2D): void {
     context.save();
     context.beginPath();
     context.arc(this.x, this.y, this.size, 0, Math.PI * 2);
@@ -29,19 +38,34 @@ export class Dust extends GameEntity {
 }
 
 export class Splash extends GameEntity {
-  constructor(game, x, y) {
+  image: HTMLImageElement | null;
+  size: number;
+  speedX: number;
+  speedY: number;
+  decelRate: number;
+  shrink: number;
+  gravity: number;
+
+  constructor(game: Game, x: number, y: number) {
     const cfg = PARTICLE_CONFIG.splash;
     const size = Math.random() * (cfg.size.max - cfg.size.min) + cfg.size.min;
     super(game, x - size * 0.4, y - size * 0.5, size, size);
-    this.image = document.getElementById(cfg.imageId);
+    this.image = document.getElementById(cfg.imageId) as HTMLImageElement;
     this.size = size;
-    this.speedX = Math.random() * (cfg.speedX.max - cfg.speedX.min) + cfg.speedX.min;
-    this.speedY = Math.random() * (cfg.speedY.max - cfg.speedY.min) + cfg.speedY.min;
+    this.speedX =
+      typeof cfg.speedX === "number"
+        ? cfg.speedX
+        : Math.random() * (cfg.speedX!.max - cfg.speedX!.min) + cfg.speedX!.min;
+    this.speedY =
+      typeof cfg.speedY === "number"
+        ? cfg.speedY
+        : Math.random() * (cfg.speedY!.max - cfg.speedY!.min) + cfg.speedY!.min;
     this.decelRate = 0;
     this.shrink = cfg.shrink;
-    this.gravity = cfg.gravity;
+    this.gravity = cfg.gravity ?? 0.1;
   }
-  update() {
+
+  update(): void {
     this.x -= this.speedX + this.game.speed;
     this.y -= this.speedY;
     this.size *= this.shrink;
@@ -49,25 +73,35 @@ export class Splash extends GameEntity {
     this.decelRate += this.gravity;
     this.y += this.decelRate;
   }
-  draw(context) {
+
+  draw(context: CanvasRenderingContext2D): void {
     context.drawImage(this.image, this.x, this.y, this.size, this.size);
   }
 }
 
 export class Fire extends GameEntity {
-  constructor(game, x, y) {
+  image: HTMLImageElement | null;
+  size: number;
+  speedX: number;
+  speedY: number;
+  angle: number;
+  shrink: number;
+  va: number;
+
+  constructor(game: Game, x: number, y: number) {
     const cfg = PARTICLE_CONFIG.fire;
     const size = Math.random() * (cfg.size.max - cfg.size.min) + cfg.size.min;
     super(game, x, y, size, size);
-    this.image = document.getElementById(cfg.imageId);
+    this.image = document.getElementById(cfg.imageId) as HTMLImageElement;
     this.size = size;
-    this.speedX = cfg.speedX;
-    this.speedY = cfg.speedY;
+    this.speedX = typeof cfg.speedX === "number" ? cfg.speedX : 1;
+    this.speedY = typeof cfg.speedY === "number" ? cfg.speedY : 1;
     this.angle = 0;
     this.shrink = cfg.shrink;
-    this.va = Math.random() * (cfg.va.max - cfg.va.min) + cfg.va.min;
+    this.va = typeof cfg.va === "number" ? cfg.va : Math.random() * (cfg.va!.max - cfg.va!.min) + cfg.va!.min;
   }
-  update() {
+
+  update(): void {
     this.x -= this.speedX + this.game.speed;
     this.y -= this.speedY;
     this.size *= this.shrink;
@@ -75,7 +109,8 @@ export class Fire extends GameEntity {
     this.angle += this.va;
     this.x += Math.sin(this.angle * 10);
   }
-  draw(context) {
+
+  draw(context: CanvasRenderingContext2D): void {
     context.save();
     context.translate(this.x, this.y);
     context.rotate(this.angle);

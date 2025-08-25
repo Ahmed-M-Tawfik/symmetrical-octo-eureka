@@ -1,5 +1,7 @@
+import type { ISpawnData } from "../ConfigTypes";
+
 // spawns HELLO
-export const manual1Spawn = [
+export const manual1Spawn: ISpawnData[] = [
   // H
   { time: 0, type: "FlyingEnemy", x: 0, y: 0, speed: 2 },
   { time: 0, type: "FlyingEnemy", x: 0, y: 40, speed: 2 },

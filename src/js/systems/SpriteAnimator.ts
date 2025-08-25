@@ -1,5 +1,13 @@
+import type { SpriteData } from "../SpriteData.js";
+import type { IRect } from "../entities/GameEntity.js";
+
+export interface ISpriteAnimatable extends IRect {
+  spriteData: SpriteData;
+  draw?: (context: CanvasRenderingContext2D) => void;
+}
+
 export class SpriteAnimator {
-  update(deltaTime, gameEntity) {
+  update(deltaTime: number, gameEntity: ISpriteAnimatable): void {
     let s = gameEntity.spriteData;
     s.frameTimer += deltaTime;
     if (s.frameTimer > s.frameInterval) {
@@ -8,7 +16,8 @@ export class SpriteAnimator {
       if (s.frameX > s.maxFrame) s.frameX = 0;
     }
   }
-  draw(context, gameEntity, isDebug = false) {
+
+  draw(context: CanvasRenderingContext2D, gameEntity: ISpriteAnimatable, isDebug: boolean = false): void {
     if (isDebug) {
       context.strokeRect(gameEntity.x, gameEntity.y, gameEntity.width, gameEntity.height);
     }

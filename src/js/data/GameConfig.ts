@@ -1,4 +1,6 @@
-export const PARTICLE_CONFIG = {
+import type { IParticleConfig, IEnemyConfig, IGameConfig } from "./ConfigTypes";
+
+export const PARTICLE_CONFIG: Record<string, IParticleConfig> = {
   dust: {
     size: { min: 10, max: 20 },
     color: "rgba(0,0,0,0.2)",
@@ -21,7 +23,7 @@ export const PARTICLE_CONFIG = {
     imageId: "fire",
   },
 };
-export const ENEMY_CONFIG = {
+export const ENEMY_CONFIG: Record<string, IEnemyConfig> = {
   flying: {
     width: 60,
     height: 44,
@@ -52,7 +54,7 @@ export const ENEMY_CONFIG = {
     speedY: { min: -1, max: 1 },
   },
 };
-export const GAME_CONFIG = {
+export const GAME_CONFIG: IGameConfig = {
   // window
   canvasWidth: 900,
   canvasHeight: 500,

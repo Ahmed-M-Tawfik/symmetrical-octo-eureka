@@ -1,20 +1,28 @@
 import { GameEntity } from "./GameEntity.js";
+import type { Game } from "../Main.js";
 
 export class FloatingMessage extends GameEntity {
-  constructor(value, x, y, targetX, targetY) {
-    super(null, x, y, 0, 0); // No game ref nor width/height needed
+  value: string;
+  targetX: number;
+  targetY: number;
+  timer: number;
+
+  constructor(value: string, x: number, y: number, targetX: number, targetY: number) {
+    super(null as Game, x, y, 0, 0); // No game ref nor width/height needed
     this.value = value;
     this.targetX = targetX;
     this.targetY = targetY;
     this.timer = 0;
   }
-  update() {
+
+  update(): void {
     this.x += (this.targetX - this.x) * 0.03;
     this.y += (this.targetY - this.y) * 0.03;
     this.timer++;
     if (this.timer > 100) this.markedForDeletion = true;
   }
-  draw(context) {
+
+  draw(context: CanvasRenderingContext2D): void {
     context.save();
     context.font = "20px Creepster";
     context.fillStyle = "white";

@@ -1,9 +1,18 @@
+import type { KeyBindings } from "./KeyBindings.js";
+import { Button } from "./Button.js";
+import type { Game } from "../Main.js";
+
 export class InputHandler {
-  constructor(game, canvas, keyBindings) {
+  game: Game;
+  keyBindings: KeyBindings;
+  buttons: Button[];
+  actions: Set<string>;
+
+  constructor(game: Game, canvas: HTMLCanvasElement, keyBindings: KeyBindings) {
     this.game = game;
     this.keyBindings = keyBindings;
     this.buttons = [];
-    this.actions = new Set();
+    this.actions = new Set<string>();
 
     // Make sure the canvas is focused to receive keyboard events
     canvas.focus();
@@ -41,7 +50,7 @@ export class InputHandler {
     });
   }
 
-  processDebugKeys(e) {
+  processDebugKeys(e: KeyboardEvent) {
     if (e.key === this.keyBindings.actionToKey["debug_active"].key) {
       this.game.debug = !this.game.debug;
     }

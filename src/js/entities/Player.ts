@@ -1,19 +1,41 @@
-import { states, Sitting, Running, Jumping, Falling, Rolling, Diving, Hit } from "../states/PlayerStates.js";
+import {
+  states,
+  Sitting,
+  Running,
+  Jumping,
+  Falling,
+  Rolling,
+  Diving,
+  Hit,
+  PlayerState,
+} from "../states/PlayerStates.js";
+import type { FlyingEnemy, GroundEnemy, ClimbingEnemy } from "./Enemy.js";
 import { CollisionAnimation } from "./CollisionAnimation.js";
 import { FloatingMessage } from "./FloatingMessages.js";
 import { SpriteData } from "../SpriteData.js";
 import { GameEntity } from "./GameEntity.js";
 import { GAME_CONFIG } from "../data/GameConfig.js";
+import type { Game } from "../Main.js";
+import type { ISpriteAnimatable } from "../systems/SpriteAnimator.js";
 
-export class Player extends GameEntity {
-  constructor(game) {
+export class Player extends GameEntity implements ISpriteAnimatable {
+  draw?: (context: CanvasRenderingContext2D) => void;
+  spriteData: SpriteData;
+  states: PlayerState[];
+  currentState: PlayerState;
+  speed: number;
+  maxSpeed: number;
+  vy: number;
+  weight: number;
+
+  constructor(game: Game) {
     const { width, height, spriteWidth, spriteHeight, maxFrame } = GAME_CONFIG.player;
     super(game, 0, 0, width, height);
 
     this.spriteData = new SpriteData(game, 20);
     this.spriteData.spriteWidth = spriteWidth;
     this.spriteData.spriteHeight = spriteHeight;
-    this.spriteData.image = document.getElementById("player");
+    this.spriteData.image = document.getElementById("player") as HTMLImageElement;
     this.spriteData.frameX = 0;
     this.spriteData.frameY = 0;
     this.spriteData.maxFrame = maxFrame;
@@ -27,10 +49,12 @@ export class Player extends GameEntity {
       new Diving(this),
       new Hit(this),
     ];
+    this.currentState = this.states[0];
 
     this.reset();
   }
-  update(actions, deltaTime) {
+
+  updateWithActions(actions: Set<string>, deltaTime: number): void {
     this.checkCollision();
     this.currentState.handleInput(actions);
 
@@ -53,15 +77,18 @@ export class Player extends GameEntity {
     if (this.y > this.game.height - this.height - this.game.groundMargin)
       this.y = this.game.height - this.height - this.game.groundMargin;
   }
-  onGround() {
+
+  onGround(): boolean {
     return this.y >= this.game.height - this.height - this.game.groundMargin;
   }
-  setState(state, speed) {
+
+  setState(state: number, speed: number): void {
     this.game.speed = this.game.maxSpeed * speed;
     this.currentState = this.states[state];
     this.currentState.enter();
   }
-  reset() {
+
+  reset(): void {
     this.x = 0;
     this.y = this.game.height - this.height - this.game.groundMargin;
     this.vy = 0;
@@ -70,8 +97,9 @@ export class Player extends GameEntity {
     this.maxSpeed = GAME_CONFIG.player.maxSpeed;
     this.setState(this.states[0].state, 0);
   }
-  checkCollision() {
-    this.game.session.enemies.forEach((enemy) => {
+
+  checkCollision(): void {
+    this.game.session.enemies.forEach((enemy: GameEntity) => {
       if (this.collidesWith(enemy)) {
         // collision detected
         enemy.markedForDeletion = true;

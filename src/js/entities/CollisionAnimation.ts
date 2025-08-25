@@ -1,31 +1,40 @@
 import { SpriteData } from "../SpriteData.js";
 import { GameEntity } from "./GameEntity.js";
+import type { Game } from "../Main.js";
 import { GAME_CONFIG } from "../data/GameConfig.js";
+import type { ISpriteAnimatable } from "../systems/SpriteAnimator.js";
 
-export class CollisionAnimation extends GameEntity {
-  constructor(game, x, y) {
+export class CollisionAnimation extends GameEntity implements ISpriteAnimatable {
+  draw?: (context: CanvasRenderingContext2D) => void;
+  spriteData: SpriteData;
+  sizeModifier: number;
+  reachedLastSprite: boolean = false;
+
+  constructor(game: Game, x: number, y: number) {
     // Use config values
     const config = GAME_CONFIG.collisionAnimation;
-    const spriteWidth = config.spriteWidth;
-    const spriteHeight = config.spriteHeight;
-    const sizeModifier = Math.random() * (config.sizeModifierMax - config.sizeModifierMin) + config.sizeModifierMin;
-    const width = spriteWidth * sizeModifier;
-    const height = spriteHeight * sizeModifier;
+    const spriteWidth: number = config.spriteWidth;
+    const spriteHeight: number = config.spriteHeight;
+    const sizeModifier: number =
+      Math.random() * (config.sizeModifierMax - config.sizeModifierMin) + config.sizeModifierMin;
+    const width: number = spriteWidth * sizeModifier;
+    const height: number = spriteHeight * sizeModifier;
     // Center the animation on (x, y)
     super(game, x - width * 0.5, y - height * 0.5, width, height);
 
-    const frameInterval = Math.random() * (config.frameIntervalMax - config.frameIntervalMin) + config.frameIntervalMin;
+    const frameInterval: number =
+      Math.random() * (config.frameIntervalMax - config.frameIntervalMin) + config.frameIntervalMin;
     this.spriteData = new SpriteData(game, frameInterval);
     this.spriteData.spriteWidth = spriteWidth;
     this.spriteData.spriteHeight = spriteHeight;
-    this.spriteData.image = document.getElementById(config.imageId);
+    this.spriteData.image = document.getElementById(config.imageId) as HTMLImageElement;
     this.spriteData.maxFrame = config.maxFrame;
     this.spriteData.frameX = 0;
 
     this.sizeModifier = sizeModifier;
   }
 
-  update(deltaTime) {
+  update(deltaTime: number): void {
     this.x -= this.game.speed;
 
     if (!this.reachedLastSprite && this.spriteData.frameX == this.spriteData.maxFrame) {

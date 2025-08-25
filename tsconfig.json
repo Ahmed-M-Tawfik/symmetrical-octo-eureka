@@ -10,10 +10,12 @@
     "module": "esnext",
     "target": "es6",
     "types": [],
+
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],
     // and npm install -D @types/node
+    "lib": ["es2017", "dom"],
 
     // Other Outputs
     "sourceMap": true,

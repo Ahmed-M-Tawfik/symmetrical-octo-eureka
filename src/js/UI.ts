@@ -1,10 +1,18 @@
 import { Button } from "./ui/Button.js";
+import type { Game } from "./Main.js";
+import { PlayingState } from "./states/PlayingState.js";
+
 export class UI {
-  constructor(game) {
+  game: Game;
+  fontSize: number;
+  fontFamily: string;
+  livesImage: HTMLImageElement;
+
+  constructor(game: Game) {
     this.game = game;
     this.fontSize = 30;
     this.fontFamily = "Creepster";
-    this.livesImage = document.getElementById("lives");
+    this.livesImage = document.getElementById("lives") as HTMLImageElement;
 
     this.game.input.buttons.push(
       new Button(
@@ -17,7 +25,7 @@ export class UI {
           if (this.game.state !== this.game.states.levelComplete) return;
           this.game.nextLevel();
         },
-        (context) => {
+        (context: CanvasRenderingContext2D) => {
           if (this.game.state !== this.game.states.levelComplete) return;
           context.save();
           context.font = "20px Creepster";
@@ -42,7 +50,7 @@ export class UI {
           if (this.game.state !== this.game.states.gameOver) return;
           this.game.retryLevel();
         },
-        (context) => {
+        (context: CanvasRenderingContext2D) => {
           if (this.game.state !== this.game.states.gameOver) return;
           context.save();
           context.font = "20px Creepster";
@@ -56,14 +64,13 @@ export class UI {
       )
     );
   }
-  draw(context) {
-    context.save();
 
+  draw(context: CanvasRenderingContext2D): void {
+    context.save();
     context.shadowOffsetX = 2;
     context.shadowOffsetY = 2;
     context.shadowColor = "white";
     context.shadowBlur = 0;
-
     context.font = `${this.fontSize}px ${this.fontFamily}`;
     context.textAlign = "left";
     context.fillStyle = "black";
@@ -74,40 +81,39 @@ export class UI {
     context.fillText(`Time: ${(this.game.session.time * 0.001).toFixed(1)}`, 20, 80);
     // lives
     for (let i = 0; i < this.game.session.lives; i++) {
-      context.drawImage(this.livesImage, 25 * i + 20, 95, 25, 25);
+      if (this.livesImage) {
+        context.drawImage(this.livesImage, 25 * i + 20, 95, 25, 25);
+      }
     }
-
     // game state messages
     if (this.game.state === this.game.states.gameOver) {
       this.drawGameOver(context);
     } else if (this.game.state === this.game.states.levelComplete) {
       this.drawLevelComplete(context);
-    } else if (this.game.state === this.game.states.playing && this.game.state.subState === "paused") {
+    } else if (this.game.state instanceof PlayingState && this.game.state.subState === "paused") {
       this.drawPaused(context);
     }
-
     context.restore();
-
-    this.game.input.buttons.forEach((button) => {
+    this.game.input.buttons.forEach((button: Button) => {
       button.draw(context);
     });
   }
-  drawGameOver(context) {
+
+  drawGameOver(context: CanvasRenderingContext2D): void {
     context.save();
     context.textAlign = "center";
     context.font = this.fontSize * 2 + "px " + this.fontFamily;
-
     context.fillText("Love at first bite?", this.game.width * 0.5, this.game.height * 0.5 - 20);
     context.font = this.fontSize * 0.7 + "px " + this.fontFamily;
     context.fillText("You fought bravely,", this.game.width * 0.5, this.game.height * 0.5 + 20);
     context.fillText("but the night is dark and full of terrors.", this.game.width * 0.5, this.game.height * 0.5 + 50);
     context.restore();
   }
-  drawLevelComplete(context) {
+
+  drawLevelComplete(context: CanvasRenderingContext2D): void {
     context.save();
     context.textAlign = "center";
     context.font = this.fontSize * 2 + "px " + this.fontFamily;
-
     context.fillText("Boo-yah", this.game.width * 0.5, this.game.height * 0.5 - 20);
     context.font = this.fontSize * 0.7 + "px " + this.fontFamily;
     context.fillText(
@@ -120,18 +126,14 @@ export class UI {
 
   /**
    * Should only be called if the game is NOT over / level NOT complete
-   * @param {CanvasRenderingContext2D} context
    */
-  drawPaused(context) {
+  drawPaused(context: CanvasRenderingContext2D): void {
     context.save();
-
     context.textAlign = "center";
     context.font = this.fontSize * 2 + "px " + this.fontFamily;
-
     context.fillText("Paused!", this.game.width * 0.5, this.game.height * 0.5 - 20);
     context.font = this.fontSize * 0.7 + "px " + this.fontFamily;
     context.fillText("Press P to resume", this.game.width * 0.5, this.game.height * 0.5 + 20);
-
     context.restore();
   }
 }
