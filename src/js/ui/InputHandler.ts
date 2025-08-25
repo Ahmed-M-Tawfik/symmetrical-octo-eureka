@@ -1,4 +1,4 @@
-import type { KeyBindings } from "./KeyBindings.js";
+import type { KeyBinding, KeyBindings } from "./KeyBindings.js";
 import { Button } from "./Button.js";
 import type { Game } from "../Main.js";
 
@@ -20,7 +20,7 @@ export class InputHandler {
     canvas.addEventListener("keydown", (e) => {
       // Only process player actions if game is in PLAYING state
       if (this.game.state === this.game.states.playing && this.keyBindings.getKeysByGroup("player").includes(e.key)) {
-        this.actions.add(this.keyBindings.keyToAction[e.key].action);
+        this.actions.add(this.getKeyBinding(this.keyBindings.keyToAction, e.key).action);
       }
       this.processDebugKeys(e);
       // Route game-level input to the current state
@@ -28,7 +28,7 @@ export class InputHandler {
     });
     canvas.addEventListener("keyup", (e) => {
       if (this.game.state === this.game.states.playing && this.keyBindings.getKeysByGroup("player").includes(e.key)) {
-        this.actions.delete(this.keyBindings.keyToAction[e.key].action);
+        this.actions.delete(this.getKeyBinding(this.keyBindings.keyToAction, e.key).action);
       }
     });
 
@@ -51,17 +51,25 @@ export class InputHandler {
   }
 
   processDebugKeys(e: KeyboardEvent) {
-    if (e.key === this.keyBindings.actionToKey["debug_active"].key) {
+    if (e.key === this.getKeyBinding(this.keyBindings.actionToKey, "debug_active").key) {
       this.game.debug = !this.game.debug;
     }
-    if (e.key === this.keyBindings.actionToKey["debug_add_score"].key) {
+    if (e.key === this.getKeyBinding(this.keyBindings.actionToKey, "debug_add_score").key) {
       this.game.session.score += 10;
     }
-    if (e.key === this.keyBindings.actionToKey["debug_next_level"].key) {
+    if (e.key === this.getKeyBinding(this.keyBindings.actionToKey, "debug_next_level").key) {
       this.game.nextLevel();
     }
-    if (e.key === this.keyBindings.actionToKey["debug_retry_level"].key) {
+    if (e.key === this.getKeyBinding(this.keyBindings.actionToKey, "debug_retry_level").key) {
       this.game.retryLevel();
     }
+  }
+
+  getKeyBinding<T extends object>(map: T, key: string): NonNullable<KeyBinding> {
+    const value = map[key];
+    if (value === undefined || value === null) {
+      throw new Error(`Key binding for '${String(key)}' not found`);
+    }
+    return value as NonNullable<KeyBinding>;
   }
 }

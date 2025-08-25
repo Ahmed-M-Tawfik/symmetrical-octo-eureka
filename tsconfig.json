@@ -27,7 +27,7 @@
     // "checkJs": true, // for migrating (temporary)
     "noUncheckedIndexedAccess": true,
 
-    // "exactOptionalPropertyTypes": true,
+    "exactOptionalPropertyTypes": true,
     "strictNullChecks": true,
 
     // Style Options
@@ -40,7 +40,6 @@
 
     // Recommended Options
     // "strict": true,
-    "jsx": "react-jsx",
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,

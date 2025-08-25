@@ -25,7 +25,7 @@ export class KeyBindings {
   }
 }
 
-class KeyBinding implements IKeyBinding {
+export class KeyBinding implements IKeyBinding {
   action: string;
   key: string;
   group: string;
