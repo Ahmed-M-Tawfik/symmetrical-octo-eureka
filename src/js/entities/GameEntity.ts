@@ -1,4 +1,3 @@
-import type { GameSession } from "../session/GameSession.js";
 import type { Game } from "../Main.js";
 
 export interface IRect {

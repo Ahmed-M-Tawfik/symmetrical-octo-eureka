@@ -10,7 +10,7 @@ export class Dust extends GameEntity {
   shrink: number;
 
   constructor(game: Game, x: number, y: number) {
-    const cfg = PARTICLE_CONFIG.dust;
+    const cfg = PARTICLE_CONFIG["dust"];
     const size = Math.random() * (cfg.size.max - cfg.size.min) + cfg.size.min;
     super(game, x, y, size, size);
     this.size = size;
@@ -47,7 +47,7 @@ export class Splash extends GameEntity {
   gravity: number;
 
   constructor(game: Game, x: number, y: number) {
-    const cfg = PARTICLE_CONFIG.splash;
+    const cfg = PARTICLE_CONFIG["splash"];
     const size = Math.random() * (cfg.size.max - cfg.size.min) + cfg.size.min;
     super(game, x - size * 0.4, y - size * 0.5, size, size);
     this.image = document.getElementById(cfg.imageId) as HTMLImageElement;
@@ -89,7 +89,7 @@ export class Fire extends GameEntity {
   va: number;
 
   constructor(game: Game, x: number, y: number) {
-    const cfg = PARTICLE_CONFIG.fire;
+    const cfg = PARTICLE_CONFIG["fire"];
     const size = Math.random() * (cfg.size.max - cfg.size.min) + cfg.size.min;
     super(game, x, y, size, size);
     this.image = document.getElementById(cfg.imageId) as HTMLImageElement;

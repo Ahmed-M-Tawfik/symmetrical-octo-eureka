@@ -12,7 +12,7 @@ export class FlyingEnemy extends GameEntity implements ISpriteAnimatable {
   va: number;
 
   constructor(game: Game, x?: number, y?: number, speedX?: number, va?: number) {
-    const cfg = ENEMY_CONFIG.flying;
+    const cfg = ENEMY_CONFIG["flying"];
     const spawnX = x !== undefined ? x : game.width + Math.random() * game.width * 0.5;
     const spawnY = y !== undefined ? y : Math.random() * game.height * 0.5;
     super(game, spawnX, spawnY, cfg.width, cfg.height);
@@ -58,7 +58,7 @@ export class GroundEnemy extends GameEntity implements ISpriteAnimatable {
   speedY: number;
 
   constructor(game: Game) {
-    const cfg = ENEMY_CONFIG.ground;
+    const cfg = ENEMY_CONFIG["ground"];
     const x = game.width;
     const y = game.height - cfg.height - game.groundMargin;
     super(game, x, y, cfg.width, cfg.height);
@@ -86,7 +86,7 @@ export class ClimbingEnemy extends GameEntity implements ISpriteAnimatable {
   speedY: number;
 
   constructor(game: Game) {
-    const cfg = ENEMY_CONFIG.climbing;
+    const cfg = ENEMY_CONFIG["climbing"];
     const x = game.width;
     const y = Math.random() * game.height * 0.5;
     super(game, x, y, cfg.width, cfg.height);

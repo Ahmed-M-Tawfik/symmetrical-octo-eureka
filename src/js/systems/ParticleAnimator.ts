@@ -1,7 +1,6 @@
 import { GAME_CONFIG } from "../data/GameConfig.js";
 import { Dust, Fire, Splash } from "../entities/Particles.js";
 import type { Game } from "../Main.js";
-import type { GameSession } from "../session/GameSession.js";
 
 export class ParticleAnimator {
   game: Game;

@@ -1,22 +1,21 @@
-import {
-  states,
-  Sitting,
-  Running,
-  Jumping,
-  Falling,
-  Rolling,
-  Diving,
-  Hit,
-  PlayerState,
-} from "../states/PlayerStates.js";
-import type { FlyingEnemy, GroundEnemy, ClimbingEnemy } from "./Enemy.js";
-import { CollisionAnimation } from "./CollisionAnimation.js";
-import { FloatingMessage } from "./FloatingMessages.js";
-import { SpriteData } from "../SpriteData.js";
-import { GameEntity } from "./GameEntity.js";
 import { GAME_CONFIG } from "../data/GameConfig.js";
 import type { Game } from "../Main.js";
+import { SpriteData } from "../SpriteData.js";
+import {
+  Diving,
+  Falling,
+  Hit,
+  Jumping,
+  PlayerState,
+  Rolling,
+  Running,
+  Sitting,
+  states,
+} from "../states/PlayerStates.js";
 import type { ISpriteAnimatable } from "../systems/SpriteAnimator.js";
+import { CollisionAnimation } from "./CollisionAnimation.js";
+import { FloatingMessage } from "./FloatingMessages.js";
+import { GameEntity } from "./GameEntity.js";
 
 export class Player extends GameEntity implements ISpriteAnimatable {
   draw?: (context: CanvasRenderingContext2D) => void;
