@@ -36,11 +36,11 @@ export class Sitting extends PlayerState {
   constructor(player: Player) {
     super(states.SITTING, player);
   }
-  enter(): void {
+  override enter(): void {
     resetFrames(this.player, 5, 4);
     this.player.speed = 0;
   }
-  handleInput(inputActions: Set<string>): void {
+  override handleInput(inputActions: Set<string>): void {
     if (inputActions.has(playerActions.down)) {
       // no op
       return;
@@ -58,10 +58,10 @@ export class Running extends PlayerState {
   constructor(player: Player) {
     super(states.RUNNING, player);
   }
-  enter(): void {
+  override enter(): void {
     resetFrames(this.player, 3, 8);
   }
-  handleInput(inputActions: Set<string>): void {
+  override handleInput(inputActions: Set<string>): void {
     this.game.particleAnimator.addDust(this.player.x + this.player.width * 0.5, this.player.y + this.player.height);
     handleHorizontalMovement(this.player, inputActions);
     if (inputActions.has(playerActions.down)) {
@@ -77,11 +77,11 @@ export class Jumping extends PlayerState {
   constructor(player: Player) {
     super(states.JUMPING, player);
   }
-  enter(): void {
+  override enter(): void {
     if (this.player.onGround()) this.player.vy = -27;
     resetFrames(this.player, 1, 6);
   }
-  handleInput(inputActions: Set<string>): void {
+  override handleInput(inputActions: Set<string>): void {
     handleHorizontalMovement(this.player, inputActions);
     if (this.player.vy > this.player.weight) {
       this.player.setState(states.FALLING, 1);
@@ -96,10 +96,10 @@ export class Falling extends PlayerState {
   constructor(player: Player) {
     super(states.FALLING, player);
   }
-  enter(): void {
+  override enter(): void {
     resetFrames(this.player, 2, 6);
   }
-  handleInput(inputActions: Set<string>): void {
+  override handleInput(inputActions: Set<string>): void {
     handleHorizontalMovement(this.player, inputActions);
     if (this.player.onGround()) {
       this.player.setState(states.RUNNING, 1);
@@ -112,10 +112,10 @@ export class Rolling extends PlayerState {
   constructor(player: Player) {
     super(states.ROLLING, player);
   }
-  enter(): void {
+  override enter(): void {
     resetFrames(this.player, 6, 6);
   }
-  handleInput(inputActions: Set<string>): void {
+  override handleInput(inputActions: Set<string>): void {
     this.game.particleAnimator.addFire(
       this.player.x + this.player.width * 0.5,
       this.player.y + this.player.height * 0.5
@@ -136,11 +136,11 @@ export class Diving extends PlayerState {
   constructor(player: Player) {
     super(states.DIVING, player);
   }
-  enter(): void {
+  override enter(): void {
     resetFrames(this.player, 6, 6);
     this.player.vy = 30;
   }
-  handleInput(inputActions: Set<string>): void {
+  override handleInput(inputActions: Set<string>): void {
     this.game.particleAnimator.addFire(
       this.player.x + this.player.width * 0.5,
       this.player.y + this.player.height * 0.5
@@ -157,10 +157,10 @@ export class Hit extends PlayerState {
   constructor(player: Player) {
     super(states.HIT, player);
   }
-  enter(): void {
+  override enter(): void {
     resetFrames(this.player, 4, 10);
   }
-  handleInput(inputActions: Set<string>): void {
+  override handleInput(inputActions: Set<string>): void {
     if (this.player.spriteData.frameX >= 10 && this.player.onGround()) {
       this.player.setState(states.RUNNING, 1);
     } else if (this.player.spriteData.frameX >= 10 && !this.player.onGround()) {

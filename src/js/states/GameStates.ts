@@ -14,19 +14,19 @@ export class GameState {
 }
 
 export class MainMenuState extends GameState {
-  draw(context: CanvasRenderingContext2D): void {
+  override draw(context: CanvasRenderingContext2D): void {
     this.game.UI.draw(context);
   }
 }
 
 export class GameOverState extends GameState {
-  draw(context: CanvasRenderingContext2D): void {
+  override draw(context: CanvasRenderingContext2D): void {
     this.game.UI.draw(context);
   }
 }
 
 export class LevelCompleteState extends GameState {
-  draw(context: CanvasRenderingContext2D): void {
+  override draw(context: CanvasRenderingContext2D): void {
     this.game.UI.draw(context);
   }
 }

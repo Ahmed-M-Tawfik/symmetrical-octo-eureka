@@ -5,7 +5,6 @@ import { GAME_CONFIG } from "../data/GameConfig.js";
 import type { ISpriteAnimatable } from "../systems/SpriteAnimator.js";
 
 export class CollisionAnimation extends GameEntity implements ISpriteAnimatable {
-  draw?: (context: CanvasRenderingContext2D) => void;
   spriteData: SpriteData;
   sizeModifier: number;
   reachedLastSprite: boolean = false;
@@ -34,7 +33,7 @@ export class CollisionAnimation extends GameEntity implements ISpriteAnimatable 
     this.sizeModifier = sizeModifier;
   }
 
-  update(deltaTime: number): void {
+  override update(deltaTime: number): void {
     this.x -= this.game.speed;
 
     if (!this.reachedLastSprite && this.spriteData.frameX == this.spriteData.maxFrame) {

@@ -3,18 +3,18 @@ import { GameState } from "./GameStates.js";
 export class PlayingState extends GameState {
   subState: "active" | "paused" = "active";
 
-  enter(): void {
+  override enter(): void {
     this.subState = "active";
     this.game.session.player.currentState = this.game.session.player.states[0];
     this.game.session.player.currentState.enter();
   }
 
-  exit(): void {
+  override exit(): void {
     // Clear all input actions to prevent stuck keys when leaving playing state
     this.game.input.actions.clear();
   }
 
-  update(deltaTime: number): void {
+  override update(deltaTime: number): void {
     if (this.subState === "paused") return;
     this.game.session.time += deltaTime;
     this.evaluateEndGameCondition();
@@ -57,7 +57,7 @@ export class PlayingState extends GameState {
     }
   }
 
-  draw(context: CanvasRenderingContext2D): void {
+  override draw(context: CanvasRenderingContext2D): void {
     this.game.gameLevels[this.game.currentGameLevel].draw(context);
     this.game.spriteAnimator.draw(context, this.game.session.player, this.game.debug);
     this.game.session.enemies.forEach((enemy) => this.game.spriteAnimator.draw(context, enemy, this.game.debug));
@@ -70,7 +70,7 @@ export class PlayingState extends GameState {
     this.game.UI.draw(context);
   }
 
-  handleInput(event: KeyboardEvent): void {
+  override handleInput(event: KeyboardEvent): void {
     const pauseKey = this.game.input.keyBindings.actionToKey["pause"].key;
     if (event.key === pauseKey) {
       if (this.subState === "active") {

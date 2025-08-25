@@ -20,14 +20,14 @@ export class Dust extends GameEntity {
     this.shrink = cfg.shrink;
   }
 
-  update(): void {
+  override update(): void {
     this.x -= this.speedX + this.game.speed;
     this.y -= this.speedY;
     this.size *= this.shrink;
     if (this.size < 0.5) this.markedForDeletion = true;
   }
 
-  draw(context: CanvasRenderingContext2D): void {
+  override draw(context: CanvasRenderingContext2D): void {
     context.save();
     context.beginPath();
     context.arc(this.x, this.y, this.size, 0, Math.PI * 2);
@@ -65,7 +65,7 @@ export class Splash extends GameEntity {
     this.gravity = cfg.gravity ?? 0.1;
   }
 
-  update(): void {
+  override update(): void {
     this.x -= this.speedX + this.game.speed;
     this.y -= this.speedY;
     this.size *= this.shrink;
@@ -74,7 +74,7 @@ export class Splash extends GameEntity {
     this.y += this.decelRate;
   }
 
-  draw(context: CanvasRenderingContext2D): void {
+  override draw(context: CanvasRenderingContext2D): void {
     context.drawImage(this.image, this.x, this.y, this.size, this.size);
   }
 }
@@ -101,7 +101,7 @@ export class Fire extends GameEntity {
     this.va = typeof cfg.va === "number" ? cfg.va : Math.random() * (cfg.va!.max - cfg.va!.min) + cfg.va!.min;
   }
 
-  update(): void {
+  override update(): void {
     this.x -= this.speedX + this.game.speed;
     this.y -= this.speedY;
     this.size *= this.shrink;
@@ -110,7 +110,7 @@ export class Fire extends GameEntity {
     this.x += Math.sin(this.angle * 10);
   }
 
-  draw(context: CanvasRenderingContext2D): void {
+  override draw(context: CanvasRenderingContext2D): void {
     context.save();
     context.translate(this.x, this.y);
     context.rotate(this.angle);

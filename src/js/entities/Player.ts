@@ -18,7 +18,7 @@ import { FloatingMessage } from "./FloatingMessages.js";
 import { GameEntity } from "./GameEntity.js";
 
 export class Player extends GameEntity implements ISpriteAnimatable {
-  draw?: (context: CanvasRenderingContext2D) => void;
+  override draw?: (context: CanvasRenderingContext2D) => void;
   spriteData: SpriteData;
   states: PlayerState[];
   currentState: PlayerState;

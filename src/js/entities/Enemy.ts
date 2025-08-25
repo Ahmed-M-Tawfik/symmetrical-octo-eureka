@@ -42,7 +42,7 @@ export class FlyingEnemy extends GameEntity implements ISpriteAnimatable {
     }
   }
 
-  update(deltaTime: number): void {
+  override update(deltaTime: number): void {
     this.x -= this.speedX + this.game.speed;
     this.y += this.speedY;
     if (this.x + this.width < 0) this.markedForDeletion = true;
@@ -73,7 +73,7 @@ export class GroundEnemy extends GameEntity implements ISpriteAnimatable {
     this.speedY = 0;
   }
 
-  update(deltaTime: number): void {
+  override update(deltaTime: number): void {
     this.x -= this.speedX + this.game.speed;
     this.y += this.speedY;
     if (this.x + this.width < 0) this.markedForDeletion = true;
@@ -101,7 +101,7 @@ export class ClimbingEnemy extends GameEntity implements ISpriteAnimatable {
     this.speedY = Math.random() > 0.5 ? 1 : -1;
   }
 
-  update(deltaTime: number): void {
+  override update(deltaTime: number): void {
     this.x -= this.speedX + this.game.speed;
     this.y += this.speedY;
     if (this.x + this.width < 0) this.markedForDeletion = true;
@@ -110,7 +110,7 @@ export class ClimbingEnemy extends GameEntity implements ISpriteAnimatable {
     }
   }
 
-  draw(context: CanvasRenderingContext2D): void {
+  override draw(context: CanvasRenderingContext2D): void {
     // Draw the web line
     context.beginPath();
     context.moveTo(this.x + this.width / 2, 0);

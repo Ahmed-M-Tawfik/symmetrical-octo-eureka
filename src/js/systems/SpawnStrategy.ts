@@ -19,7 +19,7 @@ export class RandomSpawnStrategy extends SpawnStrategy {
     this.enemyTimer = 0;
     this.enemyInterval = enemyInterval;
   }
-  update(deltaTime: number): void {
+  override update(deltaTime: number): void {
     super.update(deltaTime);
     this.enemyTimer += deltaTime;
     if (this.enemyTimer > this.enemyInterval) {
@@ -58,7 +58,7 @@ export class Manual1SpawnStrategy extends SpawnStrategy {
     this.nextSpawnIndex = 0;
   }
 
-  update(deltaTime: number): void {
+  override update(deltaTime: number): void {
     super.update(deltaTime);
     this.enemyTimer += deltaTime;
     while (

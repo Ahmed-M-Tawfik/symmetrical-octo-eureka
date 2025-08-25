@@ -15,14 +15,14 @@ export class FloatingMessage extends GameEntity {
     this.timer = 0;
   }
 
-  update(): void {
+  override update(): void {
     this.x += (this.targetX - this.x) * 0.03;
     this.y += (this.targetY - this.y) * 0.03;
     this.timer++;
     if (this.timer > 100) this.markedForDeletion = true;
   }
 
-  draw(context: CanvasRenderingContext2D): void {
+  override draw(context: CanvasRenderingContext2D): void {
     context.save();
     context.font = "20px Creepster";
     context.fillStyle = "white";
