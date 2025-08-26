@@ -50,6 +50,13 @@ export class Game {
       this.debug = active;
     });
 
+    eventBus.on("test:debug_next_level", () => {
+      this.nextLevel();
+    });
+    eventBus.on("test:debug_retry_level", () => {
+      this.retryLevel();
+    });
+
     this.gameLevels = getLevelSequence(this);
     this.currentGameLevel = 0;
     atIndex(this.gameLevels, this.currentGameLevel).start();

@@ -56,13 +56,13 @@ export class InputHandler {
       eventBus.emit("test:debug_active", { active: !this.game.debug });
     }
     if (e.key === this.getKeyBinding(this.keyBindings.actionToKey, "debug_add_score").key) {
-      this.game.session.score += 10;
+      eventBus.emit("test:debug_add_score", {});
     }
     if (e.key === this.getKeyBinding(this.keyBindings.actionToKey, "debug_next_level").key) {
-      this.game.nextLevel();
+      eventBus.emit("test:debug_next_level", {});
     }
     if (e.key === this.getKeyBinding(this.keyBindings.actionToKey, "debug_retry_level").key) {
-      this.game.retryLevel();
+      eventBus.emit("test:debug_retry_level", {});
     }
   }
 

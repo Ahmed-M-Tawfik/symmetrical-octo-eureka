@@ -6,6 +6,7 @@ import type { FloatingMessage } from "../entities/FloatingMessages.js";
 import type { CollisionAnimation } from "../entities/CollisionAnimation.js";
 import type { Dust, Splash, Fire } from "../entities/Particles.js";
 import type { FlyingEnemy, GroundEnemy, ClimbingEnemy } from "../entities/Enemy.js";
+import { eventBus } from "../engine/EventBus.js";
 
 export class GameSession {
   game: Game;
@@ -23,6 +24,10 @@ export class GameSession {
   constructor(game: Game) {
     this.game = game;
     this.reset();
+
+    eventBus.on("test:debug_add_score", () => {
+      this.score += 10;
+    });
   }
 
   reset(): void {

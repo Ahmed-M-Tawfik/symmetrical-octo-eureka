@@ -63,5 +63,8 @@ export type GameEventMap = {
 
   // Test/automation events
   "test:debug_active": { active: boolean };
+  "test:debug_add_score": {};
+  "test:debug_next_level": {};
+  "test:debug_retry_level": {};
   "test:event": { name: string; payload?: any };
 };
