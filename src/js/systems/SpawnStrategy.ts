@@ -1,8 +1,9 @@
 import { atIndex } from "../utils/arrayUtils.js";
-import { FlyingEnemy, ClimbingEnemy, GroundEnemy } from "../entities/Enemy.js";
+import { FlyingEnemy, ClimbingEnemy, GroundEnemy, Enemy } from "../entities/Enemy.js";
 
 import type { Game } from "../Main.js";
 import type { ISpawnData } from "../data/ConfigTypes.js";
+import { eventBus } from "../engine/EventBus.js";
 
 export class SpawnStrategy {
   game: Game;
@@ -34,12 +35,16 @@ export class RandomSpawnStrategy extends SpawnStrategy {
     }
   }
   addEnemy(): void {
+    let spawnedEnemies: Enemy[] = [];
     if (this.game.speed > 0 && Math.random() < 0.5) {
-      this.game.session.enemies.push(new GroundEnemy(this.game));
+      spawnedEnemies.push(new GroundEnemy(this.game));
     } else if (this.game.speed > 0) {
-      this.game.session.enemies.push(new ClimbingEnemy(this.game));
+      spawnedEnemies.push(new ClimbingEnemy(this.game));
     }
-    this.game.session.enemies.push(new FlyingEnemy(this.game));
+    spawnedEnemies.push(new FlyingEnemy(this.game));
+
+    this.game.session.enemies.push(...spawnedEnemies);
+    eventBus.emit("enemy:spawned", { enemies: spawnedEnemies });
   }
 }
 
@@ -90,11 +95,13 @@ export class Manual1SpawnStrategy extends SpawnStrategy {
         enemy = new GroundEnemy(this.game);
         break;
       default:
-        return;
+        throw new Error(`Unknown enemy type: ${event.type}`);
     }
     enemy.x = this.game.width + event.x;
     enemy.y = event.y;
     enemy.speedX = event.speed;
     this.game.session.enemies.push(enemy);
+
+    eventBus.emit("enemy:spawned", { enemies: [enemy] });
   }
 }

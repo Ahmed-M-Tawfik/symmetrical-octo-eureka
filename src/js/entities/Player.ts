@@ -6,6 +6,7 @@ import { Diving, Falling, Hit, Jumping, PlayerState, Rolling, Running, Sitting }
 import { AssetManager } from "../systems/AssetManager.js";
 import type { ISpriteAnimatable } from "../systems/SpriteAnimator.js";
 import { atIndex, first } from "../utils/arrayUtils.js";
+import type { Enemy } from "./Enemy.js";
 import { GameEntity } from "./GameEntity.js";
 
 export class Player extends GameEntity implements ISpriteAnimatable {
@@ -45,7 +46,7 @@ export class Player extends GameEntity implements ISpriteAnimatable {
   }
 
   updateWithActions(actions: Set<string>, deltaTime: number): void {
-    this.checkCollision();
+    this.checkCollisionWithEnemy();
     this.currentState.handleInput(actions);
 
     // horizontal movement
@@ -88,15 +89,16 @@ export class Player extends GameEntity implements ISpriteAnimatable {
     this.setState(first(this.states).state, 0);
   }
 
-  checkCollision(): void {
-    this.game.session.enemies.forEach((enemy: GameEntity) => {
+  checkCollisionWithEnemy(): void {
+    this.game.session.enemies.forEach((enemy: Enemy) => {
+      let collidedEnemies: Enemy[] = [];
       if (this.collidesWith(enemy)) {
-        eventBus.emit("collision:detected", {
-          x: enemy.x,
-          y: enemy.y,
-          entity: enemy,
-        });
+        collidedEnemies.push(enemy);
       }
+      eventBus.emit("enemy:collisionWithPlayer", {
+        enemies: collidedEnemies,
+        player: this,
+      });
     });
   }
 }

@@ -5,7 +5,7 @@ import type { Game } from "../Main.js";
 import { FloatingMessage } from "../entities/FloatingMessages.js";
 import { CollisionAnimation } from "../entities/CollisionAnimation.js";
 import type { Dust, Splash, Fire } from "../entities/Particles.js";
-import type { FlyingEnemy, GroundEnemy, ClimbingEnemy } from "../entities/Enemy.js";
+import type { Enemy } from "../entities/Enemy.js";
 import { eventBus } from "../engine/EventBus.js";
 import { Diving, Rolling, states } from "../states/PlayerStates.js";
 import { atIndex } from "../utils/arrayUtils.js";
@@ -14,7 +14,7 @@ export class GameSession {
   game: Game;
   player!: Player;
   particles: Array<Dust | Splash | Fire> = [];
-  enemies: Array<FlyingEnemy | GroundEnemy | ClimbingEnemy> = [];
+  enemies: Array<Enemy> = [];
   collisions: CollisionAnimation[] = [];
   floatingMessages: FloatingMessage[] = [];
   lives: number = 0;
@@ -30,19 +30,33 @@ export class GameSession {
     eventBus.on("test:debug_add_score", () => {
       this.score += 10;
     });
-    eventBus.on("collision:detected", (data) => {
-      if (this.player.currentState instanceof Diving || this.player.currentState instanceof Rolling) {
-        this.score++;
-        this.floatingMessages.push(new FloatingMessage("+1", data.entity.x, data.entity.y, 100, 50));
-      } else {
-        this.player.setState(states.HIT, 0);
-        this.lives--;
-        if (this.lives <= 0) {
-          eventBus.emit("level:fail", {
-            levelId: this.game.currentGameLevel,
-            level: atIndex(this.game.gameLevels, this.game.currentGameLevel),
-          });
+    eventBus.on("enemy:collisionWithPlayer", (data) => {
+      let enemiesDamagedPlayer: Enemy[] = [];
+      let enemiesDefeatedByPlayer: Enemy[] = [];
+
+      data.enemies.forEach((enemy) => {
+        if (this.player.currentState instanceof Diving || this.player.currentState instanceof Rolling) {
+          this.score++;
+          this.floatingMessages.push(new FloatingMessage("+1", enemy.x, enemy.y, 100, 50));
+          enemiesDefeatedByPlayer.push(enemy);
+        } else {
+          this.player.setState(states.HIT, 0);
+          this.lives--;
+          enemiesDamagedPlayer.push(enemy);
+          if (this.lives <= 0) {
+            eventBus.emit("level:fail", {
+              levelId: this.game.currentGameLevel,
+              level: atIndex(this.game.gameLevels, this.game.currentGameLevel),
+            });
+          }
         }
+      });
+
+      if (enemiesDamagedPlayer.length > 0) {
+        eventBus.emit("enemy:damagedPlayer", { enemies: enemiesDamagedPlayer, player: this.player });
+      }
+      if (enemiesDefeatedByPlayer.length > 0) {
+        eventBus.emit("enemy:defeatedByPlayer", { enemies: enemiesDefeatedByPlayer, player: this.player });
       }
     });
   }

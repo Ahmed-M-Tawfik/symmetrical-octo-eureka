@@ -5,19 +5,28 @@ import { ENEMY_CONFIG } from "../data/GameConfig.js";
 import type { ISpriteAnimatable } from "../systems/SpriteAnimator.js";
 import { AssetManager } from "../systems/AssetManager.js";
 import { eventBus } from "../engine/EventBus.js";
+import type { IEnemyConfig } from "../data/ConfigTypes.js";
 
-export class Enemy extends GameEntity {
-  constructor(game: Game, x: number, y: number, width: number, height: number) {
-    super(game, x, y, width, height);
-    eventBus.on("collision:detected", (data) => {
-      if (data.entity != this) return;
-      this.markedForDeletion = true;
+export class Enemy extends GameEntity implements ISpriteAnimatable {
+  spriteData: SpriteData;
+  constructor(game: Game, cfg: IEnemyConfig, x: number, y: number) {
+    super(game, x, y, cfg.width, cfg.height);
+
+    this.spriteData = new SpriteData(game, cfg.fps);
+    this.spriteData.spriteWidth = cfg.spriteWidth;
+    this.spriteData.spriteHeight = cfg.spriteHeight;
+    this.spriteData.maxFrame = cfg.maxFrame;
+    this.spriteData.image = AssetManager.getImage(cfg.imageId);
+
+    eventBus.on("enemy:collisionWithPlayer", (data) => {
+      if (data.enemies.includes(this)) {
+        this.markedForDeletion = true;
+      }
     });
   }
 }
 
-export class FlyingEnemy extends Enemy implements ISpriteAnimatable {
-  spriteData: SpriteData;
+export class FlyingEnemy extends Enemy {
   speedX: number;
   speedY: number;
   angle: number;
@@ -28,13 +37,8 @@ export class FlyingEnemy extends Enemy implements ISpriteAnimatable {
     if (!cfg) throw new Error("Flying enemy config not found");
     const spawnX = x !== undefined ? x : game.width + Math.random() * game.width * 0.5;
     const spawnY = y !== undefined ? y : Math.random() * game.height * 0.5;
-    super(game, spawnX, spawnY, cfg.width, cfg.height);
 
-    this.spriteData = new SpriteData(game, 20);
-    this.spriteData.spriteWidth = cfg.spriteWidth;
-    this.spriteData.spriteHeight = cfg.spriteHeight;
-    this.spriteData.maxFrame = cfg.maxFrame;
-    this.spriteData.image = AssetManager.getImage(cfg.imageId);
+    super(game, cfg, spawnX, spawnY);
 
     if (speedX !== undefined) {
       this.speedX = speedX;
@@ -69,8 +73,7 @@ export class FlyingEnemy extends Enemy implements ISpriteAnimatable {
   }
 }
 
-export class GroundEnemy extends Enemy implements ISpriteAnimatable {
-  spriteData: SpriteData;
+export class GroundEnemy extends Enemy {
   speedX: number;
   speedY: number;
 
@@ -79,13 +82,8 @@ export class GroundEnemy extends Enemy implements ISpriteAnimatable {
     if (!cfg) throw new Error("Ground enemy config not found");
     const x = game.width;
     const y = game.height - cfg.height - game.groundMargin;
-    super(game, x, y, cfg.width, cfg.height);
 
-    this.spriteData = new SpriteData(game, 20);
-    this.spriteData.spriteWidth = cfg.spriteWidth;
-    this.spriteData.spriteHeight = cfg.spriteHeight;
-    this.spriteData.image = AssetManager.getImage(cfg.imageId);
-    this.spriteData.maxFrame = cfg.maxFrame;
+    super(game, cfg, x, y);
 
     this.speedX = typeof cfg.speedX === "number" ? cfg.speedX : 0;
     this.speedY = 0;
@@ -98,8 +96,7 @@ export class GroundEnemy extends Enemy implements ISpriteAnimatable {
   }
 }
 
-export class ClimbingEnemy extends Enemy implements ISpriteAnimatable {
-  spriteData: SpriteData;
+export class ClimbingEnemy extends Enemy {
   speedX: number;
   speedY: number;
 
@@ -108,13 +105,8 @@ export class ClimbingEnemy extends Enemy implements ISpriteAnimatable {
     if (!cfg) throw new Error("Climbing enemy config not found");
     const x = game.width;
     const y = Math.random() * game.height * 0.5;
-    super(game, x, y, cfg.width, cfg.height);
 
-    this.spriteData = new SpriteData(game, 20);
-    this.spriteData.spriteWidth = cfg.spriteWidth;
-    this.spriteData.spriteHeight = cfg.spriteHeight;
-    this.spriteData.image = AssetManager.getImage(cfg.imageId);
-    this.spriteData.maxFrame = cfg.maxFrame;
+    super(game, cfg, x, y);
 
     this.speedX = typeof cfg.speedX === "number" ? cfg.speedX : 0;
     this.speedY = Math.random() > 0.5 ? 1 : -1;

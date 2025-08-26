@@ -1,6 +1,11 @@
+import type { Enemy } from "../entities/Enemy.js";
 import type { GameEntity } from "../entities/GameEntity.js";
+import type { Player } from "../entities/Player.js";
 import type { Level } from "../Level.js";
 
+// Game EVENTS, not COMMANDS
+// We use events here to communicate "this happened" and not "do this"
+// This is not a command bus, as the nature of a command bus is to encapsulate a request for action
 export type GameEventMap = {
   // Player events
   "player:death": { hitGameEntity: GameEntity };
@@ -18,8 +23,10 @@ export type GameEventMap = {
   // "player:update": { x: number; y: number; vy: number; remainingLives: number; speed: number };
 
   // Enemy events
-  "enemy:spawn": { type: string; enemy: GameEntity };
-  "enemy:defeated": { type: string; enemy: GameEntity };
+  "enemy:spawned": { enemies: Enemy[] };
+  "enemy:collisionWithPlayer": { enemies: Enemy[]; player: Player };
+  "enemy:defeatedByPlayer": { enemies: Enemy[]; player: Player };
+  "enemy:damagedPlayer": { enemies: Enemy[]; player: Player };
 
   // Level events
   "level:start": { levelId: number; level: Level }; // any level start
@@ -54,7 +61,7 @@ export type GameEventMap = {
   // Particle events
   // "particle:spawn": { type: string; x: number; y: number };
 
-  // Collision events
+  // Collision events - not enemies
   "collision:detected": { x: number; y: number; entity: GameEntity };
 
   // Input events

@@ -33,6 +33,7 @@ export const ENEMY_CONFIG: Record<string, IEnemyConfig> = {
     imageId: "enemy_fly",
     speedX: { min: 1, max: 2 },
     va: { min: 0.1, max: 0.2 },
+    fps: 20,
   },
   ground: {
     width: 60,
@@ -42,6 +43,7 @@ export const ENEMY_CONFIG: Record<string, IEnemyConfig> = {
     maxFrame: 1,
     imageId: "enemy_plant",
     speedX: 0,
+    fps: 20,
   },
   climbing: {
     width: 120,
@@ -52,6 +54,7 @@ export const ENEMY_CONFIG: Record<string, IEnemyConfig> = {
     imageId: "enemy_spider_big",
     speedX: 0,
     speedY: { min: -1, max: 1 },
+    fps: 20,
   },
 };
 export const GAME_CONFIG: IGameConfig = {

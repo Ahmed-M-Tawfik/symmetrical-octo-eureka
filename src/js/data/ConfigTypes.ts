@@ -55,6 +55,7 @@ export interface IEnemyConfig {
   spriteHeight: number;
   maxFrame: number;
   imageId: string;
+  fps: number;
   speedX?: number | { min: number; max: number };
   speedY?: number | { min: number; max: number };
   va?: number | { min: number; max: number };

@@ -14,14 +14,12 @@ export class SpriteAnimator {
 
   constructor(game: Game) {
     this.game = game;
-    eventBus.on("collision:detected", (data) => {
-      this.game.session.collisions.push(
-        new CollisionAnimation(
-          this.game,
-          data.entity.x + data.entity.width * 0.5,
-          data.entity.y + data.entity.height * 0.5
-        )
-      );
+    eventBus.on("enemy:collisionWithPlayer", (data) => {
+      data.enemies.forEach((enemy) => {
+        this.game.session.collisions.push(
+          new CollisionAnimation(this.game, enemy.x + enemy.width * 0.5, enemy.y + enemy.height * 0.5)
+        );
+      });
     });
   }
 
