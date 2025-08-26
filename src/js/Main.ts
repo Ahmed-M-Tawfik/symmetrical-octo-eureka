@@ -49,21 +49,30 @@ export class Game {
     eventBus.on("test:debug_active", ({ active }) => {
       this.debug = active;
     });
-
     eventBus.on("test:debug_next_level", () => {
       this.nextLevel();
     });
     eventBus.on("test:debug_retry_level", () => {
       this.retryLevel();
     });
+    eventBus.on("level:fail", () => {
+      this.changeState(this.states.gameOver);
+    });
+    eventBus.on("level:complete", () => {
+      this.changeState(this.states.levelComplete);
+    });
 
     this.gameLevels = getLevelSequence(this);
     this.currentGameLevel = 0;
     atIndex(this.gameLevels, this.currentGameLevel).start();
+    eventBus.emit("level:start", {
+      levelId: this.currentGameLevel,
+      level: atIndex(this.gameLevels, this.currentGameLevel),
+    });
     this.groundMargin = atIndex(this.gameLevels, this.currentGameLevel).background.groundMargin;
 
     this.session = new GameSession(this);
-    this.spriteAnimator = new SpriteAnimator();
+    this.spriteAnimator = new SpriteAnimator(this);
     this.particleAnimator = new ParticleAnimator(this);
     this.input = new InputHandler(this, context.canvas, new KeyBindings(DEFAULT_KEY_BINDINGS));
     this.UI = new UI(this);
@@ -94,17 +103,28 @@ export class Game {
   _resetLevelState() {
     this.session.reset();
     atIndex(this.gameLevels, this.currentGameLevel).start();
+    this.changeState(this.states.playing);
+    eventBus.emit("level:start", {
+      levelId: this.currentGameLevel,
+      level: atIndex(this.gameLevels, this.currentGameLevel),
+    });
   }
 
   nextLevel() {
     this.currentGameLevel = (this.currentGameLevel + 1) % this.gameLevels.length;
     this._resetLevelState();
-    this.changeState(this.states.playing);
+    eventBus.emit("level:next", {
+      levelId: this.currentGameLevel,
+      level: atIndex(this.gameLevels, this.currentGameLevel),
+    });
   }
 
   retryLevel() {
     this._resetLevelState();
-    this.changeState(this.states.playing);
+    eventBus.emit("level:retry", {
+      levelId: this.currentGameLevel,
+      level: atIndex(this.gameLevels, this.currentGameLevel),
+    });
   }
 }
 

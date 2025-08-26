@@ -1,4 +1,5 @@
 import type { GameEntity } from "../entities/GameEntity.js";
+import type { Level } from "../Level.js";
 
 export type GameEventMap = {
   // Player events
@@ -17,17 +18,17 @@ export type GameEventMap = {
   // "player:update": { x: number; y: number; vy: number; remainingLives: number; speed: number };
 
   // Enemy events
-  "enemy:spawn": { type: string; x: number; y: number };
-  "enemy:defeated": { type: string; x: number; y: number };
+  "enemy:spawn": { type: string; enemy: GameEntity };
+  "enemy:defeated": { type: string; enemy: GameEntity };
 
   // Level events
-  "level:start": { levelId: number }; // any level start
+  "level:start": { levelId: number; level: Level }; // any level start
 
-  "level:complete": { levelId: number }; // load win screen
-  "level:next": { levelId: number }; // load next level
+  "level:complete": { levelId: number; level: Level }; // load win screen
+  "level:next": { levelId: number; level: Level }; // load next level
 
-  "level:fail": { levelId: number }; // load lose screen
-  "level:retry": { levelId: number }; // reload level
+  "level:fail": { levelId: number; level: Level }; // load lose screen
+  "level:retry": { levelId: number; level: Level }; // reload level
 
   // Game state events
   "game:update": { deltaTime: number; active_actions: string[] }; // input actions
@@ -39,11 +40,11 @@ export type GameEventMap = {
   // "game:stateChange": { from: string; to: string };
 
   // Score events
-  "score:change": { amount: number; total: number };
+  // "score:change": { amount: number; total: number };
   // "score:milestone": { total: number; milestone: number };
 
   // UI events
-  "ui:buttonClick": { button: string };
+  "ui:buttonClick": { button: string; clickEvent: MouseEvent };
   // "ui:floatingMessage": { value: string; x: number; y: number };
 
   // Asset events
@@ -57,8 +58,8 @@ export type GameEventMap = {
   "collision:detected": { x: number; y: number; entity: GameEntity };
 
   // Input events
-  "input:actionStart": { action: string };
-  "input:actionEnd": { action: string };
+  // "input:actionStart": { action: string };
+  // "input:actionEnd": { action: string };
   // to get list of active actions, subscribe to "game:update"
 
   // Test/automation events
@@ -66,5 +67,4 @@ export type GameEventMap = {
   "test:debug_add_score": {};
   "test:debug_next_level": {};
   "test:debug_retry_level": {};
-  "test:event": { name: string; payload?: any };
 };

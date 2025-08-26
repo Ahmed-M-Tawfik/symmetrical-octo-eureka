@@ -1,6 +1,7 @@
 import { GameState } from "./GameStates.js";
-import { first } from "../utils/arrayUtils.js";
+import { atIndex, first } from "../utils/arrayUtils.js";
 import type { Level } from "../Level.js";
+import { eventBus } from "../engine/EventBus.js";
 
 export class PlayingState extends GameState {
   subState: "active" | "paused" = "active";
@@ -53,9 +54,15 @@ export class PlayingState extends GameState {
   evaluateEndGameCondition(): void {
     if (this.game.session.time > this.game.session.maxTime) {
       if (this.game.session.score > this.game.session.winningScore) {
-        this.game.changeState(this.game.states.levelComplete);
+        eventBus.emit("level:complete", {
+          levelId: this.game.currentGameLevel,
+          level: atIndex(this.game.gameLevels, this.game.currentGameLevel),
+        });
       } else {
-        this.game.changeState(this.game.states.gameOver);
+        eventBus.emit("level:fail", {
+          levelId: this.game.currentGameLevel,
+          level: atIndex(this.game.gameLevels, this.game.currentGameLevel),
+        });
       }
     }
   }
