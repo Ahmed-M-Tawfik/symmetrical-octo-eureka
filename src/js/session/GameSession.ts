@@ -2,11 +2,12 @@ import { Player } from "../entities/Player.js";
 import { GAME_CONFIG } from "../data/GameConfig.js";
 
 import type { Game } from "../Main.js";
-import type { FloatingMessage } from "../entities/FloatingMessages.js";
-import type { CollisionAnimation } from "../entities/CollisionAnimation.js";
+import { FloatingMessage } from "../entities/FloatingMessages.js";
+import { CollisionAnimation } from "../entities/CollisionAnimation.js";
 import type { Dust, Splash, Fire } from "../entities/Particles.js";
 import type { FlyingEnemy, GroundEnemy, ClimbingEnemy } from "../entities/Enemy.js";
 import { eventBus } from "../engine/EventBus.js";
+import { Diving, Rolling, states } from "../states/PlayerStates.js";
 
 export class GameSession {
   game: Game;
@@ -27,6 +28,26 @@ export class GameSession {
 
     eventBus.on("test:debug_add_score", () => {
       this.score += 10;
+    });
+    eventBus.on("collision:detected", (data) => {
+      this.collisions.push(
+        new CollisionAnimation(
+          this.game,
+          data.entity.x + data.entity.width * 0.5,
+          data.entity.y + data.entity.height * 0.5
+        )
+      );
+
+      if (this.player.currentState instanceof Diving || this.player.currentState instanceof Rolling) {
+        this.score++;
+        this.floatingMessages.push(new FloatingMessage("+1", data.entity.x, data.entity.y, 100, 50));
+      } else {
+        this.player.setState(states.HIT, 0);
+        this.lives--;
+        if (this.lives <= 0) {
+          this.game.changeState(this.game.states.gameOver);
+        }
+      }
     });
   }
 

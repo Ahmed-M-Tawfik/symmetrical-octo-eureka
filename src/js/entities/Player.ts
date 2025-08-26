@@ -1,23 +1,12 @@
 import { GAME_CONFIG } from "../data/GameConfig.js";
-import { first, atIndex } from "../utils/arrayUtils.js";
+import { eventBus } from "../engine/EventBus.js";
 import type { Game } from "../Main.js";
 import { SpriteData } from "../SpriteData.js";
-import {
-  Diving,
-  Falling,
-  Hit,
-  Jumping,
-  PlayerState,
-  Rolling,
-  Running,
-  Sitting,
-  states,
-} from "../states/PlayerStates.js";
-import type { ISpriteAnimatable } from "../systems/SpriteAnimator.js";
-import { CollisionAnimation } from "./CollisionAnimation.js";
-import { FloatingMessage } from "./FloatingMessages.js";
-import { GameEntity } from "./GameEntity.js";
+import { Diving, Falling, Hit, Jumping, PlayerState, Rolling, Running, Sitting } from "../states/PlayerStates.js";
 import { AssetManager } from "../systems/AssetManager.js";
+import type { ISpriteAnimatable } from "../systems/SpriteAnimator.js";
+import { atIndex, first } from "../utils/arrayUtils.js";
+import { GameEntity } from "./GameEntity.js";
 
 export class Player extends GameEntity implements ISpriteAnimatable {
   override draw?: (context: CanvasRenderingContext2D) => void;
@@ -102,21 +91,11 @@ export class Player extends GameEntity implements ISpriteAnimatable {
   checkCollision(): void {
     this.game.session.enemies.forEach((enemy: GameEntity) => {
       if (this.collidesWith(enemy)) {
-        // collision detected
-        enemy.markedForDeletion = true;
-        this.game.session.collisions.push(
-          new CollisionAnimation(this.game, enemy.x + enemy.width * 0.5, enemy.y + enemy.height * 0.5)
-        );
-        if (this.currentState instanceof Diving || this.currentState instanceof Rolling) {
-          this.game.session.score++;
-          this.game.session.floatingMessages.push(new FloatingMessage("+1", enemy.x, enemy.y, 100, 50));
-        } else {
-          this.setState(states.HIT, 0);
-          this.game.session.lives--;
-          if (this.game.session.lives <= 0) {
-            this.game.changeState(this.game.states.gameOver);
-          }
-        }
+        eventBus.emit("collision:detected", {
+          x: enemy.x,
+          y: enemy.y,
+          entity: enemy,
+        });
       }
     });
   }

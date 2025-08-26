@@ -4,8 +4,19 @@ import type { Game } from "../Main.js";
 import { ENEMY_CONFIG } from "../data/GameConfig.js";
 import type { ISpriteAnimatable } from "../systems/SpriteAnimator.js";
 import { AssetManager } from "../systems/AssetManager.js";
+import { eventBus } from "../engine/EventBus.js";
 
-export class FlyingEnemy extends GameEntity implements ISpriteAnimatable {
+export class Enemy extends GameEntity {
+  constructor(game: Game, x: number, y: number, width: number, height: number) {
+    super(game, x, y, width, height);
+    eventBus.on("collision:detected", (data) => {
+      if (data.entity != this) return;
+      this.markedForDeletion = true;
+    });
+  }
+}
+
+export class FlyingEnemy extends Enemy implements ISpriteAnimatable {
   spriteData: SpriteData;
   speedX: number;
   speedY: number;
@@ -58,7 +69,7 @@ export class FlyingEnemy extends GameEntity implements ISpriteAnimatable {
   }
 }
 
-export class GroundEnemy extends GameEntity implements ISpriteAnimatable {
+export class GroundEnemy extends Enemy implements ISpriteAnimatable {
   spriteData: SpriteData;
   speedX: number;
   speedY: number;
@@ -87,7 +98,7 @@ export class GroundEnemy extends GameEntity implements ISpriteAnimatable {
   }
 }
 
-export class ClimbingEnemy extends GameEntity implements ISpriteAnimatable {
+export class ClimbingEnemy extends Enemy implements ISpriteAnimatable {
   spriteData: SpriteData;
   speedX: number;
   speedY: number;
