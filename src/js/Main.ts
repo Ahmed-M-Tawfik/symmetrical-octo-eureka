@@ -64,11 +64,6 @@ export class Game {
 
     this.gameLevels = getLevelSequence(this);
     this.currentGameLevel = 0;
-    atIndex(this.gameLevels, this.currentGameLevel).start();
-    eventBus.emit("level:start", {
-      levelId: this.currentGameLevel,
-      level: atIndex(this.gameLevels, this.currentGameLevel),
-    });
     this.groundMargin = atIndex(this.gameLevels, this.currentGameLevel).background.groundMargin;
 
     this.session = new GameSession(this);
@@ -84,9 +79,10 @@ export class Game {
       mainMenu: new MainMenuState(this),
       levelComplete: new LevelCompleteState(this),
     };
-    // change state only using changeState(state) method
-    this.state = this.states.playing;
-    this.state.enter();
+    // init here - change state only using changeState(state) method
+    this.state = this.states.mainMenu;
+
+    this._resetLevelStateAndStart();
   }
   update(deltaTime: number) {
     this.state.update(deltaTime);
@@ -100,7 +96,7 @@ export class Game {
     this.state.enter();
   }
 
-  _resetLevelState() {
+  _resetLevelStateAndStart() {
     this.session.reset();
     atIndex(this.gameLevels, this.currentGameLevel).start();
     this.changeState(this.states.playing);
@@ -112,7 +108,7 @@ export class Game {
 
   nextLevel() {
     this.currentGameLevel = (this.currentGameLevel + 1) % this.gameLevels.length;
-    this._resetLevelState();
+    this._resetLevelStateAndStart();
     eventBus.emit("level:next", {
       levelId: this.currentGameLevel,
       level: atIndex(this.gameLevels, this.currentGameLevel),
@@ -120,7 +116,7 @@ export class Game {
   }
 
   retryLevel() {
-    this._resetLevelState();
+    this._resetLevelStateAndStart();
     eventBus.emit("level:retry", {
       levelId: this.currentGameLevel,
       level: atIndex(this.gameLevels, this.currentGameLevel),
