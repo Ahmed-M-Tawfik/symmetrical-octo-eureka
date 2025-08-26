@@ -8,18 +8,18 @@ import type { Level } from "../Level.js";
 // This is not a command bus, as the nature of a command bus is to encapsulate a request for action
 export type GameEventMap = {
   // Player events
-  "player:death": { hitGameEntity: GameEntity };
-  "player:hit": { remainingLives: number; hitGameEntity: GameEntity };
-  "player:run": { x: number; y: number; speed: number }; // on ground
-  "player:sit": { x: number; y: number };
-  "player:jump": { x: number; y: number; vy: number };
-  "player:fall": { x: number; y: number; vy: number };
-  "player:land": { x: number; y: number };
-  "player:roll": { x: number; y: number; vy: number };
-  "player:dive": { x: number; y: number; vy: number };
-  "player:diveEnd": { x: number; y: number };
-  "player:stateChange": { from: string; to: string; speed: number };
-  "player:reset": {};
+  "player:died": { hitGameEntity: GameEntity };
+  "player:gotHit": { remainingLives: number; hitGameEntity: GameEntity };
+  "player:startedToRun": { x: number; y: number; speed: number }; // on ground
+  "player:startedToSit": { x: number; y: number };
+  "player:startedToJump": { x: number; y: number; vy: number };
+  "player:startedToFall": { x: number; y: number; vy: number };
+  "player:landed": { x: number; y: number };
+  "player:startedToRoll": { x: number; y: number; vy: number };
+  "player:startedToDive": { x: number; y: number; vy: number };
+  "player:endedDive": { x: number; y: number };
+  // "player:stateChange": { from: string; to: string; speed: number };
+  // "player:reset": {};
   // "player:update": { x: number; y: number; vy: number; remainingLives: number; speed: number };
 
   // Enemy events
