@@ -87,8 +87,10 @@ export class PlayingState extends GameState {
     if (event.key === pauseKeyBinding.key) {
       if (this.subState === "active") {
         this.subState = "paused";
+        eventBus.emit("game:paused", {});
       } else if (this.subState === "paused") {
         this.subState = "active";
+        eventBus.emit("game:resumed", {});
       }
     }
   }

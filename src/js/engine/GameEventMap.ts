@@ -43,24 +43,13 @@ export type GameEventMap = {
   // "game:over": { reason: string };
   "game:started": {};
   "game:paused": {};
-  "game:resume": {};
+  "game:resumed": {};
   // "game:reset": {};
   // "game:stateChange": { from: string; to: string };
 
   // Score events
   // "score:change": { amount: number; total: number };
   // "score:milestone": { total: number; milestone: number };
-
-  // UI events
-  "ui:buttonClick": { button: string; clickEvent: MouseEvent };
-  // "ui:floatingMessage": { value: string; x: number; y: number };
-
-  // Asset events
-  // "asset:loaded": { assetId: string };
-  // "asset:error": { assetId: string; error: string };
-
-  // Particle events
-  // "particle:spawn": { type: string; x: number; y: number };
 
   // Game Entity events
   "gameEntity:collidedWithPlayer": { x: number; y: number; entity: GameEntity };
