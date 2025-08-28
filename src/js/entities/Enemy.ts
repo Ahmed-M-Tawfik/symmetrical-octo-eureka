@@ -18,7 +18,7 @@ export class Enemy extends GameEntity implements ISpriteAnimatable {
     this.spriteData.maxFrame = cfg.maxFrame;
     this.spriteData.image = AssetManager.getImage(cfg.imageId);
 
-    eventBus.on("enemy:collisionWithPlayer", (data) => {
+    eventBus.on("enemy:collidedWithPlayer", (data) => {
       if (data.enemies.includes(this)) {
         this.markedForDeletion = true;
       }

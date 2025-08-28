@@ -30,7 +30,7 @@ export class GameSession {
     eventBus.on("test:debug_add_score", () => {
       this.score += 10;
     });
-    eventBus.on("enemy:collisionWithPlayer", (data) => {
+    eventBus.on("enemy:collidedWithPlayer", (data) => {
       let enemiesDamagedPlayer: Enemy[] = [];
       let enemiesDefeatedByPlayer: Enemy[] = [];
 
@@ -44,7 +44,7 @@ export class GameSession {
           this.lives--;
           enemiesDamagedPlayer.push(enemy);
           if (this.lives <= 0) {
-            eventBus.emit("level:fail", {
+            eventBus.emit("level:lost", {
               levelId: this.game.currentGameLevel,
               level: atIndex(this.game.gameLevels, this.game.currentGameLevel),
             });

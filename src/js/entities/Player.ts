@@ -96,7 +96,7 @@ export class Player extends GameEntity implements ISpriteAnimatable {
         collidedEnemies.push(enemy);
       }
       if (collidedEnemies.length > 0) {
-        eventBus.emit("enemy:collisionWithPlayer", {
+        eventBus.emit("enemy:collidedWithPlayer", {
           enemies: collidedEnemies,
           player: this,
         });

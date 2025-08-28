@@ -2,46 +2,47 @@ import type { Enemy } from "../entities/Enemy.js";
 import type { GameEntity } from "../entities/GameEntity.js";
 import type { Player } from "../entities/Player.js";
 import type { Level } from "../Level.js";
+import type { PlayerState } from "../states/PlayerStates.js";
 
 // Game EVENTS, not COMMANDS
 // We use events here to communicate "this happened" and not "do this"
 // This is not a command bus, as the nature of a command bus is to encapsulate a request for action
 export type GameEventMap = {
   // Player events
-  "player:died": { hitGameEntity: GameEntity };
-  "player:gotHit": { remainingLives: number; hitGameEntity: GameEntity };
-  "player:startedToRun": { x: number; y: number; speed: number }; // on ground
-  "player:startedToSit": { x: number; y: number };
-  "player:startedToJump": { x: number; y: number; vy: number };
-  "player:startedToFall": { x: number; y: number; vy: number };
-  "player:landed": { x: number; y: number };
-  "player:startedToRoll": { x: number; y: number; vy: number };
-  "player:startedToDive": { x: number; y: number; vy: number };
-  "player:endedDive": { x: number; y: number };
-  // "player:stateChange": { from: string; to: string; speed: number };
-  // "player:reset": {};
-  // "player:update": { x: number; y: number; vy: number; remainingLives: number; speed: number };
+  // "player:died": { hitGameEntity: GameEntity };
+  // "player:gotHit": { remainingLives: number; hitGameEntity: GameEntity };
+  // "player:startedToRun": { x: number; y: number; speed: number }; // on ground
+  // "player:stoppedRunning": { x: number; y: number; speed: number; newState: PlayerState }; // on ground
+  // "player:startedToSit": { x: number; y: number };
+  // "player:stoppedSitting": { x: number; y: number };
+  // "player:startedToJump": { x: number; y: number; vy: number };
+  // "player:startedToFall": { x: number; y: number; vy: number };
+  // "player:landed": { x: number; y: number };
+  // "player:startedToRoll": { x: number; y: number; vy: number };
+  // "player:startedToDive": { x: number; y: number; vy: number };
+  // "player:endedDive": { x: number; y: number };
+  "player:stateChanged": { from: PlayerState; to: PlayerState; player: Player };
 
   // Enemy events
   "enemy:spawned": { enemies: Enemy[] };
-  "enemy:collisionWithPlayer": { enemies: Enemy[]; player: Player };
+  "enemy:collidedWithPlayer": { enemies: Enemy[]; player: Player };
   "enemy:defeatedByPlayer": { enemies: Enemy[]; player: Player };
   "enemy:damagedPlayer": { enemies: Enemy[]; player: Player };
 
   // Level events
-  "level:start": { levelId: number; level: Level }; // any level start
+  "level:started": { levelId: number; level: Level }; // any level start
 
-  "level:complete": { levelId: number; level: Level }; // load win screen
-  "level:next": { levelId: number; level: Level }; // load next level
+  "level:won": { levelId: number; level: Level }; // load win screen
+  "level:startedNext": { levelId: number; level: Level }; // load next level
 
-  "level:fail": { levelId: number; level: Level }; // load lose screen
-  "level:retry": { levelId: number; level: Level }; // reload level
+  "level:lost": { levelId: number; level: Level }; // load lose screen
+  "level:startedRetry": { levelId: number; level: Level }; // reload level
 
   // Game state events
-  "game:update": { deltaTime: number; active_actions: string[] }; // input actions
+  "game:updateTriggered": { deltaTime: number; active_actions: string[] }; // input actions
   // "game:over": { reason: string };
-  "game:start": {};
-  "game:pause": {};
+  "game:started": {};
+  "game:paused": {};
   "game:resume": {};
   // "game:reset": {};
   // "game:stateChange": { from: string; to: string };
@@ -61,13 +62,13 @@ export type GameEventMap = {
   // Particle events
   // "particle:spawn": { type: string; x: number; y: number };
 
-  // Collision events - not enemies
-  "collision:detected": { x: number; y: number; entity: GameEntity };
+  // Game Entity events
+  "gameEntity:collidedWithPlayer": { x: number; y: number; entity: GameEntity };
 
   // Input events
   // "input:actionStart": { action: string };
   // "input:actionEnd": { action: string };
-  // to get list of active actions, subscribe to "game:update"
+  // to get list of active actions, subscribe to "game:updateTriggered"
 
   // Test/automation events
   "test:debug_active": { active: boolean };

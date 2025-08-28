@@ -54,12 +54,12 @@ export class PlayingState extends GameState {
   evaluateEndGameCondition(): void {
     if (this.game.session.time > this.game.session.maxTime) {
       if (this.game.session.score > this.game.session.winningScore) {
-        eventBus.emit("level:complete", {
+        eventBus.emit("level:won", {
           levelId: this.game.currentGameLevel,
           level: atIndex(this.game.gameLevels, this.game.currentGameLevel),
         });
       } else {
-        eventBus.emit("level:fail", {
+        eventBus.emit("level:lost", {
           levelId: this.game.currentGameLevel,
           level: atIndex(this.game.gameLevels, this.game.currentGameLevel),
         });

@@ -55,10 +55,10 @@ export class Game {
     eventBus.on("test:debug_retry_level", () => {
       this.retryLevel();
     });
-    eventBus.on("level:fail", () => {
+    eventBus.on("level:lost", () => {
       this.changeState(this.states.gameOver);
     });
-    eventBus.on("level:complete", () => {
+    eventBus.on("level:won", () => {
       this.changeState(this.states.levelComplete);
     });
 
@@ -100,7 +100,7 @@ export class Game {
     this.session.reset();
     atIndex(this.gameLevels, this.currentGameLevel).start();
     this.changeState(this.states.playing);
-    eventBus.emit("level:start", {
+    eventBus.emit("level:started", {
       levelId: this.currentGameLevel,
       level: atIndex(this.gameLevels, this.currentGameLevel),
     });
@@ -109,7 +109,7 @@ export class Game {
   nextLevel() {
     this.currentGameLevel = (this.currentGameLevel + 1) % this.gameLevels.length;
     this._resetLevelStateAndStart();
-    eventBus.emit("level:next", {
+    eventBus.emit("level:startedNext", {
       levelId: this.currentGameLevel,
       level: atIndex(this.gameLevels, this.currentGameLevel),
     });
@@ -117,7 +117,7 @@ export class Game {
 
   retryLevel() {
     this._resetLevelStateAndStart();
-    eventBus.emit("level:retry", {
+    eventBus.emit("level:startedRetry", {
       levelId: this.currentGameLevel,
       level: atIndex(this.gameLevels, this.currentGameLevel),
     });

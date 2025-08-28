@@ -14,7 +14,7 @@ export class SpriteAnimator {
 
   constructor(game: Game) {
     this.game = game;
-    eventBus.on("enemy:collisionWithPlayer", (data) => {
+    eventBus.on("enemy:collidedWithPlayer", (data) => {
       data.enemies.forEach((enemy) => {
         this.game.session.collisions.push(
           new CollisionAnimation(this.game, enemy.x + enemy.width * 0.5, enemy.y + enemy.height * 0.5)
