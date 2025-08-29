@@ -37,7 +37,7 @@ export class GameSession {
       data.enemies.forEach((enemy) => {
         if (this.player.currentState instanceof Diving || this.player.currentState instanceof Rolling) {
           this.score++;
-          this.floatingMessages.push(new FloatingMessage("+1", enemy.x, enemy.y, 100, 50));
+          this.floatingMessages.push(new FloatingMessage(this.game, "+1", enemy.x, enemy.y, 100, 50));
           enemiesDefeatedByPlayer.push(enemy);
         } else {
           this.player.setState(states.HIT, 0);

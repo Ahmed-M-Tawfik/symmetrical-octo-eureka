@@ -31,7 +31,7 @@ export class RandomSpawnStrategy extends SpawnStrategy {
     this.enemyTimer += deltaTime;
     if (this.enemyTimer > this.enemyInterval) {
       this.addEnemy();
-      this.enemyTimer = 0;
+      this.enemyTimer -= this.enemyInterval;
     }
   }
   addEnemy(): void {

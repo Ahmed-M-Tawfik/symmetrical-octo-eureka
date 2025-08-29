@@ -2,6 +2,7 @@ import { GameEntity } from "./GameEntity.js";
 import type { Game } from "../Main.js";
 import { PARTICLE_CONFIG } from "../data/GameConfig.js";
 import { AssetManager } from "../systems/AssetManager.js";
+import { scaleDecayFactor, scaleDeltaTime } from "../utils/timeUtils.js";
 
 export class Dust extends GameEntity {
   size: number;
@@ -9,6 +10,10 @@ export class Dust extends GameEntity {
   speedY: number;
   color: string;
   shrink: number;
+
+  // optimization to calculate shrink speed per frame only once:
+  private shrinkSpeed: number;
+  private shrinkSpeedUsedDeltaTime: number;
 
   constructor(game: Game, x: number, y: number) {
     const cfg = PARTICLE_CONFIG["dust"];
@@ -20,12 +25,22 @@ export class Dust extends GameEntity {
     this.speedY = Math.random();
     this.color = cfg.color === undefined ? "black" : cfg.color;
     this.shrink = cfg.shrink;
+
+    this.shrinkSpeed = 0;
+    this.shrinkSpeedUsedDeltaTime = 0;
   }
 
-  override update(): void {
-    this.x -= this.speedX + this.game.speed;
-    this.y -= this.speedY;
-    this.size *= this.shrink;
+  override update(deltaTime: number): void {
+    const scaled = scaleDeltaTime(deltaTime, this.game);
+    this.x -= (this.speedX + this.game.speed) * scaled;
+    this.y -= this.speedY * scaled;
+
+    // optimize to not do Math.pow 30 times per frame...
+    if (this.shrinkSpeedUsedDeltaTime !== deltaTime) {
+      this.shrinkSpeed = scaleDecayFactor(this.shrink, deltaTime, this.game);
+      this.shrinkSpeedUsedDeltaTime = deltaTime;
+    }
+    this.size *= this.shrinkSpeed;
     if (this.size < 0.5) this.markedForDeletion = true;
   }
 
@@ -48,6 +63,10 @@ export class Splash extends GameEntity {
   shrink: number;
   gravity: number;
 
+  // optimization to calculate shrink speed per frame only once:
+  private shrinkSpeed: number;
+  private shrinkSpeedUsedDeltaTime: number;
+
   constructor(game: Game, x: number, y: number) {
     const cfg = PARTICLE_CONFIG["splash"];
     if (!cfg) throw new Error("Splash particle config not found");
@@ -67,15 +86,26 @@ export class Splash extends GameEntity {
     this.decelRate = 0;
     this.shrink = cfg.shrink;
     this.gravity = cfg.gravity ?? 0.1;
+
+    this.shrinkSpeed = 0;
+    this.shrinkSpeedUsedDeltaTime = 0;
   }
 
-  override update(): void {
-    this.x -= this.speedX + this.game.speed;
-    this.y -= this.speedY;
-    this.size *= this.shrink;
+  override update(deltaTime: number): void {
+    const scaled = scaleDeltaTime(deltaTime, this.game);
+    this.x -= (this.speedX + this.game.speed) * scaled;
+    this.y -= this.speedY * scaled;
+
+    this.decelRate += this.gravity * scaled;
+    this.y += this.decelRate * scaled;
+
+    // optimize to not do Math.pow 30 times per frame...
+    if (this.shrinkSpeedUsedDeltaTime !== deltaTime) {
+      this.shrinkSpeed = scaleDecayFactor(this.shrink, deltaTime, this.game);
+      this.shrinkSpeedUsedDeltaTime = deltaTime;
+    }
+    this.size *= this.shrinkSpeed;
     if (this.size < 0.5) this.markedForDeletion = true;
-    this.decelRate += this.gravity;
-    this.y += this.decelRate;
   }
 
   override draw(context: CanvasRenderingContext2D): void {
@@ -92,6 +122,10 @@ export class Fire extends GameEntity {
   shrink: number;
   va: number;
 
+  // optimization to calculate shrink speed per frame only once:
+  private shrinkSpeed: number;
+  private shrinkSpeedUsedDeltaTime: number;
+
   constructor(game: Game, x: number, y: number) {
     const cfg = PARTICLE_CONFIG["fire"];
     if (!cfg) throw new Error("Fire particle config not found");
@@ -105,15 +139,26 @@ export class Fire extends GameEntity {
     this.angle = 0;
     this.shrink = cfg.shrink;
     this.va = typeof cfg.va === "number" ? cfg.va : Math.random() * (cfg.va!.max - cfg.va!.min) + cfg.va!.min;
+
+    this.shrinkSpeed = 0;
+    this.shrinkSpeedUsedDeltaTime = 0;
   }
 
-  override update(): void {
-    this.x -= this.speedX + this.game.speed;
-    this.y -= this.speedY;
-    this.size *= this.shrink;
+  override update(deltaTime: number): void {
+    const scaled = scaleDeltaTime(deltaTime, this.game);
+    this.x -= (this.speedX + this.game.speed) * scaled;
+    this.y -= this.speedY * scaled;
+
+    // optimize to not do Math.pow 30 times per frame...
+    if (this.shrinkSpeedUsedDeltaTime !== deltaTime) {
+      this.shrinkSpeed = scaleDecayFactor(this.shrink, deltaTime, this.game);
+      this.shrinkSpeedUsedDeltaTime = deltaTime;
+    }
+    this.size *= this.shrinkSpeed;
     if (this.size < 0.5) this.markedForDeletion = true;
-    this.angle += this.va;
-    this.x += Math.sin(this.angle * 10);
+
+    this.angle += this.va * scaled;
+    this.x += Math.sin(this.angle * 10) * scaled;
   }
 
   override draw(context: CanvasRenderingContext2D): void {

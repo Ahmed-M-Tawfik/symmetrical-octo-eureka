@@ -6,6 +6,7 @@ import type { ISpriteAnimatable } from "../systems/SpriteAnimator.js";
 import { AssetManager } from "../systems/AssetManager.js";
 import { eventBus } from "../engine/EventBus.js";
 import type { IEnemyConfig } from "../data/ConfigTypes.js";
+import { scaleDeltaTime } from "../utils/timeUtils.js";
 
 export class Enemy extends GameEntity implements ISpriteAnimatable {
   spriteData: SpriteData;
@@ -64,12 +65,13 @@ export class FlyingEnemy extends Enemy {
   }
 
   override update(deltaTime: number): void {
-    this.x -= this.speedX + this.game.speed;
-    this.y += this.speedY;
+    const scaled = scaleDeltaTime(deltaTime, this.game);
+    this.x -= (this.speedX + this.game.speed) * scaled;
+    this.y += this.speedY * scaled;
     if (this.x + this.width < 0) this.markedForDeletion = true;
 
-    this.angle += this.va;
-    this.y += Math.sin(this.angle) * 2;
+    this.angle += this.va * scaled;
+    this.y += Math.sin(this.angle) * 2 * scaled;
   }
 }
 
@@ -90,8 +92,9 @@ export class GroundEnemy extends Enemy {
   }
 
   override update(deltaTime: number): void {
-    this.x -= this.speedX + this.game.speed;
-    this.y += this.speedY;
+    const scaled = scaleDeltaTime(deltaTime, this.game);
+    this.x -= (this.speedX + this.game.speed) * scaled;
+    this.y += this.speedY * scaled;
     if (this.x + this.width < 0) this.markedForDeletion = true;
   }
 }
@@ -113,8 +116,9 @@ export class ClimbingEnemy extends Enemy {
   }
 
   override update(deltaTime: number): void {
-    this.x -= this.speedX + this.game.speed;
-    this.y += this.speedY;
+    const scaled = scaleDeltaTime(deltaTime, this.game);
+    this.x -= (this.speedX + this.game.speed) * scaled;
+    this.y += this.speedY * scaled;
     if (this.x + this.width < 0) this.markedForDeletion = true;
     if (this.y < 0 || this.y > this.game.height - this.height - this.game.groundMargin) {
       this.speedY *= -1;

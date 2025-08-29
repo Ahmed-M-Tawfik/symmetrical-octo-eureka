@@ -4,6 +4,7 @@ import type { Game } from "../Main.js";
 import { GAME_CONFIG } from "../data/GameConfig.js";
 import type { ISpriteAnimatable } from "../systems/SpriteAnimator.js";
 import { AssetManager } from "../systems/AssetManager.js";
+import { scaleDeltaTime } from "../utils/timeUtils.js";
 
 export class CollisionAnimation extends GameEntity implements ISpriteAnimatable {
   spriteData: SpriteData;
@@ -35,13 +36,11 @@ export class CollisionAnimation extends GameEntity implements ISpriteAnimatable 
   }
 
   override update(deltaTime: number): void {
-    this.x -= this.game.speed;
+    this.x -= this.game.speed * scaleDeltaTime(deltaTime, this.game);
 
-    if (!this.reachedLastSprite && this.spriteData.frameX == this.spriteData.maxFrame) {
-      this.reachedLastSprite = true;
-    } else if (this.reachedLastSprite) {
-      let frameTimerCalc = this.spriteData.frameTimer + deltaTime;
-      if (frameTimerCalc > this.spriteData.frameInterval) {
+    if (this.spriteData.frameX === this.spriteData.maxFrame) {
+      const calcedNextFrameTimer = this.spriteData.frameTimer + deltaTime;
+      if (calcedNextFrameTimer > this.spriteData.frameInterval) {
         this.markedForDeletion = true;
       }
     }

@@ -12,7 +12,7 @@ export class ParticleAnimator {
   }
 
   update(deltaTime: number): void {
-    this.game.session.particles.forEach((particle: Dust | Fire | Splash) => particle.update());
+    this.game.session.particles.forEach((particle: Dust | Fire | Splash) => particle.update(deltaTime));
     // Remove deleted
     for (let i = this.game.session.particles.length - 1; i >= 0; i--) {
       const particle = this.game.session.particles[i];

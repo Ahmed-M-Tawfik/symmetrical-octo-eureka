@@ -6,6 +6,7 @@ import { Diving, Falling, Hit, Jumping, PlayerState, Rolling, Running, Sitting }
 import { AssetManager } from "../systems/AssetManager.js";
 import type { ISpriteAnimatable } from "../systems/SpriteAnimator.js";
 import { atIndex, first } from "../utils/arrayUtils.js";
+import { scaleDeltaTime } from "../utils/timeUtils.js";
 import type { Enemy } from "./Enemy.js";
 import { GameEntity } from "./GameEntity.js";
 
@@ -50,16 +51,16 @@ export class Player extends GameEntity implements ISpriteAnimatable {
     this.currentState.handleInput(actions);
 
     // horizontal movement
-    this.x += this.speed;
+    this.x += this.speed * scaleDeltaTime(deltaTime, this.game);
 
     // horizontal bounds
     if (this.x < 0) this.x = 0;
     if (this.x > this.game.width - this.width) this.x = this.game.width - this.width;
 
     // vertical movement
-    this.y += this.vy;
+    this.y += this.vy * scaleDeltaTime(deltaTime, this.game);
     if (!this.onGround()) {
-      this.vy += this.weight;
+      this.vy += this.weight * scaleDeltaTime(deltaTime, this.game);
     } else {
       this.vy = 0;
     }

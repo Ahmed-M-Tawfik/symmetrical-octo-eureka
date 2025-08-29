@@ -48,7 +48,7 @@ export class PlayingState extends GameState {
       collision.update(deltaTime);
       this.game.spriteAnimator.update(deltaTime, collision);
     });
-    this.game.session.floatingMessages.forEach((message) => message.update());
+    this.game.session.floatingMessages.forEach((message) => message.update(deltaTime));
   }
 
   evaluateEndGameCondition(): void {
@@ -68,6 +68,7 @@ export class PlayingState extends GameState {
   }
 
   override draw(context: CanvasRenderingContext2D): void {
+    // order here matters
     this._getLevel().draw(context);
     this.game.spriteAnimator.draw(context, this.game.session.player, this.game.debug);
     this.game.session.enemies.forEach((enemy) => this.game.spriteAnimator.draw(context, enemy, this.game.debug));

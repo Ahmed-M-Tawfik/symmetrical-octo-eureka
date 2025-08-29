@@ -20,6 +20,7 @@ import { eventBus } from "./engine/EventBus.js";
 export class Game {
   width: number;
   height: number;
+  gameSpeedScale: number = 60;
   speed: number;
   maxSpeed: number;
   groundMargin: number;
