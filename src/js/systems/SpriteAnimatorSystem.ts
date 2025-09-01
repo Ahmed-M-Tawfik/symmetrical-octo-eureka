@@ -6,25 +6,6 @@ import { SizeComponent } from "../entities/components/SizeComponent.js";
 import type { SpriteComponent } from "../entities/components/SpriteComponent.js";
 
 export class SpriteAnimatorSystem {
-  // constructor() {
-  //   eventBus.on("enemy:collidedWithPlayer", (data) => {
-  //     data.enemies.forEach((enemy) => {
-  //       const pos = enemy.getComponent<PositionComponent>("position");
-  //       const size = enemy.getComponent<SizeComponent>("size");
-  //       if (!pos || !size) return;
-
-  //       this.game.session.collisions.push(
-  //         new CollisionAnimation(
-  //           this.game,
-  //           pos.x + size.width * 0.5,
-  //           pos.y + size.height * 0.5,
-  //           GAME_CONFIG.collisionAnimation
-  //         )
-  //       );
-  //     });
-  //   });
-  // }
-
   static update(entities: GameEntity[], deltaTime: number): void {
     entities.forEach((gameEntity) => {
       const sprite = gameEntity.getComponent<SpriteComponent>("sprite");

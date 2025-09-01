@@ -7,18 +7,18 @@ import { scaledDeltaTime } from "../js/utils/timeUtils.js";
 
 export class MovementSystem {
   static update(game: Game, entities: GameEntity[], deltaTime: number) {
-    for (const entity of entities) {
-      const pos = entity.getComponent<PositionComponent>("position");
-      const speed = entity.getComponent<SpeedComponent>("speed");
-      if (!pos || !speed) return;
-
+    entities.forEach((entity) => {
       const customMovement = entity.getComponent<CustomMovementComponent>("customMovement");
       if (customMovement) {
         customMovement.movementLogic(game, entity, deltaTime);
       } else {
+        const pos = entity.getComponent<PositionComponent>("position");
+        const speed = entity.getComponent<SpeedComponent>("speed");
+        if (!pos || !speed) return;
+
         MovementSystem.standardMovementLogic(pos, speed, game, deltaTime);
       }
-    }
+    });
   }
 
   private static standardMovementLogic(pos: PositionComponent, speed: SpeedComponent, game: Game, deltaTime: number) {

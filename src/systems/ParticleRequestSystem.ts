@@ -4,11 +4,12 @@ import type { CollidableComponent } from "../js/entities/components/CollidableCo
 import type { ParticleRequestComponent } from "../js/entities/components/ParticleRequestComponent.js";
 import type { PositionComponent } from "../js/entities/components/PositionComponent.js";
 import type { SizeComponent } from "../js/entities/components/SizeComponent.js";
+import { Enemy } from "../js/entities/Enemy.js";
 import type { GameEntity } from "../js/entities/GameEntity.js";
 import { Dust, Fire, Splash } from "../js/entities/Particles.js";
 import type { Game } from "../js/Main.js";
 
-export class ParticleEffectSystem {
+export class ParticleRequestSystem {
   static update(game: Game, entities: GameEntity[]) {
     // This system should be called after all logic, to process queued effects
 
@@ -21,32 +22,35 @@ export class ParticleEffectSystem {
       throw new Error("Particle configuration is missing");
     }
 
-    for (const entity of entities) {
+    entities.forEach((entity) => {
       const requests = entity.getComponent<ParticleRequestComponent>("particleRequests")?.requests ?? [];
 
-      for (const particleRequest of requests) {
+      requests.forEach((particleRequest) => {
         switch (particleRequest.type) {
           case "dust":
-            game.session.entities.push(new Dust(game, particleRequest.x, particleRequest.y, PARTICLE_CONFIG["dust"]));
+            game.session.entities.push(new Dust(game, particleRequest.x, particleRequest.y, PARTICLE_CONFIG["dust"]!));
             break;
           case "fire":
-            game.session.entities.push(new Fire(game, particleRequest.x, particleRequest.y, PARTICLE_CONFIG["fire"]));
+            game.session.entities.push(new Fire(game, particleRequest.x, particleRequest.y, PARTICLE_CONFIG["fire"]!));
             break;
           case "splash":
-            game.session.entities.push(
-              new Splash(game, particleRequest.x, particleRequest.y, PARTICLE_CONFIG["splash"])
-            );
+            for (let i = 0; i < 30; i++) {
+              game.session.entities.push(
+                new Splash(game, particleRequest.x, particleRequest.y, PARTICLE_CONFIG["splash"]!)
+              );
+            }
             break;
         }
-      }
+      });
       requests.length = 0; // clear after processing
 
       const pos = entity.getComponent<PositionComponent>("position");
       const size = entity.getComponent<SizeComponent>("size");
       const collisionEvents = entity.getComponent<CollidableComponent>("collidable")?.collisionEvents ?? [];
-      if (!pos || !size) continue;
+      if (!pos || !size) return;
 
-      for (const event of collisionEvents) {
+      if (entity instanceof Enemy && collisionEvents.length > 0) console.log("making collision animation");
+      collisionEvents.forEach((event) => {
         if (event.collidedWith === entity) {
           game.session.entities.push(
             new CollisionAnimation(
@@ -57,7 +61,7 @@ export class ParticleEffectSystem {
             )
           );
         }
-      }
-    }
+      });
+    });
   }
 }

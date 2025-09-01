@@ -83,7 +83,7 @@ export class Game {
     this.state.update(deltaTime);
   }
   draw(context: CanvasRenderingContext2D, deltaTime: number) {
-    this.state.draw(this, context, deltaTime);
+    this.state.draw(context, deltaTime);
   }
   changeState(newState: GameState) {
     this.state.exit();

@@ -4,10 +4,10 @@ import { InteractionSystem } from "../../systems/InteractionSystem.js";
 import { LifetimeSystem } from "../../systems/LifetimeSystem.js";
 import { MovementSystem } from "../../systems/MovementSystem.js";
 import { OutOfBoundsSystem } from "../../systems/OutOfBoundsSystem.js";
-import { ParticleEffectSystem } from "../../systems/ParticleEffectSystem.js";
+import { CustomAnimatorSystem } from "../../systems/ParticleAnimatorSystem.js";
+import { ParticleRequestSystem } from "../../systems/ParticleRequestSystem.js";
 import { PlayerSystem } from "../../systems/PlayerSystem.js";
 import type { Level } from "../Level.js";
-import type { Game } from "../Main.js";
 import { eventBus } from "../engine/EventBus.js";
 import { SpriteAnimatorSystem } from "../systems/SpriteAnimatorSystem.js";
 import { atIndex } from "../utils/arrayUtils.js";
@@ -55,7 +55,7 @@ export class PlayingState extends GameState {
     LifetimeSystem.update(this.game.session.entities, deltaTime);
     OutOfBoundsSystem.update(this.game.session.entities);
 
-    ParticleEffectSystem.update(this.game, this.game.session.entities);
+    ParticleRequestSystem.update(this.game, this.game.session.entities);
     SpriteAnimatorSystem.update(this.game.session.entities, deltaTime);
 
     CollisionSystem.cleanup(this.game.session.entities);
@@ -78,11 +78,12 @@ export class PlayingState extends GameState {
     }
   }
 
-  override draw(game: Game, context: CanvasRenderingContext2D, deltaTime: number): void {
+  override draw(context: CanvasRenderingContext2D, deltaTime: number): void {
     // order here matters
     this._getLevel().draw(context);
 
-    SpriteAnimatorSystem.draw(game, context, this.game.session.entities, deltaTime, this.game.debug);
+    SpriteAnimatorSystem.draw(this.game, context, this.game.session.entities, deltaTime, this.game.debug);
+    CustomAnimatorSystem.draw(this.game, context, this.game.session.entities, deltaTime);
 
     // UI updates at the end to ensure they are drawn on top
     this.game.UI.draw(context);

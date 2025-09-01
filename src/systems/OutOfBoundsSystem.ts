@@ -6,7 +6,7 @@ import type { GameEntity } from "../js/entities/GameEntity.js";
 
 export class OutOfBoundsSystem {
   static update(entities: GameEntity[]) {
-    for (const entity of entities) {
+    entities.forEach((entity) => {
       const pos = entity.getComponent<PositionComponent>("position");
       const bounds = entity.getComponent<DeleteIfOutOfBoundsComponent>("deleteIfOutOfBounds");
       const size = entity.getComponent<SizeComponent>("size");
@@ -23,6 +23,6 @@ export class OutOfBoundsSystem {
           entity.addComponent("markedForDeletion", new MarkedForDeletionComponent());
         }
       }
-    }
+    });
   }
 }

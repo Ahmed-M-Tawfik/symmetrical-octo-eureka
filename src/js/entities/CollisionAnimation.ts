@@ -33,5 +33,6 @@ export class CollisionAnimation extends GameEntity {
         AssetManager.getImage(config.imageId)
       )
     );
+    console.log("Collision animation created");
   }
 }

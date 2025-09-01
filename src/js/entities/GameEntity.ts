@@ -3,10 +3,13 @@ import type { Component } from "./Component.js";
 
 export class GameEntity {
   game: Game;
+  public id: string;
   private components: Map<string, Component> = new Map();
 
   constructor(game: Game) {
     this.game = game;
+    const prefix = this.constructor.name.toLowerCase();
+    this.id = `${prefix} ${uuidv4()}`;
   }
 
   /**
@@ -46,4 +49,13 @@ export class GameEntity {
   }
 
   // No per-component update. Systems should handle updates.
+}
+
+function uuidv4(): string {
+  // Generate a RFC4122 version 4 UUID (browser-safe)
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    const r = crypto.getRandomValues(new Uint8Array(1))[0]! & 15;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
 }

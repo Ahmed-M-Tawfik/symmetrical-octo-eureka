@@ -11,25 +11,29 @@ import type { Game } from "../js/Main.js";
 
 export class InteractionSystem {
   static update(game: Game, entities: GameEntity[]) {
-    for (const entity of entities.filter((e) => e.getComponent<CollidableComponent>("collidable"))) {
-      const collidable = entity.getComponent<CollidableComponent>("collidable");
-      if (!collidable) continue;
+    entities.forEach((entity) => {
+      if (!entity.getComponent<CollidableComponent>("collidable")) return;
 
-      for (const collisionEvent of collidable.collisionEvents) {
-        const entity = collisionEvent.collidedWith;
-        if (entity.getComponent<EnemyComponent>("enemy"))
-          entity.addComponent("markedForDeletion", new MarkedForDeletionComponent());
+      const collidable = entity.getComponent<CollidableComponent>("collidable");
+      if (!collidable) return;
+
+      collidable.collisionEvents.forEach((collisionEvent) => {
+        const collidedWithEntity = collisionEvent.collidedWith;
+
+        if (collidedWithEntity.getComponent<EnemyComponent>("enemy")) {
+          collidedWithEntity.addComponent("markedForDeletion", new MarkedForDeletionComponent());
+        }
 
         if (collisionEvent.collider.getComponent<PlayerComponent>("player")) {
-          this.handlePlayerCollision(game, collisionEvent);
+          this.handlePlayerCollision(game, entity, collisionEvent);
         }
-      }
-    }
+      });
+    });
   }
 
-  private static handlePlayerCollision(game: Game, collisionEvent: CollisionEvent) {
+  private static handlePlayerCollision(game: Game, currentEntity: GameEntity, collisionEvent: CollisionEvent) {
     const player = collisionEvent.collider.getComponent<PlayerComponent>("player");
-    if (player) {
+    if (player && currentEntity === collisionEvent.collider) {
       if (player.currentState === PlayerState.ROLLING || player.currentState === PlayerState.DIVING) {
         const enemyPos = collisionEvent.collidedWith.getComponent<PositionComponent>("position");
         if (enemyPos) {

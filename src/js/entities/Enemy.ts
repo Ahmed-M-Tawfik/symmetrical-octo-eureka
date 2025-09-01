@@ -142,7 +142,6 @@ function customMovementClimbingEnemy(game: Game, entity: GameEntity, deltaTime: 
   pos.x -= (speed.speedX + game.speed) * scaled;
   pos.y += speed.speedY * scaled;
 
-  console.log("Climbing enemy position:", pos);
   if (pos.y < 0 || pos.y > game.height - size.height - game.groundMargin) {
     speed.speedY *= -1;
   }

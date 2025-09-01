@@ -3,7 +3,7 @@ import type { GameEntity } from "../js/entities/GameEntity.js";
 
 export class DeletionSystem {
   static update(entities: GameEntity[]) {
-    for (const entity of entities) {
+    entities.forEach((entity) => {
       const isMarkedForDeletion = entity.getComponent<MarkedForDeletionComponent>("markedForDeletion") != undefined;
 
       if (isMarkedForDeletion) {
@@ -12,6 +12,6 @@ export class DeletionSystem {
           entities.splice(index, 1);
         }
       }
-    }
+    });
   }
 }

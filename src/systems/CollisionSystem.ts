@@ -10,13 +10,13 @@ export class CollisionSystem {
     const collidableA = collider.getComponent<CollidableComponent>("collidable");
     if (!posA || !sizeA || !collidableA) return;
 
-    for (const entityB of otherEntities.filter(
-      (e) => e !== collider && e.getComponent<CollidableComponent>("collidable")
-    )) {
+    otherEntities.forEach((entityB) => {
+      if (entityB === collider || !entityB.getComponent<CollidableComponent>("collidable")) return;
+
       const posB = entityB.getComponent<PositionComponent>("position");
       const sizeB = entityB.getComponent<SizeComponent>("size");
       const collidableB = entityB.getComponent<CollidableComponent>("collidable");
-      if (!posB || !sizeB || !collidableB) continue;
+      if (!posB || !sizeB || !collidableB) return;
 
       let collision: boolean = false;
       if (posA && posB) {
@@ -31,15 +31,15 @@ export class CollisionSystem {
         collidableA.collisionEvents.push(collisionEvent);
         collidableB.collisionEvents.push(collisionEvent);
       }
-    }
+    });
   }
 
   static cleanup(entities: GameEntity[]) {
-    for (const entity of entities) {
+    entities.forEach((entity) => {
       const collidable = entity.getComponent<CollidableComponent>("collidable");
-      if (collidable) {
+      if (collidable && collidable.collisionEvents.length > 0) {
         collidable.collisionEvents = [];
       }
-    }
+    });
   }
 }

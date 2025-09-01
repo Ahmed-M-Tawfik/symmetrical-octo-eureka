@@ -4,7 +4,7 @@ import type { GameEntity } from "../js/entities/GameEntity.js";
 
 export class LifetimeSystem {
   static update(entities: GameEntity[], deltaTime: number) {
-    for (const entity of entities) {
+    entities.forEach((entity) => {
       const lifetime = entity.getComponent<LifetimeComponent>("lifetime");
       if (lifetime) {
         if (lifetime) {
@@ -13,6 +13,6 @@ export class LifetimeSystem {
             entity.addComponent("markedForDeletion", new MarkedForDeletionComponent());
         }
       }
-    }
+    });
   }
 }
