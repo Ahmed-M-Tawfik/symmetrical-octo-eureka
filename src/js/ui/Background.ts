@@ -1,6 +1,6 @@
 import type { Game } from "../Main.js";
 import { AssetManager } from "../systems/AssetManager.js";
-import { scaleDeltaTime } from "../utils/timeUtils.js";
+import { scaledDeltaTime } from "../utils/timeUtils.js";
 
 export interface IBackgroundLayerConfig {
   imageName: string;
@@ -25,7 +25,7 @@ class Layer {
     this.y = 0;
   }
   update(deltaTime: number): void {
-    const scaled = scaleDeltaTime(deltaTime, this.game);
+    const scaled = scaledDeltaTime(this.game, deltaTime);
     if (this.x < -this.width) this.x = 0;
     else this.x -= this.game.speed * this.speedModifier * scaled;
   }

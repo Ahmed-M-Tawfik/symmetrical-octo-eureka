@@ -7,10 +7,10 @@ import type { Game } from "../Main.js";
  * @param game The game instance (must have gameSpeedScale)
  * @returns Scaled time factor
  */
-export function scaleDeltaTime(deltaTime: number, game: Game): number {
+export function scaledDeltaTime(game: Game, deltaTime: number): number {
   return (deltaTime / 1000) * game.gameSpeedScale;
 }
 
-export function scaleDecayFactor(baseDecay: number, deltaTime: number, game: Game): number {
+export function scaledDecayFactor(baseDecay: number, deltaTime: number, game: Game): number {
   return Math.pow(baseDecay, deltaTime / (1000 / game.gameSpeedScale));
 }

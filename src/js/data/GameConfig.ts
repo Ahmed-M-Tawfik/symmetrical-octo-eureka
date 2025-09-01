@@ -5,6 +5,7 @@ export const PARTICLE_CONFIG: Record<string, IParticleConfig> = {
     size: { min: 10, max: 20 },
     color: "rgba(0,0,0,0.2)",
     shrink: 0.97,
+    maxLifetime: 2000,
   },
   splash: {
     size: { min: 10, max: 60 },
@@ -13,6 +14,7 @@ export const PARTICLE_CONFIG: Record<string, IParticleConfig> = {
     gravity: 0.1,
     shrink: 0.97,
     imageId: "fire",
+    maxLifetime: 2000,
   },
   fire: {
     size: { min: 50, max: 150 },
@@ -21,6 +23,7 @@ export const PARTICLE_CONFIG: Record<string, IParticleConfig> = {
     va: { min: -0.1, max: 0.1 },
     shrink: 0.97,
     imageId: "fire",
+    maxLifetime: 2000,
   },
 };
 export const ENEMY_CONFIG: Record<string, IEnemyConfig> = {
@@ -62,7 +65,6 @@ export const GAME_CONFIG: IGameConfig = {
   canvasWidth: 900,
   canvasHeight: 500,
 
-  // player
   player: {
     width: 100,
     height: 91.3,
@@ -72,16 +74,22 @@ export const GAME_CONFIG: IGameConfig = {
     spriteHeight: 525,
     maxFrame: 5,
     imageId: "player",
+    spriteFps: 20,
   },
 
-  // collision animation
+  floatingMessage: {
+    targetX: 100,
+    targetY: 50,
+    duration: 2000,
+  },
+
   collisionAnimation: {
     spriteWidth: 100,
     spriteHeight: 90,
     sizeModifierMin: 0.5,
     sizeModifierMax: 1.5, // Math.random() + 0.5
-    frameIntervalMin: 5,
-    frameIntervalMax: 15, // Math.random() * 10 + 5
+    frameIntervalMin: 145,
+    frameIntervalMax: 165, // Math.random() * 10 + 5
     maxFrame: 4,
     imageId: "collisionAnimation",
   },

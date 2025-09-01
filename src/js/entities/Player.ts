@@ -1,107 +1,59 @@
-import { GAME_CONFIG } from "../data/GameConfig.js";
-import { eventBus } from "../engine/EventBus.js";
 import type { Game } from "../Main.js";
-import { SpriteData } from "../SpriteData.js";
-import { Diving, Falling, Hit, Jumping, PlayerState, Rolling, Running, Sitting } from "../states/PlayerStates.js";
 import { AssetManager } from "../systems/AssetManager.js";
-import type { ISpriteAnimatable } from "../systems/SpriteAnimator.js";
-import { atIndex, first } from "../utils/arrayUtils.js";
-import { scaleDeltaTime } from "../utils/timeUtils.js";
-import type { Enemy } from "./Enemy.js";
 import { GameEntity } from "./GameEntity.js";
+import { PositionComponent } from "./components/PositionComponent.js";
+import { SizeComponent } from "./components/SizeComponent.js";
+import { initialState, PlayerComponent } from "./components/PlayerComponent.js";
+import type { IGameConfig } from "../data/ConfigTypes.js";
+import { SpriteComponent } from "./components/SpriteComponent.js";
+import { ParticleRequestComponent } from "./components/ParticleRequestComponent.js";
+import { SpeedComponent } from "./components/SpeedComponent.js";
+import { scaledDeltaTime } from "../utils/timeUtils.js";
+import { CustomMovementComponent } from "./components/CustomMovementComponent.js";
+import { CollidableComponent } from "./components/CollidableComponent.js";
 
-export class Player extends GameEntity implements ISpriteAnimatable {
-  override draw?: (context: CanvasRenderingContext2D) => void;
-  spriteData: SpriteData;
-  states: PlayerState[];
-  currentState: PlayerState;
-  speed: number = 0;
-  maxSpeed: number = 0;
-  vy: number = 0;
-  weight: number = 0;
+const msInASecond = 1000;
 
-  constructor(game: Game) {
-    const { width, height, spriteWidth, spriteHeight, maxFrame } = GAME_CONFIG.player;
-    super(game, 0, 0, width, height);
+export class Player extends GameEntity {
+  // todo: move to system - in canonical ECS, components are purely added to empty entity
+  constructor(game: Game, playerConfig: IGameConfig["player"]) {
+    super(game);
 
-    this.spriteData = new SpriteData(game, 20);
-    this.spriteData.spriteWidth = spriteWidth;
-    this.spriteData.spriteHeight = spriteHeight;
-    this.spriteData.image = AssetManager.getImage("player");
-    this.spriteData.frameX = 0;
-    this.spriteData.frameY = 0;
-    this.spriteData.maxFrame = maxFrame;
+    const { width, height, spriteWidth, spriteHeight, maxFrame, maxSpeed, weight, spriteFps } = playerConfig;
+    this.addComponent("player", new PlayerComponent(initialState));
+    this.addComponent("position", new PositionComponent(0, 0));
+    this.addComponent("size", new SizeComponent(width, height));
+    this.addComponent("speed", new SpeedComponent(0, 0, maxSpeed, weight));
+    this.addComponent("customMovement", new CustomMovementComponent(customMovementPlayer, {}));
+    this.addComponent(
+      "sprite",
+      new SpriteComponent(
+        0,
+        0,
+        maxFrame,
+        msInASecond / spriteFps,
+        spriteWidth,
+        spriteHeight,
+        AssetManager.getImage("player")
+      )
+    );
+    this.addComponent("particleRequests", new ParticleRequestComponent());
+    this.addComponent("collidable", new CollidableComponent());
 
-    this.states = [
-      new Sitting(this),
-      new Running(this),
-      new Jumping(this),
-      new Falling(this),
-      new Rolling(this),
-      new Diving(this),
-      new Hit(this),
-    ];
-    this.currentState = first(this.states);
-
-    this.reset();
+    // this is done in playersystem, where the rest of constructor should be moved
+    // this.reset();
   }
+}
 
-  updateWithActions(actions: Set<string>, deltaTime: number): void {
-    this.checkCollisionWithEnemy();
-    this.currentState.handleInput(actions);
+function customMovementPlayer(game: Game, entity: GameEntity, deltaTime: number) {
+  const pos = entity.getComponent<PositionComponent>("position");
+  const speed = entity.getComponent<SpeedComponent>("speed");
+  if (!pos || !speed) return;
 
-    // horizontal movement
-    this.x += this.speed * scaleDeltaTime(deltaTime, this.game);
+  const scaled = scaledDeltaTime(game, deltaTime);
 
-    // horizontal bounds
-    if (this.x < 0) this.x = 0;
-    if (this.x > this.game.width - this.width) this.x = this.game.width - this.width;
+  speed.speedY += speed.weight * scaled;
 
-    // vertical movement
-    this.y += this.vy * scaleDeltaTime(deltaTime, this.game);
-    if (!this.onGround()) {
-      this.vy += this.weight * scaleDeltaTime(deltaTime, this.game);
-    } else {
-      this.vy = 0;
-    }
-
-    // vertical bounds
-    if (this.y > this.game.height - this.height - this.game.groundMargin)
-      this.y = this.game.height - this.height - this.game.groundMargin;
-  }
-
-  onGround(): boolean {
-    return this.y >= this.game.height - this.height - this.game.groundMargin;
-  }
-
-  setState(state: number, speed: number): void {
-    this.game.speed = this.game.maxSpeed * speed;
-    this.currentState = atIndex(this.states, state);
-    this.currentState.enter();
-  }
-
-  reset(): void {
-    this.x = 0;
-    this.y = this.game.height - this.height - this.game.groundMargin;
-    this.vy = 0;
-    this.weight = GAME_CONFIG.player.weight;
-    this.speed = 0;
-    this.maxSpeed = GAME_CONFIG.player.maxSpeed;
-    this.setState(first(this.states).state, 0);
-  }
-
-  checkCollisionWithEnemy(): void {
-    this.game.session.enemies.forEach((enemy: Enemy) => {
-      let collidedEnemies: Enemy[] = [];
-      if (this.collidesWith(enemy)) {
-        collidedEnemies.push(enemy);
-      }
-      if (collidedEnemies.length > 0) {
-        eventBus.emit("enemy:collidedWithPlayer", {
-          enemies: collidedEnemies,
-          player: this,
-        });
-      }
-    });
-  }
+  pos.x += speed.speedX * scaled;
+  pos.y += speed.speedY * scaled;
 }

@@ -3,8 +3,6 @@ import { atIndex } from "./utils/arrayUtils.js";
 import { InputHandler } from "./ui/InputHandler.js";
 import { UI } from "./UI.js";
 import { GAME_CONFIG } from "./data/GameConfig.js";
-import { SpriteAnimator } from "./systems/SpriteAnimator.js";
-import { ParticleAnimator } from "./systems/ParticleAnimator.js";
 import { getLevelSequence } from "./data/LevelData.js";
 import { KeyBindings } from "./ui/KeyBindings.js";
 import { DEFAULT_KEY_BINDINGS } from "./data/KeyBindingsData.js";
@@ -28,8 +26,6 @@ export class Game {
   gameLevels: Level[];
   currentGameLevel: number;
   session: GameSession;
-  spriteAnimator: SpriteAnimator;
-  particleAnimator: ParticleAnimator;
   input: InputHandler;
   UI: UI;
   states: {
@@ -68,8 +64,6 @@ export class Game {
     this.groundMargin = atIndex(this.gameLevels, this.currentGameLevel).background.groundMargin;
 
     this.session = new GameSession(this);
-    this.spriteAnimator = new SpriteAnimator(this);
-    this.particleAnimator = new ParticleAnimator(this);
     this.input = new InputHandler(this, context.canvas, new KeyBindings(DEFAULT_KEY_BINDINGS));
     this.UI = new UI(this);
 
@@ -88,8 +82,8 @@ export class Game {
   update(deltaTime: number) {
     this.state.update(deltaTime);
   }
-  draw(context: CanvasRenderingContext2D) {
-    this.state.draw(context);
+  draw(context: CanvasRenderingContext2D, deltaTime: number) {
+    this.state.draw(this, context, deltaTime);
   }
   changeState(newState: GameState) {
     this.state.exit();
@@ -144,7 +138,7 @@ window.addEventListener("load", async function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     game.update(deltaTime);
-    game.draw(ctx);
+    game.draw(ctx, deltaTime);
 
     requestAnimationFrame(animate);
   }

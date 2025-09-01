@@ -1,38 +1,49 @@
 import type { Game } from "../Main.js";
+import type { Component } from "./Component.js";
 
-export interface IRect {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
-
-export class GameEntity implements IRect {
+export class GameEntity {
   game: Game;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  markedForDeletion: boolean;
+  private components: Map<string, Component> = new Map();
 
-  constructor(game: Game, x: number, y: number, width: number, height: number) {
+  constructor(game: Game) {
     this.game = game;
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-    this.markedForDeletion = false;
   }
 
-  start(): void {}
-  update(deltaTime: number): void {}
-  draw?(context: CanvasRenderingContext2D): void {}
-  collidesWith(other: IRect): boolean {
-    return (
-      this.x < other.x + other.width &&
-      this.x + this.width > other.x &&
-      this.y < other.y + other.height &&
-      this.y + this.height > other.y
-    );
+  /**
+   * Add a component to this entity. Key is usually the component's class name.
+   */
+  addComponent<T extends Component>(key: string, component: T): void {
+    this.components.set(key, component);
   }
+
+  /**
+   * Remove a component by key.
+   */
+  removeComponent(key: string): void {
+    this.components.delete(key);
+  }
+
+  /**
+   * Get a component by key.
+   */
+  getComponent<T extends Component = Component>(key: string): T | undefined {
+    return this.components.get(key) as T | undefined;
+  }
+
+  /**
+   * List all component keys. Mainly for debug purposes
+   * @returns An array of component keys.
+   */
+  listComponentKeys(): string[] {
+    return Array.from(this.components.keys());
+  }
+
+  debug(): void {
+    console.log("Debugging GameEntity:");
+    this.components.forEach((component, key) => {
+      console.log(` - ${key}:`, component);
+    });
+  }
+
+  // No per-component update. Systems should handle updates.
 }

@@ -1,5 +1,5 @@
-import { playerActions } from "../states/PlayerStates.js";
-import type { IKeyBinding } from "./ConfigTypes";
+import { playerActions } from "../../systems/PlayerSystem.js";
+import type { IKeyBinding } from "./ConfigTypes.js";
 
 export const DEFAULT_KEY_BINDINGS: IKeyBinding[] = [
   { action: playerActions.moveLeft, key: "ArrowLeft", group: "player" },

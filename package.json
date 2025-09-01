@@ -6,7 +6,7 @@
   "scripts": {
     "watch": "tsc --watch",
     "watch:assets": "chokidar 'src/index.html' 'src/style.css' 'assets/**/*' -c 'node copy-static-assets.js'",
-    "dev": "npm-run-all --parallel watch watch:assets",
+    "dev": "node copy-static-assets.js && npm-run-all --parallel watch watch:assets",
     "build": "tsc && node copy-static-assets.js",
     "start": "npx serve dist"
   },

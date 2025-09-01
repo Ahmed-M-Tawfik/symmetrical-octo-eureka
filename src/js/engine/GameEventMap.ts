@@ -1,8 +1,8 @@
+import type { PlayerState } from "../entities/components/PlayerComponent.js";
 import type { Enemy } from "../entities/Enemy.js";
 import type { GameEntity } from "../entities/GameEntity.js";
 import type { Player } from "../entities/Player.js";
 import type { Level } from "../Level.js";
-import type { PlayerState } from "../states/PlayerStates.js";
 
 // Game EVENTS, not COMMANDS
 // We use events here to communicate "this happened" and not "do this"

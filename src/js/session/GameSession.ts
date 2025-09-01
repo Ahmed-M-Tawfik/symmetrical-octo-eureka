@@ -1,22 +1,22 @@
 import { Player } from "../entities/Player.js";
 import { GAME_CONFIG } from "../data/GameConfig.js";
-
 import type { Game } from "../Main.js";
 import { FloatingMessage } from "../entities/FloatingMessages.js";
-import { CollisionAnimation } from "../entities/CollisionAnimation.js";
-import type { Dust, Splash, Fire } from "../entities/Particles.js";
 import type { Enemy } from "../entities/Enemy.js";
 import { eventBus } from "../engine/EventBus.js";
-import { Diving, Rolling, states } from "../states/PlayerStates.js";
 import { atIndex } from "../utils/arrayUtils.js";
+import type { GameEntity } from "../entities/GameEntity.js";
+import { PlayerComponent, PlayerState } from "../entities/components/PlayerComponent.js";
+import type { PositionComponent } from "../entities/components/PositionComponent.js";
 
 export class GameSession {
   game: Game;
+  entities: GameEntity[] = [];
   player!: Player;
-  particles: Array<Dust | Splash | Fire> = [];
-  enemies: Array<Enemy> = [];
-  collisions: CollisionAnimation[] = [];
-  floatingMessages: FloatingMessage[] = [];
+  // particles: Array<Dust | Splash | Fire> = [];
+  // enemies: Array<Enemy> = [];
+  // collisions: CollisionAnimation[] = [];
+  // floatingMessages: FloatingMessage[] = [];
   lives: number = 0;
   time: number = 0;
   maxTime: number = 0;
@@ -34,13 +34,20 @@ export class GameSession {
       let enemiesDamagedPlayer: Enemy[] = [];
       let enemiesDefeatedByPlayer: Enemy[] = [];
 
+      const playerComp = this.player.getComponent<PlayerComponent>("state");
+      if (!playerComp) return;
+
       data.enemies.forEach((enemy) => {
-        if (this.player.currentState instanceof Diving || this.player.currentState instanceof Rolling) {
+        // move this to dedicated system
+        if (playerComp.currentState === PlayerState.DIVING || playerComp.currentState === PlayerState.ROLLING) {
+          const enemyPos = enemy.getComponent<PositionComponent>("position");
+          if (!enemyPos) return;
+
           this.score++;
-          this.floatingMessages.push(new FloatingMessage(this.game, "+1", enemy.x, enemy.y, 100, 50));
+          this.entities.push(new FloatingMessage(this.game, "+1", enemyPos.x, enemyPos.y, GAME_CONFIG.floatingMessage));
           enemiesDefeatedByPlayer.push(enemy);
         } else {
-          this.player.setState(states.HIT, 0);
+          // playerComp.setState(PlayerState.HIT, 0); // implement in player system
           this.lives--;
           enemiesDamagedPlayer.push(enemy);
           if (this.lives <= 0) {
@@ -62,11 +69,12 @@ export class GameSession {
   }
 
   reset(): void {
-    this.player = new Player(this.game);
-    this.particles = [];
-    this.enemies = [];
-    this.collisions = [];
-    this.floatingMessages = [];
+    this.player = new Player(this.game, GAME_CONFIG.player);
+    this.entities = [this.player];
+    // this.particles = [];
+    // this.enemies = [];
+    // this.collisions = [];
+    // this.floatingMessages = [];
     this.lives = GAME_CONFIG.initialLives;
     this.time = 0;
     this.maxTime = GAME_CONFIG.maxTime;

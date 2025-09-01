@@ -9,24 +9,24 @@ export class GameState {
   enter(): void {}
   exit(): void {}
   update(deltaTime: number): void {}
-  draw(context: CanvasRenderingContext2D): void {}
+  draw(game: Game, context: CanvasRenderingContext2D, deltaTime: number): void {}
   handleInput(event: KeyboardEvent): void {}
 }
 
 export class MainMenuState extends GameState {
-  override draw(context: CanvasRenderingContext2D): void {
+  override draw(game: Game, context: CanvasRenderingContext2D, deltaTime: number): void {
     this.game.UI.draw(context);
   }
 }
 
 export class GameOverState extends GameState {
-  override draw(context: CanvasRenderingContext2D): void {
+  override draw(game: Game, context: CanvasRenderingContext2D, deltaTime: number): void {
     this.game.UI.draw(context);
   }
 }
 
 export class LevelCompleteState extends GameState {
-  override draw(context: CanvasRenderingContext2D): void {
+  override draw(game: Game, context: CanvasRenderingContext2D, deltaTime: number): void {
     this.game.UI.draw(context);
   }
 }

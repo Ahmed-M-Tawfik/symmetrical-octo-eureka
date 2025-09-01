@@ -1,15 +1,25 @@
-import { GameState } from "./GameStates.js";
-import { atIndex, first } from "../utils/arrayUtils.js";
+import { CollisionSystem } from "../../systems/CollisionSystem.js";
+import { DeletionSystem } from "../../systems/DeletionSystem.js";
+import { InteractionSystem } from "../../systems/InteractionSystem.js";
+import { LifetimeSystem } from "../../systems/LifetimeSystem.js";
+import { MovementSystem } from "../../systems/MovementSystem.js";
+import { OutOfBoundsSystem } from "../../systems/OutOfBoundsSystem.js";
+import { ParticleEffectSystem } from "../../systems/ParticleEffectSystem.js";
+import { PlayerSystem } from "../../systems/PlayerSystem.js";
 import type { Level } from "../Level.js";
+import type { Game } from "../Main.js";
 import { eventBus } from "../engine/EventBus.js";
+import { SpriteAnimatorSystem } from "../systems/SpriteAnimatorSystem.js";
+import { atIndex } from "../utils/arrayUtils.js";
+import { GameState } from "./GameStates.js";
 
 export class PlayingState extends GameState {
   subState: "active" | "paused" = "active";
 
   override enter(): void {
     this.subState = "active";
-    this.game.session.player.currentState = first(this.game.session.player.states);
-    this.game.session.player.currentState.enter();
+
+    PlayerSystem.resetPlayer(this.game, this.game.session.player);
   }
 
   override exit(): void {
@@ -19,36 +29,37 @@ export class PlayingState extends GameState {
 
   override update(deltaTime: number): void {
     if (this.subState === "paused") return;
-    this.game.session.time += deltaTime;
-    this.evaluateEndGameCondition();
-    this.runUpdates(deltaTime);
-    this.runDeletions();
-  }
 
-  runDeletions(): void {
-    this.game.session.enemies = this.game.session.enemies.filter((enemy) => !enemy.markedForDeletion);
-    this.game.session.collisions = this.game.session.collisions.filter((collision) => !collision.markedForDeletion);
-    this.game.session.floatingMessages = this.game.session.floatingMessages.filter(
-      (message) => !message.markedForDeletion
-    );
+    this.game.session.time += deltaTime;
+
+    this.evaluateEndGameCondition();
+
+    this.runUpdates(deltaTime);
   }
 
   runUpdates(deltaTime: number): void {
-    this.game.session.player.updateWithActions(this.game.input.actions, deltaTime);
-    this.game.spriteAnimator.update(deltaTime, this.game.session.player);
+    if (this.subState === "paused") {
+      return;
+    }
+    // order for some of these matters
 
-    const level = this._getLevel();
-    level.update(deltaTime);
-    this.game.session.enemies.forEach((enemy) => {
-      enemy.update(deltaTime);
-      this.game.spriteAnimator.update(deltaTime, enemy);
-    });
-    this.game.particleAnimator.update(deltaTime);
-    this.game.session.collisions.forEach((collision) => {
-      collision.update(deltaTime);
-      this.game.spriteAnimator.update(deltaTime, collision);
-    });
-    this.game.session.floatingMessages.forEach((message) => message.update(deltaTime));
+    // todo: make into system?
+    this._getLevel().update(deltaTime);
+
+    MovementSystem.update(this.game, this.game.session.entities, deltaTime);
+    PlayerSystem.update(this.game, this.game.session.player, this.game.input.actions, deltaTime);
+
+    CollisionSystem.update(this.game.session.player, this.game.session.entities);
+    InteractionSystem.update(this.game, this.game.session.entities);
+
+    LifetimeSystem.update(this.game.session.entities, deltaTime);
+    OutOfBoundsSystem.update(this.game.session.entities);
+
+    ParticleEffectSystem.update(this.game, this.game.session.entities);
+    SpriteAnimatorSystem.update(this.game.session.entities, deltaTime);
+
+    CollisionSystem.cleanup(this.game.session.entities);
+    DeletionSystem.update(this.game.session.entities);
   }
 
   evaluateEndGameCondition(): void {
@@ -67,16 +78,12 @@ export class PlayingState extends GameState {
     }
   }
 
-  override draw(context: CanvasRenderingContext2D): void {
+  override draw(game: Game, context: CanvasRenderingContext2D, deltaTime: number): void {
     // order here matters
     this._getLevel().draw(context);
-    this.game.spriteAnimator.draw(context, this.game.session.player, this.game.debug);
-    this.game.session.enemies.forEach((enemy) => this.game.spriteAnimator.draw(context, enemy, this.game.debug));
-    this.game.particleAnimator.draw(context);
-    this.game.session.collisions.forEach((collision) =>
-      this.game.spriteAnimator.draw(context, collision, this.game.debug)
-    );
-    this.game.session.floatingMessages.forEach((message) => message.draw(context));
+
+    SpriteAnimatorSystem.draw(game, context, this.game.session.entities, deltaTime, this.game.debug);
+
     // UI updates at the end to ensure they are drawn on top
     this.game.UI.draw(context);
   }

@@ -25,6 +25,13 @@ export interface IGameConfig {
     spriteHeight: number;
     maxFrame: number;
     imageId: string;
+    spriteFps: number;
+  };
+
+  floatingMessage: {
+    targetX: number;
+    targetY: number;
+    duration: number;
   };
 
   // collision animation
@@ -71,6 +78,7 @@ export interface IParticleConfig {
   gravity?: number;
   va?: number | { min: number; max: number };
   imageId?: string;
+  maxLifetime: number;
   // Extend this interface for additional particle config as needed
 }
 

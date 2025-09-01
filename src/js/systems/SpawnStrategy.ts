@@ -4,6 +4,7 @@ import { FlyingEnemy, ClimbingEnemy, GroundEnemy, Enemy } from "../entities/Enem
 import type { Game } from "../Main.js";
 import type { ISpawnData } from "../data/ConfigTypes.js";
 import { eventBus } from "../engine/EventBus.js";
+import { PositionComponent } from "../entities/components/PositionComponent.js";
 
 export class SpawnStrategy {
   game: Game;
@@ -43,12 +44,12 @@ export class RandomSpawnStrategy extends SpawnStrategy {
     }
     spawnedEnemies.push(new FlyingEnemy(this.game));
 
-    this.game.session.enemies.push(...spawnedEnemies);
+    this.game.session.entities.push(...spawnedEnemies);
     eventBus.emit("enemy:spawned", { enemies: spawnedEnemies });
   }
 }
 
-export class Manual1SpawnStrategy extends SpawnStrategy {
+export class ManualSpawnStrategy extends SpawnStrategy {
   enemyTimer: number;
   spawnSchedule: ISpawnData[];
   nextSpawnIndex: number;
@@ -97,10 +98,12 @@ export class Manual1SpawnStrategy extends SpawnStrategy {
       default:
         throw new Error(`Unknown enemy type: ${event.type}`);
     }
-    enemy.x = this.game.width + event.x;
-    enemy.y = event.y;
-    enemy.speedX = event.speed;
-    this.game.session.enemies.push(enemy);
+    const position = enemy.getComponent<PositionComponent>("position");
+    if (position) {
+      position.x = this.game.width + event.x;
+      position.y = event.y;
+    }
+    this.game.session.entities.push(enemy);
 
     eventBus.emit("enemy:spawned", { enemies: [enemy] });
   }
