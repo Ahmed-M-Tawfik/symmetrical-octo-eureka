@@ -190,7 +190,6 @@ function fireUpdate(game: Game, entity: GameEntity, deltaTime: number) {
   const shrink = entity.getComponent<ShrinkComponent>("shrink");
   const size = entity.getComponent<SizeComponent>("size");
   const customMovement = entity.getComponent<CustomMovementComponent>("customMovement");
-  // console.log("Updating fire particle");
 
   if (!pos || !speed || !shrink || !size || !customMovement) return;
 
@@ -218,7 +217,6 @@ function fireDraw(game: Game, context: CanvasRenderingContext2D, entity: GameEnt
   const image = entity.getComponent<ImageComponent>("image");
   const customDraw = entity.getComponent<CustomDrawComponent>("customDraw");
   if (!pos || !size || !image || !customDraw) return;
-  // console.log("Drawing fire particle");
 
   context.save();
   context.translate(pos.x, pos.y);

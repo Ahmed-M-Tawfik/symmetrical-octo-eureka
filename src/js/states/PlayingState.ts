@@ -42,8 +42,6 @@ export class PlayingState extends GameState {
       return;
     }
     // order for some of these matters
-
-    // todo: make into system?
     this._getLevel().update(deltaTime);
 
     MovementSystem.update(this.game, this.game.session.entities, deltaTime);
@@ -75,6 +73,11 @@ export class PlayingState extends GameState {
           level: atIndex(this.game.gameLevels, this.game.currentGameLevel),
         });
       }
+    } else if (this.game.session.lives <= 0) {
+      eventBus.emit("level:lost", {
+        levelId: this.game.currentGameLevel,
+        level: atIndex(this.game.gameLevels, this.game.currentGameLevel),
+      });
     }
   }
 

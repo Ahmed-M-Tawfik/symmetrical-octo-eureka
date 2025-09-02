@@ -1,5 +1,5 @@
+import { ClimbingEnemy, Enemy, FlyingEnemy, GroundEnemy } from "../entities/Enemy.js";
 import { atIndex } from "../utils/arrayUtils.js";
-import { FlyingEnemy, ClimbingEnemy, GroundEnemy, Enemy } from "../entities/Enemy.js";
 
 import type { Game } from "../Main.js";
 import type { ISpawnData } from "../data/ConfigTypes.js";
@@ -104,7 +104,5 @@ export class ManualSpawnStrategy extends SpawnStrategy {
       position.y = event.y;
     }
     this.game.session.entities.push(enemy);
-
-    eventBus.emit("enemy:spawned", { enemies: [enemy] });
   }
 }

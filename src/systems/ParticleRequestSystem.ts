@@ -4,7 +4,6 @@ import type { CollidableComponent } from "../js/entities/components/CollidableCo
 import type { ParticleRequestComponent } from "../js/entities/components/ParticleRequestComponent.js";
 import type { PositionComponent } from "../js/entities/components/PositionComponent.js";
 import type { SizeComponent } from "../js/entities/components/SizeComponent.js";
-import { Enemy } from "../js/entities/Enemy.js";
 import type { GameEntity } from "../js/entities/GameEntity.js";
 import { Dust, Fire, Splash } from "../js/entities/Particles.js";
 import type { Game } from "../js/Main.js";
@@ -49,7 +48,6 @@ export class ParticleRequestSystem {
       const collisionEvents = entity.getComponent<CollidableComponent>("collidable")?.collisionEvents ?? [];
       if (!pos || !size) return;
 
-      if (entity instanceof Enemy && collisionEvents.length > 0) console.log("making collision animation");
       collisionEvents.forEach((event) => {
         if (event.collidedWith === entity) {
           game.session.entities.push(
