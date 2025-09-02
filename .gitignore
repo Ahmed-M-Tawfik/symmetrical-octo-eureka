@@ -4,5 +4,9 @@ Thumbs.db
 dist/
 node_modules/
 
+# ignore dist and node_modules folders even if under another folder e.g. ecs/dist
+**/dist/
+**/node_modules/
+
 *.ts.map
 *.d.ts

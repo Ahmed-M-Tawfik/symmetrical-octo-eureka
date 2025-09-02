@@ -8,6 +8,11 @@ const projectRoot = __dirname;
 const distDir = path.join(projectRoot, "dist");
 const srcDir = path.join(projectRoot, "src");
 
+// Ensure dist directory exists
+if (!fs.existsSync(distDir)) {
+  fs.mkdirSync(distDir, { recursive: true });
+}
+
 function copyFileSync(source, target) {
   let targetFile = target;
   if (fs.existsSync(target)) {
