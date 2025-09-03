@@ -61,10 +61,7 @@ export class RandomSpawnStrategy extends SpawnStrategy {
     const val = Math.floor(Math.random() * powerupTypes.length);
     const randomType = powerupTypes[val] as PowerupType;
 
-    const spawnX = this.game.width + Math.random() * 25 * 0.5;
-    const spawnY = Math.random() * this.game.height * 0.5;
-
-    const powerup = new PowerupEntity(this.game, randomType, spawnX, spawnY);
+    const powerup = new PowerupEntity(this.game, randomType);
     this.game.session.entities.push(powerup);
   }
 }

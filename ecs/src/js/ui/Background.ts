@@ -40,25 +40,22 @@ export class Background {
   width: number;
   height: number;
   groundMargin: number;
-  layers: Layer[];
+  bglayers: Layer[];
+  fglayers: Layer[];
   constructor(
     game: Game,
     width: number,
     height: number,
     groundMargin: number,
-    backgroundLayers: IBackgroundLayerConfig[] = [
-      { imageName: "layer1", speed: 0.15 },
-      { imageName: "layer2", speed: 0.2 },
-      { imageName: "layer3", speed: 0.4 },
-      { imageName: "layer4", speed: 0.6 },
-      { imageName: "layer5", speed: 1 },
-    ]
+    backgroundLayers: IBackgroundLayerConfig[],
+    foregroundLayers: IBackgroundLayerConfig[] = []
   ) {
     this.game = game;
     this.width = width;
     this.height = height;
     this.groundMargin = groundMargin;
-    this.layers = [];
+    this.bglayers = [];
+    this.fglayers = [];
     backgroundLayers.forEach((layer) => {
       const layerInstance = new Layer(
         this.game,
@@ -67,22 +64,37 @@ export class Background {
         layer.speed,
         AssetManager.getImage(layer.imageName)
       );
-      this.layers.push(layerInstance);
+      this.bglayers.push(layerInstance);
+    });
+    foregroundLayers.forEach((layer) => {
+      const layerInstance = new Layer(
+        this.game,
+        this.width,
+        this.height,
+        layer.speed,
+        AssetManager.getImage(layer.imageName)
+      );
+      this.fglayers.push(layerInstance);
     });
   }
   start(): void {
     this.game.groundMargin = this.groundMargin;
-    this.layers.forEach((layer) => {
+    [...this.bglayers, ...this.fglayers].forEach((layer) => {
       layer.x = 0;
     });
   }
   update(deltaTime: number): void {
-    this.layers.forEach((layer) => {
+    [...this.bglayers, ...this.fglayers].forEach((layer) => {
       layer.update(deltaTime);
     });
   }
-  draw(context: CanvasRenderingContext2D): void {
-    this.layers.forEach((layer) => {
+  drawBackground(context: CanvasRenderingContext2D): void {
+    this.bglayers.forEach((layer) => {
+      layer.draw(context);
+    });
+  }
+  drawForeground(context: CanvasRenderingContext2D): void {
+    this.fglayers.forEach((layer) => {
       layer.draw(context);
     });
   }
@@ -90,13 +102,20 @@ export class Background {
 
 export class ForestBackground extends Background {
   constructor(game: Game) {
-    super(game, 1667, 500, 40, [
-      { imageName: "bglayer1-forest", speed: 0.15 },
-      { imageName: "bglayer2-forest", speed: 0.2 },
-      { imageName: "bglayer3-forest", speed: 0.4 },
-      { imageName: "bglayer4-forest", speed: 0.6 },
-      { imageName: "bglayer5-forest", speed: 1 },
-    ]);
+    super(
+      game,
+      1667,
+      500,
+      40,
+      [
+        { imageName: "bglayer1-forest", speed: 0.15 },
+        { imageName: "bglayer2-forest", speed: 0.2 },
+        { imageName: "bglayer3-forest", speed: 0.4 },
+        { imageName: "bglayer4-forest", speed: 0.6 },
+        { imageName: "bglayer5-forest", speed: 1 },
+      ],
+      [{ imageName: "fglayer-forest", speed: 2 }]
+    );
   }
 }
 

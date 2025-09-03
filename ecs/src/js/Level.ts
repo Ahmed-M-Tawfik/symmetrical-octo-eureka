@@ -26,7 +26,11 @@ export class Level {
     this.spawnStrategy.update(deltaTime);
   }
 
-  draw(context: CanvasRenderingContext2D): void {
-    this.background.draw(context);
+  drawBackground(context: CanvasRenderingContext2D): void {
+    this.background.drawBackground(context);
+  }
+
+  drawForeground(context: CanvasRenderingContext2D): void {
+    this.background.drawForeground(context);
   }
 }

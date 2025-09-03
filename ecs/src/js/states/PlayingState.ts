@@ -83,10 +83,12 @@ export class PlayingState extends GameState {
 
   override draw(context: CanvasRenderingContext2D, deltaTime: number): void {
     // order here matters
-    this._getLevel().draw(context);
+    this._getLevel().drawBackground(context);
 
     SpriteAnimatorSystem.draw(this.game, context, this.game.session.entities, deltaTime, this.game.debug);
     CustomAnimatorSystem.draw(this.game, context, this.game.session.entities, deltaTime);
+
+    this._getLevel().drawForeground(context);
 
     // UI updates at the end to ensure they are drawn on top
     this.game.UI.draw(context);

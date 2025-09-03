@@ -11,12 +11,17 @@ import { AssetManager } from "../systems/AssetManager.js";
 import { SizeComponent } from "./components/SizeComponent.js";
 
 export class PowerupEntity extends GameEntity {
-  constructor(game: Game, type: PowerupType, x: number, y: number, value: number = 1) {
+  constructor(game: Game, type: PowerupType, value: number = 1, x?: number, y?: number) {
     super(game);
     this.addComponent("powerup", new PowerupComponent(type, value));
+    const size = 25;
+    this.addComponent("size", new SizeComponent(size, size));
+
+    const horizontalMargin = 400;
+    x = x !== undefined ? x : horizontalMargin + Math.random() * (game.width - horizontalMargin); // 400 left margin
+    y = y !== undefined ? y : -1 * size; // start above canvas
     this.addComponent("position", new PositionComponent(x, y));
-    this.addComponent("size", new SizeComponent(25, 25));
-    this.addComponent("speed", new SpeedComponent(0, 0, 0, 0));
+    this.addComponent("speed", new SpeedComponent(0, 0, 0, 0.1));
     this.addComponent("collidable", new CollidableComponent());
     this.addComponent("deleteIfOutOfBounds", new DeleteIfOutOfBoundsComponent(0, undefined, undefined, undefined));
 

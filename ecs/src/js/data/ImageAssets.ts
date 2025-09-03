@@ -10,6 +10,7 @@ export const imageAssets: AssetDescriptor[] = [
   { id: "bglayer3-forest", src: "assets/background/forest/bglayer3-forest.png" },
   { id: "bglayer2-forest", src: "assets/background/forest/bglayer2-forest.png" },
   { id: "bglayer1-forest", src: "assets/background/forest/bglayer1-forest.png" },
+  { id: "fglayer-forest", src: "assets/background/forest/fglayer-forest.png" },
 
   { id: "bglayer5-city", src: "assets/background/city/bglayer5-city.png" },
   { id: "bglayer4-city", src: "assets/background/city/bglayer4-city.png" },
