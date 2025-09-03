@@ -39,21 +39,21 @@ export class SpriteAnimatorSystem {
       if (!sprite.image) {
         throw new Error("Sprite image not found for " + sprite.image);
       }
-      context.drawImage(
-        sprite.image,
-        sprite.frameX * sprite.spriteWidth,
-        sprite.frameY * sprite.spriteHeight,
-        sprite.spriteWidth,
-        sprite.spriteHeight,
-        pos.x,
-        pos.y,
-        size.width,
-        size.height
-      );
-
       const customDraw = gameEntity.getComponent<CustomDrawComponent>("customDraw");
       if (customDraw) {
         customDraw.draw(game, context, gameEntity, deltaTime);
+      } else {
+        context.drawImage(
+          sprite.image,
+          sprite.frameX * sprite.spriteWidth,
+          sprite.frameY * sprite.spriteHeight,
+          sprite.spriteWidth,
+          sprite.spriteHeight,
+          pos.x,
+          pos.y,
+          size.width,
+          size.height
+        );
       }
     });
   }

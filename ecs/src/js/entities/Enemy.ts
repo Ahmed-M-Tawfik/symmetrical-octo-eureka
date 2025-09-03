@@ -149,8 +149,9 @@ function customMovementClimbingEnemy(game: Game, entity: GameEntity, deltaTime: 
 
 function customDrawClimbingEnemy(game: Game, context: CanvasRenderingContext2D, entity: GameEntity, deltaTime: number) {
   const pos = entity.getComponent<PositionComponent>("position");
+  const sprite = entity.getComponent<SpriteComponent>("sprite");
   const size = entity.getComponent<SizeComponent>("size");
-  if (!pos || !size) return;
+  if (!pos || !sprite || !size) return;
 
   context.save();
   // Draw the web line
@@ -159,4 +160,16 @@ function customDrawClimbingEnemy(game: Game, context: CanvasRenderingContext2D, 
   context.lineTo(pos.x + size.width * 0.5, pos.y + 50);
   context.stroke();
   context.restore();
+
+  context.drawImage(
+    sprite.image,
+    sprite.frameX * sprite.spriteWidth,
+    sprite.frameY * sprite.spriteHeight,
+    sprite.spriteWidth,
+    sprite.spriteHeight,
+    pos.x,
+    pos.y,
+    size.width,
+    size.height
+  );
 }

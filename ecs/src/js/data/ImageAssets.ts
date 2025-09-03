@@ -1,7 +1,9 @@
 import type { AssetDescriptor } from "../systems/AssetManager.js";
+
 export const imageAssets: AssetDescriptor[] = [
   { id: "player", src: "assets/player.png" },
   { id: "lives", src: "assets/lives.png" },
+  { id: "leaf", src: "assets/leaf.png" },
 
   { id: "bglayer5-forest", src: "assets/background/forest/bglayer5-forest.png" },
   { id: "bglayer4-forest", src: "assets/background/forest/bglayer4-forest.png" },

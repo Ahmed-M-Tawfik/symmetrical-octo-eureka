@@ -3,8 +3,9 @@ import { atIndex } from "../utils/arrayUtils.js";
 
 import type { Game } from "../Main.js";
 import type { ISpawnData } from "../data/ConfigTypes.js";
-import { eventBus } from "../engine/EventBus.js";
 import { PositionComponent } from "../entities/components/PositionComponent.js";
+import type { PowerupType } from "../entities/components/PowerupComponent.js";
+import { PowerupEntity } from "../entities/PowerupEntity.js";
 
 export class SpawnStrategy {
   game: Game;
@@ -22,10 +23,14 @@ export class SpawnStrategy {
 export class RandomSpawnStrategy extends SpawnStrategy {
   enemyTimer: number;
   enemyInterval: number;
-  constructor(game: Game, enemyInterval: number = 1000) {
+  powerupTimer: number;
+  powerupInterval: number;
+  constructor(game: Game, enemyInterval: number = 1000, powerupInterval: number = 1000) {
     super(game);
     this.enemyTimer = 0;
+    this.powerupTimer = 0;
     this.enemyInterval = enemyInterval;
+    this.powerupInterval = powerupInterval;
   }
   override update(deltaTime: number): void {
     super.update(deltaTime);
@@ -33,6 +38,11 @@ export class RandomSpawnStrategy extends SpawnStrategy {
     if (this.enemyTimer > this.enemyInterval) {
       this.addEnemy();
       this.enemyTimer -= this.enemyInterval;
+    }
+    this.powerupTimer += deltaTime;
+    if (this.powerupTimer > this.powerupInterval) {
+      this.addPowerup();
+      this.powerupTimer -= this.powerupInterval;
     }
   }
   addEnemy(): void {
@@ -45,7 +55,17 @@ export class RandomSpawnStrategy extends SpawnStrategy {
     spawnedEnemies.push(new FlyingEnemy(this.game));
 
     this.game.session.entities.push(...spawnedEnemies);
-    eventBus.emit("enemy:spawned", { enemies: spawnedEnemies });
+  }
+  addPowerup(): void {
+    const powerupTypes: PowerupType[] = ["life", "score"];
+    const val = Math.floor(Math.random() * powerupTypes.length);
+    const randomType = powerupTypes[val] as PowerupType;
+
+    const spawnX = this.game.width + Math.random() * 25 * 0.5;
+    const spawnY = Math.random() * this.game.height * 0.5;
+
+    const powerup = new PowerupEntity(this.game, randomType, spawnX, spawnY);
+    this.game.session.entities.push(powerup);
   }
 }
 
